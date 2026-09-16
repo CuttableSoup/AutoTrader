@@ -6,11 +6,11 @@ run against it; changing a frozen entry bumps `strategy_version`.
 
 ## Resolved §12 decisions (v0.1 defaults, frozen in `config/strategy.v1.json`)
 
-> **Data entitlements as of 2026-09-15.** See "Vendor entitlements" below for what
-> each key actually returns. The Claude layer is verified working end to end. Gate
-> G1 remains blocked on a Sharadar subscription that covers more than the ~30 free
-> sample tickers. Nothing in the design changed because of this; only what can be
-> run today.
+>  **Gate G1 was run on the full universe on 2026-09-15 and FAILED.** See
+> [G1-RESULT.md](G1-RESULT.md). The v1.0 signal has no forward drift before costs:
+> its candidates underperform SPY by 0.80% over the 40-session holding window.
+> v1.0 does not proceed to paper trading, and the v2 sleeve stays blocked behind it.
+> The parameters below are kept as the record of what was tested and frozen.
 
 | # | Decision | Choice | Rationale |
 |---|---|---|---|
@@ -46,13 +46,13 @@ Every vendor was called with the live keys. What §8 assumes vs what the keys re
 | Historical consensus (backtest) | FMP | **Blocked.** `from` earlier than ~30 days returns HTTP 402 on this plan. Not fatal: the v1.0 signal is price, volume, momentum and trend only. Consensus feeds the mock validator's revenue-surprise proxy and the thesis facts, both of which degrade quietly. |
 | Transcripts | FMP | **Blocked.** Transcript endpoints return HTTP 402. The `require_transcript` universe rule cannot be enforced and is reported as not enforced rather than silently passing. |
 | Analyst coverage | FMP `stable/analyst-estimates` | **OK** (`numAnalystsEps`, `numAnalystsRevenue`), current values only, so a small look-ahead on a slow-moving rule. |
-| Point-in-time fundamentals, prices, constituents (backtest) | Sharadar | **Free tier: the ~30 Dow constituents only.** Everything else returns `403 Exceeds free tier`. |
+| Point-in-time fundamentals, prices, constituents (backtest) | Sharadar Bundle 10yr | **OK** since 2026-09-15. 2,168 symbols above the cap floor, 4.4M bars, 73k events, delisted included. Bulk CSV export (302 to a presigned zip) pulls 1.9 GB in ~30 s; paginating would take hours. ETFs are in `funds`, not `stocks`, so the benchmark comes from there. |
 | Quoted spreads | none | **Not available.** `median_spread_bps` is written as 0 and the rule is logged as not enforced. |
 | Claude validator | Anthropic | **Working** (verified end to end 2026-09-15, $0.066 per candidate). See "Claude validator, measured against the live API" below. |
 
 Consequences:
 
-* **Gate G1 cannot be attempted** until Sharadar covers the real universe. Thirty mega-caps are not a cross-sectional universe: eleven of them are on the over-optioned exclusion list, the momentum percentile is computed over a handful of names, and there is no survivorship-free breadth. The pipeline itself is exercised on those thirty so the code path is proven.
+* **Gate G1 was attempted and failed** on the full universe: deflated Sharpe −1.77, net return positive in 2 of 7 folds. See [G1-RESULT.md](G1-RESULT.md).
 * **Gate G4 accrual can start as soon as paper trading starts**, but only forward: the validator reads the live web and so cannot be replayed over history (see below).
 * The two universe rules that cannot be sourced (transcript, spread) are **reported as unenforced on every build** rather than defaulted silently, so the universe size is never mistaken for a filtered one.
 

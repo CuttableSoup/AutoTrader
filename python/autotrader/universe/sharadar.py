@@ -23,7 +23,9 @@ from __future__ import annotations
 import csv
 import datetime as dt
 import logging
+import shutil
 import time
+import zipfile
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -111,6 +113,41 @@ class SharadarClient:
             yield from self.rows(table, **params)
         except SharadarFreeTier as e:
             log.warning("free tier: skipping %s", e)
+
+    def bulk(self, table: str, years: str, dest_dir: Path) -> Path | None:
+        """Download a whole table as CSV via the bulk export (302 -> presigned zip).
+
+        Sharadar's own throttle message says to use this for large extracts, and it
+        is the difference between minutes and hours: ten years of `stocks` is ~12M
+        rows, which is ~1200 paginated requests. Returns None when the subscription
+        does not include bulk for that table, so the caller can fall back to paging.
+        Cached per (table, years, day).
+        """
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        target = dest_dir / f"{table}-{years}-{dt.date.today().isoformat()}.csv"
+        if target.exists() and target.stat().st_size > 0:
+            log.info("bulk %s: cached %s (%.0f MB)", table, target.name, target.stat().st_size / 1e6)
+            return target
+        r = self.http.get(f"{self.base_url}/data/{table}", params={"years": years, "format": "csv"},
+                          follow_redirects=False, timeout=120)
+        if r.status_code != 302:
+            log.warning("bulk %s unavailable (HTTP %s): %s", table, r.status_code, r.text[:160])
+            return None
+        url = r.headers["location"]
+        log.info("bulk %s: downloading %s years...", table, years)
+        tmp = target.with_suffix(".zip")
+        with httpx.stream("GET", url, timeout=1800, follow_redirects=True) as resp:
+            resp.raise_for_status()
+            with open(tmp, "wb") as f:
+                for chunk in resp.iter_bytes(1 << 20):
+                    f.write(chunk)
+        with zipfile.ZipFile(tmp) as z:
+            name = z.namelist()[0]
+            with z.open(name) as src, open(target, "wb") as dst:
+                shutil.copyfileobj(src, dst)
+        tmp.unlink()
+        log.info("bulk %s: %s (%.0f MB)", table, target.name, target.stat().st_size / 1e6)
+        return target
 
     def stock_tickers(self) -> list[dict]:
         """Ticker metadata for securities that have a price history (table == 'stocks')."""
@@ -251,6 +288,144 @@ def write_earnings_csv(client: SharadarClient, out: Path, symbols: list[str], st
                             "" if rev is None else f"{rev:.2f}", cons.get("revenue_consensus", ""),
                             nxt, ";".join(window)])
                 n += 1
+    return n
+
+
+# ------------------------------------------------------- bulk transform -----
+
+def _iter_csv(path: Path) -> Iterator[dict]:
+    with open(path, newline="", encoding="utf-8", errors="ignore") as f:
+        yield from csv.DictReader(f)
+
+
+def build_from_bulk(bulk: dict[str, Path], out: Path, start: dt.date, end: dt.date, min_market_cap: float,
+                    benchmark: str, coverage: dict[str, tuple[int, bool]] | None, default_coverage: int,
+                    default_spread_bps: float = 0.0) -> dict[str, int]:
+    """Turn the four bulk CSVs into bars.csv / securities.csv / earnings.csv.
+
+    Everything streams: `stocks` alone is ~16M rows and must never be held in memory.
+
+    The symbol set is chosen from `fundamentals` first: a name that never reached
+    `min_market_cap` inside the window can never satisfy the universe rule, so its
+    bars are not worth carrying. That is a superset of the real universe (the ADV,
+    spread and coverage rules narrow it further at evaluation time), so it cannot
+    remove a name the strategy would otherwise have traded. It cuts the bar file
+    by roughly an order of magnitude.
+
+    Delisted names are kept. Dropping them is exactly the survivorship bias that
+    makes a backtest lie (docs/DESIGN.md 7.1).
+    """
+    out.mkdir(parents=True, exist_ok=True)
+    lo, hi = start.isoformat(), end.isoformat()
+    tickers = {r["ticker"]: r for r in _iter_csv(bulk["tickers"]) if r.get("table") in ("SEP", "stocks")}
+    log.info("bulk: %d tickers with a price history", len(tickers))
+
+    # ---- pass 1: fundamentals -> eligible symbols + securities rows + earnings rows
+    eligible: set[str] = set()
+    fund_rows: dict[str, list[dict]] = {}
+    scanned = 0
+    for r in _iter_csv(bulk["fundamentals"]):
+        scanned += 1
+        if r.get("dimension") != "ARQ":
+            continue
+        sym, d = r.get("ticker", ""), _d(r.get("date"))
+        if not d or not (lo <= d <= hi) or sym not in tickers:
+            continue
+        cap = _f(r.get("marketcap"))
+        if cap is not None and cap > min_market_cap:
+            eligible.add(sym)
+        fund_rows.setdefault(sym, []).append({"date": d, "marketcap": cap, "eps": _f(r.get("eps")),
+                                              "revenue": _f(r.get("revenue")), "fiscalperiod": (r.get("fiscalperiod") or "").replace("-", "")})
+    log.info("bulk: scanned %d fundamentals rows; %d symbols ever above the market-cap floor", scanned, len(eligible))
+
+    # ---- pass 2: events -> material 8-K dates for eligible symbols
+    k8: dict[str, list[str]] = {}
+    for r in _iter_csv(bulk["events"]):
+        sym = r.get("ticker", "")
+        if sym not in eligible:
+            continue
+        if MATERIAL_8K_CODES & set(str(r.get("eventcodes") or "").split("|")):
+            d = _d(r.get("date"))
+            if lo <= d <= hi:
+                k8.setdefault(sym, []).append(d)
+    for v in k8.values():
+        v.sort()
+    log.info("bulk: material 8-K dates for %d symbols", len(k8))
+
+    # ---- securities.csv + earnings.csv
+    n_sec = n_ev = 0
+    missing_cov: set[str] = set()
+    with open(out / "securities.csv", "w", newline="", encoding="utf-8") as gs, \
+         open(out / "earnings.csv", "w", newline="", encoding="utf-8") as ge:
+        ws, we = csv.writer(gs, lineterminator="\n"), csv.writer(ge, lineterminator="\n")
+        ws.writerow(["symbol", "name", "sector", "category", "market_cap", "first_listed", "analyst_coverage",
+                     "transcript_available", "median_spread_bps", "as_of"])
+        we.writerow(["event_id", "symbol", "report_date", "timing", "fiscal_period", "eps_actual", "eps_consensus",
+                     "eps_consensus_asof", "revenue_actual", "revenue_consensus", "next_report_date", "material_8k_dates"])
+        for sym in sorted(eligible):
+            m = tickers[sym]
+            cov, transcript = (coverage or {}).get(sym, (default_coverage, True))
+            if coverage is not None and sym not in coverage:
+                missing_cov.add(sym)
+            reports = sorted(fund_rows.get(sym, []), key=lambda x: x["date"])
+            for i, r in enumerate(reports):
+                if r["marketcap"] is not None and r["marketcap"] > 0:
+                    ws.writerow([sym, (m.get("name") or "").replace(",", " "), m.get("sector") or "", m.get("category") or "",
+                                 f"{r['marketcap']:.2f}", _d(m.get("firstpricedate")), cov, 1 if transcript else 0,
+                                 f"{default_spread_bps:.2f}", r["date"]])
+                    n_sec += 1
+                nxt = reports[i + 1]["date"] if i + 1 < len(reports) else ""
+                window = [d for d in k8.get(sym, []) if r["date"] < d <= (nxt or "9999-12-31")]
+                we.writerow(["", sym, r["date"], "UNKNOWN", r["fiscalperiod"],
+                             "" if r["eps"] is None else f"{r['eps']:.4f}", "", "",
+                             "" if r["revenue"] is None else f"{r['revenue']:.2f}", "", nxt, ";".join(window)])
+                n_ev += 1
+    if missing_cov:
+        log.warning("analyst coverage unknown for %d symbols; defaulted to %d", len(missing_cov), default_coverage)
+
+    # ---- bars.csv: stream, keeping only eligible symbols (+ benchmark if Sharadar carries it)
+    keep = eligible | {benchmark}
+    n_bars = 0
+    with open(out / "bars.csv", "w", newline="", encoding="utf-8") as gb:
+        wb = csv.writer(gb, lineterminator="\n")
+        wb.writerow(["symbol", "date", "open", "high", "low", "close", "volume"])
+        for i, r in enumerate(_iter_csv(bulk["stocks"]), 1):
+            sym = r.get("ticker", "")
+            if sym not in keep:
+                continue
+            d = _d(r.get("date"))
+            if not (lo <= d <= hi):
+                continue
+            o, h, l, c, v = (_f(r.get("open")), _f(r.get("high")), _f(r.get("low")), _f(r.get("close")), _f(r.get("volume")))
+            if None in (o, h, l, c) or v is None or c <= 0:
+                continue
+            wb.writerow([sym, d, f"{o:.4f}", f"{h:.4f}", f"{l:.4f}", f"{c:.4f}", int(v)])
+            n_bars += 1
+            if i % 4_000_000 == 0:
+                log.info("bulk bars: %dM rows scanned, %d kept", i // 1_000_000, n_bars)
+    return {"bars": n_bars, "securities": n_sec, "earnings": n_ev, "symbols": len(eligible)}
+
+
+def append_benchmark_from_funds(client: "SharadarClient", out: Path, symbol: str, start: dt.date, end: dt.date) -> int:
+    """Append benchmark bars from Sharadar `funds`.
+
+    ETFs are not in `stocks`; Sharadar keeps them in `funds` (legacy SFP). Taking the
+    benchmark from there rather than from Alpaca matters for history depth: Alpaca's
+    free IEX feed starts in 2020, which would strand four of the ten purchased years,
+    because the trend filter cannot run until 200 sessions after the first benchmark bar.
+    """
+    rows = sorted(client.rows_safe("funds", ticker=symbol, **{"from": start.isoformat(), "to": end.isoformat()}),
+                  key=lambda r: r["date"])
+    n = 0
+    with open(out, "a", newline="", encoding="utf-8") as g:
+        w = csv.writer(g, lineterminator="\n")
+        for r in rows:
+            o, h, l, c, v = (_f(r.get("open")), _f(r.get("high")), _f(r.get("low")), _f(r.get("close")), _f(r.get("volume")))
+            if None in (o, h, l, c) or v is None or c <= 0:
+                continue
+            w.writerow([symbol, _d(r["date"]), f"{o:.4f}", f"{h:.4f}", f"{l:.4f}", f"{c:.4f}", int(v)])
+            n += 1
+    log.info("benchmark %s from sharadar funds: %d bars", symbol, n)
     return n
 
 

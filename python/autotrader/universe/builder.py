@@ -20,8 +20,8 @@ import statistics
 from pathlib import Path
 
 from ..config import Config, Secrets
-from .sharadar import (SharadarClient, SharadarFreeTier, append_alpaca_bars, fmp_coverage, write_bars_csv,
-                       write_earnings_csv, write_securities_csv)
+from .sharadar import (SharadarClient, SharadarFreeTier, append_alpaca_bars, append_benchmark_from_funds, build_from_bulk, fmp_coverage,
+                       write_bars_csv, write_earnings_csv, write_securities_csv)
 
 log = logging.getLogger("autotrader.universe")
 
@@ -101,6 +101,38 @@ def cmd_backtest(a: argparse.Namespace) -> None:
     end = dt.date.fromisoformat(a.end) if a.end else dt.date.today()
     # Bars need a warm-up before `start` for the 252-session momentum lookback and the 200-day trend MA.
     bars_start = start - dt.timedelta(days=int(a.warmup_days))
+    benchmark = strat["universe"].get("benchmark", "SPY")
+
+    if a.bulk:
+        raw = Path(a.raw_dir)
+        want = {"tickers": ("tickers", "full"), "fundamentals": ("fundamentals", a.years),
+                "events": ("events", a.years), "stocks": ("stocks", a.years)}
+        paths = {}
+        for key, (table, years) in want.items():
+            p = client.bulk(table, years, raw)
+            if p is None:
+                log.error("bulk download unavailable for %s; rerun without --bulk to page instead", table)
+                raise SystemExit(3)
+            paths[key] = p
+        coverage = None
+        if secrets.has("fmp_api_key") and a.enrich:
+            log.warning("--enrich with --bulk would need one FMP call per eligible symbol; skipping")
+        stats = build_from_bulk(paths, out, bars_start, end, float(strat["universe"]["min_market_cap_cents"]) / 100.0,
+                                benchmark, coverage, strat["universe"]["min_analyst_coverage"])
+        # The benchmark is an ETF, so it is in `funds`, not `stocks`. Alpaca is the fallback.
+        added = append_benchmark_from_funds(client, out / "bars.csv", benchmark, bars_start, end)
+        if added == 0:
+            log.warning("benchmark %s not in Sharadar funds; falling back to Alpaca (history starts ~2020)", benchmark)
+            added = append_alpaca_bars(out / "bars.csv", benchmark, secrets.require("alpaca_key_id"),
+                                       secrets.require("alpaca_secret_key"), bars_start, end,
+                                       cfg.get("alpaca.data_base_url", "https://data.alpaca.markets"),
+                                       cfg.get("alpaca.data_feed", "iex"))
+        stats["bars"] += added
+        client.close()
+        log.warning("analyst coverage defaulted to the universe minimum; the coverage rule is NOT being enforced")
+        log.warning("quoted spreads are not in Sharadar; the median-spread rule is NOT being enforced")
+        log.info("bulk build: %s -> %s", stats, out)
+        return
 
     tickers = client.stock_tickers()
     log.info("sharadar: %d tickers with a price history", len(tickers))
@@ -111,7 +143,6 @@ def cmd_backtest(a: argparse.Namespace) -> None:
         symbols = [s for s in symbols if s in want]
     if a.max_symbols:
         symbols = symbols[: int(a.max_symbols)]
-    benchmark = strat["universe"].get("benchmark", "SPY")
 
     # What can this key actually read? A free-tier key covers ~30 names; probing first
     # avoids marching through thousands of 403s and reports the real coverage up front.
@@ -192,6 +223,9 @@ def main() -> None:
     b.add_argument("--include-delisted", action="store_true", help="keep delisted tickers (survivorship-free; recommended)")
     b.add_argument("--enrich", action="store_true", help="join FMP analyst coverage (2 API calls per symbol)")
     b.add_argument("--no-probe", action="store_true", help="skip the entitlement probe and attempt every ticker")
+    b.add_argument("--bulk", action="store_true", help="use Sharadar bulk CSV export (required for a full-universe pull)")
+    b.add_argument("--years", default="10", help="bulk history: 5 | 10 | full")
+    b.add_argument("--raw-dir", default="data/raw", help="where bulk CSVs are cached")
     l = sub.add_parser("live")
     l.add_argument("--config", default=None)
     l.add_argument("--securities", required=True)
