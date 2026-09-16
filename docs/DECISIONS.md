@@ -93,3 +93,15 @@ Sharadar moved off Nasdaq Data Link. The loader targets `https://api.sharadar.co
 ## Frozen parameters (v1.0)
 
 See `config/strategy.v1.json`. Only `ear_threshold_pct` and `momentum_top_pct` are tunable by walk-forward. Every other value is fixed; changing one requires a new strategy version.
+
+## v2 research foundations (2026-09-16)
+
+The v2 hypothesis pre-tests (plan: ranked hypotheses H1–H5, Stage 0/1) run on a new research panel, not on `data/sharadar/`. Recorded here because each point changes a number someone might otherwise compare directly with the v1 reports.
+
+* **`data/sharadar/` is selection-biased below its floor.** `build_from_bulk` keeps only symbols whose market cap was *ever* above the floor inside the window. Every sub-floor name in it is one that later grew, so the event study's "under $2B: +4.9% to +10.7%" row is inflated by an unknown amount. `python/autotrader/research/panel.py` rebuilds from `data/raw/` over all 17,049 domestic common-stock tickers (delisted included) and decides membership from data known at each close: market cap ≥ $500M, unadjusted price ≥ $5, 20-day dollar ADV ≥ $5M, listed ≥ 365 days. About 2,000 names qualify at each year-end (roughly 550 at $0.5–2B, 550 at $2–5B, 1,000 above $5B).
+* **SF1 `sharesbas` is restated for later splits.** AAPL's 2020-07-31 filing, a month before its 4:1 split, already reports 17.1B shares, and SF1 `marketcap` equals split-adjusted price × `sharesbas`. So daily market cap is split-adjusted `close` × `sharesbas` × `sharefactor`, and year-over-year share changes need no split correction. The plan said `closeunadj`; that would have overstated pre-split caps by the split ratio.
+* **Total-return benchmark.** Stock returns use `closeadj` (dividends included). The SPY rows in `data/sharadar/bars.csv` are price-only, which would have added SPY's dividend yield (~1.5%/yr) to every excess return. The panel takes SPY `closeadj` from Sharadar `funds`.
+* **Hold-out sealed at 2025-09-15** (`research/seal.py`). Research loaders stop there. Reading further needs `--unseal --reason`, which writes to the trial ledger.
+* **Trial ledger** `docs/trials.jsonl`, seeded with 437 prior configurations (v1.0 on the Dow-30 sample 24; v1.0, v1.1, v1.2 walk-forwards 84 each; the 519-candidate raw check 1; the event-study sweep 160). Every later pre-test and backtest appends to it, and Stage 2's deflated Sharpe must be penalised for the total.
+* **Fama-French factors** from the Ken French library, `data/factors/` with sha256 in `SOURCE.md`. The daily file currently ends 2026-07-31.
+* **Sharadar insiders table is entitled** (probed 2026-09-16: `data/insiders` returns Form 4 rows). `institutions` is not ("Unknown table"). H5 (insider-purchase drift) is therefore testable without a new subscription.

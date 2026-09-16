@@ -26,6 +26,7 @@ at-validator = "autotrader.validator.sidecar:main"
 at-evaluate-claude = "autotrader.evaluation.counterfactual:main"
 at-fake-alpaca = "autotrader.fake_alpaca.server:main"
 at-pager = "autotrader.pager:main"
+at-research = "autotrader.research.cli:main"
 
 [build-system]
 requires = ["setuptools>=68"]

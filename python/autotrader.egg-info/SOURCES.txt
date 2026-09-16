@@ -19,6 +19,13 @@ autotrader/events_feed/feed.py
 autotrader/events_feed/vendors.py
 autotrader/fake_alpaca/__init__.py
 autotrader/fake_alpaca/server.py
+autotrader/research/__init__.py
+autotrader/research/cli.py
+autotrader/research/factors.py
+autotrader/research/ledger.py
+autotrader/research/panel.py
+autotrader/research/seal.py
+autotrader/research/stats.py
 autotrader/universe/__init__.py
 autotrader/universe/builder.py
 autotrader/universe/sharadar.py
@@ -28,3 +35,4 @@ autotrader/validator/mock.py
 autotrader/validator/prompts.py
 autotrader/validator/sidecar.py
 tests/test_core.py
+tests/test_research_core.py
