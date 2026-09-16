@@ -12,6 +12,8 @@ from dataclasses import dataclass
 import httpx
 
 log = logging.getLogger("autotrader.events.vendors")
+# httpx logs full request URLs at INFO, which would put vendor API keys into the log archive.
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 @dataclass

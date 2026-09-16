@@ -49,6 +49,8 @@
   "validator": {
     "mode": "SHADOW",
     "model": "claude-haiku-4-5-20251001",
+    "anthropic_workspace_id": "",
+    "_anthropic_workspace_id_doc": "Required when the Anthropic API key is org-level (not scoped to a workspace); the API rejects such requests without the anthropic-workspace-id header.",
     "timeout_s": 20,
     "max_search_uses": 3,
     "include_transcript": false,

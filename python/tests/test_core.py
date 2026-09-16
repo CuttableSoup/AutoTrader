@@ -98,6 +98,12 @@ def test_feed_merge_and_timing_cross_check(tmp_path):
     p_xyz = build_payload("XYZ", dt.date(2026, 10, 29), groups[("XYZ", dt.date(2026, 10, 29))], state, today, dt.date(2027, 1, 28))
     assert p_abc["timing"] == "AMC"
     assert p_xyz["timing"] == "UNKNOWN"      # vendors disagree -> untrusted
+    # FMP's stable calendar has no time field: a silent vendor does not veto the other one's timing...
+    silent = [_ve("fmp", "QQQ1", "2026-10-28", "UNKNOWN"), _ve("finnhub", "QQQ1", "2026-10-28", "BMO")]
+    assert build_payload("QQQ1", dt.date(2026, 10, 28), silent, state, today, None)["timing"] == "BMO"
+    # ...but a single vendor alone is never trusted for day 0.
+    alone = [_ve("finnhub", "QQQ2", "2026-10-28", "BMO")]
+    assert build_payload("QQQ2", dt.date(2026, 10, 28), alone, state, today, None)["timing"] == "UNKNOWN"
     assert p_xyz["next_report_date"] == "2027-01-28"
     assert p_abc["event_id"] == event_id("ABC", "2026Q3", dt.date(2026, 10, 28))
     reg = SchemaRegistry(ROOT / "schemas")

@@ -97,14 +97,13 @@ def merge_vendor_events(fmp: list[VendorEvent], finnhub: list[VendorEvent]) -> d
 def build_payload(symbol: str, report_date: dt.date, sources: list[VendorEvent], state: FeedState, today: dt.date, next_report: dt.date | None) -> dict[str, Any]:
     timings = {s.vendor: s.timing for s in sources}
     known = [t for t in timings.values() if t != "UNKNOWN"]
-    if len(known) >= 2 and len(set(known)) == 1:
-        timing = known[0]
-    elif len(known) == 1 and len(sources) == 1:
-        timing = "UNKNOWN"   # one vendor only: not trusted (determines day 0)
+    if len(set(known)) > 1:
+        timing = "UNKNOWN"   # explicit disagreement: day 0 is not trusted
+        log.warning("%s %s: vendors disagree on timing %s -> UNKNOWN", symbol, report_date, timings)
+    elif len(known) >= 1 and len(sources) >= 2:
+        timing = known[0]    # at least one vendor states it and no vendor contradicts it (FMP's stable calendar carries no time field)
     else:
-        timing = "UNKNOWN"
-        if len(set(known)) > 1:
-            log.warning("%s %s: vendors disagree on timing %s -> UNKNOWN", symbol, report_date, timings)
+        timing = "UNKNOWN"   # single vendor only, or nobody knows
     fiscal = next((s.fiscal_period for s in sources if s.fiscal_period), "")
     eid = event_id(symbol, fiscal, report_date)
     # Consensus snapshot (today) then read the as-of value.

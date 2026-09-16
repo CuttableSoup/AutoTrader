@@ -52,11 +52,13 @@ class ValidatorConfig:
     include_transcript: bool = False
     max_tokens_research: int = 2048
     max_tokens_verdict: int = 512
+    workspace_id: str = ""            # required when the API key is org-level (not scoped to a workspace)
 
     @classmethod
     def from_config(cls, cfg: Any) -> "ValidatorConfig":
         c = cls()
         c.model = cfg.get("validator.model", c.model)
+        c.workspace_id = str(cfg.get("validator.anthropic_workspace_id", "") or "")
         c.timeout_s = float(cfg.get("validator.timeout_s", c.timeout_s))
         c.max_search_uses = int(cfg.get("validator.max_search_uses", c.max_search_uses))
         doms = cfg.get("validator.allowed_domains", c.allowed_domains)
@@ -122,7 +124,8 @@ def candidate_facts_json(candidate: dict[str, Any]) -> str:
 class ClaudeValidator:
     def __init__(self, api_key: str, cfg: ValidatorConfig):
         self.cfg = cfg
-        self.client = anthropic.Anthropic(api_key=api_key, timeout=cfg.timeout_s, max_retries=0)
+        headers = {"anthropic-workspace-id": cfg.workspace_id} if cfg.workspace_id else None
+        self.client = anthropic.Anthropic(api_key=api_key, timeout=cfg.timeout_s, max_retries=0, default_headers=headers)
 
     # ---- step 1 -------------------------------------------------------------
     def research(self, facts_json: str, deadline: float) -> tuple[str, list[dict[str, str]], float]:
