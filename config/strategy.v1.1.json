@@ -1,0 +1,108 @@
+{
+  "strategy_version": "EARNINGS_MOMENTUM_V1.1",
+  "_doc": "v1.1. The ONLY change from v1.0 is the universe floor. v1.0 failed Gate G1 because it traded above $5B, where the post-earnings drift is absent (+0.38% at 40d, t=0.74 over 1028 events). The same trigger below $5B is strong and monotone in size, and stable across 2017-2020, 2020-2023 and 2023-2026. This is what Martineau (2022), already cited in DESIGN.md 2.4, predicts: the effect is dead in large caps. v1.0's own universe rule contradicted the paper it cited. Signal, exits and sizing are untouched.",
+  "universe": {
+    "min_market_cap_cents": 100000000000,
+    "min_adv20_dollars_cents": 1000000000,
+    "max_median_spread_bps": 25.0,
+    "min_analyst_coverage": 5,
+    "require_transcript": true,
+    "min_listing_age_days": 365,
+    "exclude_etfs": true,
+    "exclude_adrs": true,
+    "exclude_over_optioned": [
+      "AAPL",
+      "TSLA",
+      "NVDA",
+      "AMZN",
+      "MSFT",
+      "META",
+      "GOOGL",
+      "GOOG",
+      "AMD",
+      "NFLX",
+      "SPY",
+      "QQQ",
+      "IWM",
+      "BABA",
+      "COIN",
+      "MSTR",
+      "PLTR",
+      "SMCI",
+      "ARM",
+      "AVGO"
+    ],
+    "rebuild": "monthly",
+    "benchmark": "SPY"
+  },
+  "signal": {
+    "ear_window": "CLOSE_DM1_TO_CLOSE_DP1",
+    "ear_benchmark": "SPY",
+    "ear_top_tercile_fallback": true,
+    "volume_multiple": 2.0,
+    "adv_window_sessions": 20,
+    "momentum_lookback_sessions": 252,
+    "momentum_skip_sessions": 21,
+    "trend_ma_sessions": 200,
+    "trend_symbol": "SPY",
+    "entry_max_sessions_after_signal": 2,
+    "pullback_rsi": {
+      "enabled": false,
+      "period": 5,
+      "max_rsi": 50
+    },
+    "revision_breadth": {
+      "enabled": false,
+      "min_breadth": 0.3,
+      "window_weeks": 4
+    },
+    "skip_entry_days_before_ex_dividend": 2,
+    "tunable": {
+      "ear_threshold_pct": 3.0,
+      "momentum_top_pct": 40.0
+    },
+    "tunable_grid": {
+      "ear_threshold_pct": [
+        2.0,
+        3.0,
+        4.0,
+        5.0
+      ],
+      "momentum_top_pct": [
+        30.0,
+        40.0,
+        50.0
+      ]
+    }
+  },
+  "exit": {
+    "drift_window_sessions": 40,
+    "exit_sessions_before_earnings": 1,
+    "atr_period": 20,
+    "trailing_stop_atr_mult": 3.0,
+    "trend_break_scale_down_pct": 50.0,
+    "take_profit_atr_mult": null
+  },
+  "sizing": {
+    "target_vol_annual_pct": 11.0,
+    "target_vol_band_pct": [
+      10.0,
+      12.0
+    ],
+    "inverse_vol_tilt": true,
+    "vol_lookback_sessions": 20,
+    "max_positions": 15,
+    "single_name_cap_pct": 8.0,
+    "sector_cap_pct": 30.0,
+    "gap_budget": {
+      "atr_mult": 2.0,
+      "max_equity_pct": 0.5
+    }
+  },
+  "order": {
+    "order_type": "oto",
+    "tif": "gtc",
+    "entry_limit_offset_bps": 20,
+    "extended_hours": false
+  }
+}

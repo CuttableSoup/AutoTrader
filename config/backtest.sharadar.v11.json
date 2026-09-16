@@ -1,0 +1,49 @@
+{
+  "_doc": "Gate G1 for v1.1. Spread assumption raised from 4bp to 25bp: the universe is now $1-5B names at $10M/day, where a mega-cap spread assumption would manufacture a pass.",
+  "run_name": "sharadar-g1-v11",
+  "data_dir": "data/sharadar",
+  "out_dir": "var/backtest/sharadar-g1-v11",
+  "strategy_config": "config/strategy.v1.1.json",
+  "risk_config": "config/risk.v1.1.json",
+  "start_date": "2017-10-02",
+  "_start_date_doc": "Bars begin 2016-09-16; the 252-session 12-1 momentum lookback and the 200-day trend MA need a year of warm-up.",
+  "end_date": "2026-09-15",
+  "initial_equity_cents": 100000000,
+  "costs": {
+    "commission_bps_per_side": 5.0,
+    "sec_fee_per_million_dollars_sold_cents": 2780,
+    "finra_taf_per_share_cents": 0.0166,
+    "finra_taf_max_per_trade_cents": 833,
+    "half_spread_slippage": true,
+    "default_spread_bps": 25.0
+  },
+  "validator": {
+    "mode": "mock",
+    "mock": {
+      "reject_revenue_miss_with_large_ear": true,
+      "large_ear_pct": 8.0,
+      "reject_second_8k_in_window": true,
+      "reject_counter_gap_atr_mult": 1.5,
+      "counter_gap_window_sessions": 3,
+      "reject_over_optioned": true
+    }
+  },
+  "walk_forward": {
+    "folds": 7,
+    "train_years": 2,
+    "test_years": 1,
+    "purge_sessions": 40,
+    "embargo_sessions": 10,
+    "tune": [
+      "ear_threshold_pct",
+      "momentum_top_pct"
+    ],
+    "objective": "sharpe_net",
+    "_folds_doc": "Seven rolling folds of 2y train + 1y test cover every usable year (test windows 2019-10 through 2026-09). The designed three folds would have left the last four years of data untested."
+  },
+  "report": {
+    "haircut_pct": 50.0,
+    "risk_free_annual_pct": 0.0,
+    "min_gross_sharpe_after_haircut": 0.4
+  }
+}
