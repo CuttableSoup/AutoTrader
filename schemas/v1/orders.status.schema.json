@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "autotrader:v1/orders.status",
+  "title": "orders.status payload",
+  "description": "One trade-update event from the Alpaca trade_updates WebSocket, normalised. The WS is the authoritative order-state feed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["client_order_id", "broker_order_id", "symbol", "event", "status", "filled_qty", "event_ts_utc"],
+  "properties": {
+    "client_order_id": { "type": "string" },
+    "broker_order_id": { "type": "string" },
+    "parent_broker_order_id": { "type": ["string", "null"], "description": "Set for bracket/oto legs." },
+    "symbol": { "type": "string" },
+    "side": { "type": "string", "enum": ["buy", "sell"] },
+    "event": { "type": "string", "enum": ["new", "accepted", "pending_new", "partial_fill", "fill", "canceled", "pending_cancel", "rejected", "replaced", "pending_replace", "expired", "done_for_day", "stopped", "suspended", "order_replace_rejected", "order_cancel_rejected", "held", "calculated"] },
+    "status": { "type": "string", "description": "Alpaca order.status as received." },
+    "qty": { "type": ["integer", "null"] },
+    "filled_qty": { "type": "integer", "minimum": 0 },
+    "filled_avg_px_cents": { "type": ["integer", "null"] },
+    "price_cents": { "type": ["integer", "null"], "description": "Price of this fill event, if any." },
+    "position_qty": { "type": ["integer", "null"], "description": "Position after this event, as reported by the broker." },
+    "event_ts_utc": { "type": "string" },
+    "raw": { "type": "object", "description": "Original message, for post-mortems." }
+  }
+}

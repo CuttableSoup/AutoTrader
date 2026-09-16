@@ -1,0 +1,13 @@
+{
+  "listen": "127.0.0.1:8787",
+  "token": "fake-token",
+  "alpaca_base_url": "http://127.0.0.1:8790",
+  "alpaca_key_id": "fake",
+  "alpaca_secret_key": "fake",
+  "heartbeat_interval_s": 10,
+  "miss_threshold": 6,
+  "drawdown_flatten_pct": -12.0,
+  "account_poll_s": 15,
+  "state_file": "var/state-fake/watchdog_state.json",
+  "nats_url": "nats://127.0.0.1:4222"
+}

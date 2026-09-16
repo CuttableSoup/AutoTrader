@@ -1,0 +1,26 @@
+{
+  "risk_version": "RISK_V1.0",
+  "_doc": "Hard limits from docs/DESIGN.md section 5. Enforced before orders.approved; breaches also feed the kill switch.",
+
+  "per_position_risk_pct": 0.5,
+  "single_name_cap_pct": 8.0,
+  "sector_cap_pct": 30.0,
+  "gross_exposure_cap_pct": 100.0,
+  "max_open_positions": 15,
+  "max_new_positions_per_day": 3,
+  "max_orders_per_day": 30,
+  "daily_loss_pause_pct": -2.0,
+  "drawdown_halve_pct": -8.0,
+  "drawdown_flatten_pct": -12.0,
+  "consecutive_losers_pause": 8,
+  "max_spread_bps": 10.0,
+  "max_order_pct_of_adv20": 1.0,
+  "earnings_gate": true,
+  "max_quote_age_s": 30,
+  "max_candidate_age_sessions": 1,
+  "validator_error_streak_pause": 3,
+  "reject_rate_page_pct": 10.0,
+
+  "shadow_mode": true,
+  "_shadow_mode_doc": "true = validator verdicts are recorded and ignored (mandatory first phase). false = anything other than APPROVE is rejected."
+}

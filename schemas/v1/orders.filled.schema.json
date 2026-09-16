@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "autotrader:v1/orders.filled",
+  "title": "orders.filled payload",
+  "description": "Terminal fill of an order (status=filled). Emitted once per broker_order_id. Partial fills appear on orders.status only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["client_order_id", "broker_order_id", "symbol", "side", "qty", "avg_px_cents", "filled_ts_utc", "intent"],
+  "properties": {
+    "client_order_id": { "type": "string" },
+    "broker_order_id": { "type": "string" },
+    "parent_broker_order_id": { "type": ["string", "null"] },
+    "symbol": { "type": "string" },
+    "side": { "type": "string", "enum": ["buy", "sell"] },
+    "qty": { "type": "integer", "minimum": 1 },
+    "avg_px_cents": { "type": "integer", "minimum": 1 },
+    "filled_ts_utc": { "type": "string" },
+    "intent": { "type": "string", "enum": ["ENTRY", "EXIT_TIME", "EXIT_EARNINGS", "EXIT_TREND_SCALE", "EXIT_DRAWDOWN", "FLATTEN", "STOP_LEG", "TAKE_PROFIT_LEG", "UNKNOWN"] },
+    "candidate_msg_id": { "type": ["string", "null"] },
+    "commission_cents": { "type": "integer", "minimum": 0 },
+    "fees_cents": { "type": "integer", "minimum": 0 }
+  }
+}

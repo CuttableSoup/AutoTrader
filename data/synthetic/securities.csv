@@ -1,0 +1,842 @@
+symbol,name,sector,category,market_cap,first_listed,analyst_coverage,transcript_available,median_spread_bps,as_of
+SPY,SPDR S&P 500,,ETF,500000000000,1993-01-29,0,0,0.5,2019-01-02
+SY000,SY000 Corp,Technology,ADR Common Stock,159128389205.00,2020-05-16,23,0,5.93,2019-01-01
+SY000,SY000 Corp,Technology,ADR Common Stock,124750462633.00,2020-05-16,15,0,6.40,2020-01-01
+SY000,SY000 Corp,Technology,ADR Common Stock,93225547787.00,2020-05-16,24,0,5.16,2021-01-01
+SY000,SY000 Corp,Technology,ADR Common Stock,6434855647.00,2020-05-16,2,0,2.87,2022-01-01
+SY000,SY000 Corp,Technology,ADR Common Stock,166832042468.00,2020-05-16,24,0,3.57,2023-01-01
+SY000,SY000 Corp,Technology,ADR Common Stock,48502876749.00,2020-05-16,10,0,6.37,2024-01-01
+SY000,SY000 Corp,Technology,ADR Common Stock,33090681995.00,2020-05-16,2,0,2.15,2025-01-01
+SY001,SY001 Corp,Healthcare,Domestic Common Stock,7569632402.00,2004-02-18,8,1,3.48,2019-01-01
+SY001,SY001 Corp,Healthcare,Domestic Common Stock,179774622593.00,2002-12-07,10,1,3.89,2020-01-01
+SY001,SY001 Corp,Healthcare,Domestic Common Stock,293406655578.00,2014-03-10,19,1,4.61,2021-01-01
+SY001,SY001 Corp,Healthcare,Domestic Common Stock,102704991844.00,2017-04-23,6,1,1.18,2022-01-01
+SY001,SY001 Corp,Healthcare,Domestic Common Stock,259307534121.00,2015-11-06,22,1,5.91,2023-01-01
+SY001,SY001 Corp,Healthcare,Domestic Common Stock,15039616864.00,2007-01-01,17,1,4.99,2024-01-01
+SY001,SY001 Corp,Healthcare,Domestic Common Stock,31337356473.00,2012-08-18,5,1,4.62,2025-01-01
+SY002,SY002 Corp,Financial Services,Domestic Common Stock,205890434230.00,2003-09-18,14,1,6.45,2019-01-01
+SY002,SY002 Corp,Financial Services,Domestic Common Stock,17888785753.00,2009-02-07,16,1,3.30,2020-01-01
+SY002,SY002 Corp,Financial Services,Domestic Common Stock,233325484406.00,2007-02-18,17,1,3.84,2021-01-01
+SY002,SY002 Corp,Financial Services,Domestic Common Stock,249800470296.00,2014-06-19,17,1,7.00,2022-01-01
+SY002,SY002 Corp,Financial Services,Domestic Common Stock,117582729437.00,2015-03-27,14,1,6.53,2023-01-01
+SY002,SY002 Corp,Financial Services,Domestic Common Stock,60891094610.00,2006-04-07,5,1,5.99,2024-01-01
+SY002,SY002 Corp,Financial Services,Domestic Common Stock,49452419637.00,2015-07-05,16,1,3.83,2025-01-01
+SY003,SY003 Corp,Industrials,Domestic Common Stock,293605045855.00,2009-11-15,7,1,3.29,2019-01-01
+SY003,SY003 Corp,Industrials,Domestic Common Stock,75223623311.00,2007-10-25,29,1,6.98,2020-01-01
+SY003,SY003 Corp,Industrials,Domestic Common Stock,77139697492.00,2008-08-16,28,1,6.94,2021-01-01
+SY003,SY003 Corp,Industrials,Domestic Common Stock,365799071378.00,2007-04-03,10,1,5.82,2022-01-01
+SY003,SY003 Corp,Industrials,Domestic Common Stock,206752482776.00,2008-10-13,11,1,6.99,2023-01-01
+SY003,SY003 Corp,Industrials,Domestic Common Stock,242130733877.00,2008-06-18,27,1,5.73,2024-01-01
+SY003,SY003 Corp,Industrials,Domestic Common Stock,74063981716.00,2017-07-03,29,1,3.69,2025-01-01
+SY004,SY004 Corp,Consumer Cyclical,Domestic Common Stock,27979790179.00,2012-08-15,22,1,1.27,2019-01-01
+SY004,SY004 Corp,Consumer Cyclical,Domestic Common Stock,23023368863.00,2006-11-19,25,1,5.75,2020-01-01
+SY004,SY004 Corp,Consumer Cyclical,Domestic Common Stock,368624027146.00,2013-08-10,13,1,3.65,2021-01-01
+SY004,SY004 Corp,Consumer Cyclical,Domestic Common Stock,31907835598.00,2016-01-26,19,1,2.70,2022-01-01
+SY004,SY004 Corp,Consumer Cyclical,Domestic Common Stock,261514752038.00,2015-03-30,29,1,3.96,2023-01-01
+SY004,SY004 Corp,Consumer Cyclical,Domestic Common Stock,8034397180.00,2011-07-07,22,1,2.52,2024-01-01
+SY004,SY004 Corp,Consumer Cyclical,Domestic Common Stock,324903245065.00,2017-02-22,13,1,6.64,2025-01-01
+SY005,SY005 Corp,Consumer Defensive,Domestic Common Stock,344609361769.00,2009-09-16,18,1,1.13,2019-01-01
+SY005,SY005 Corp,Consumer Defensive,Domestic Common Stock,21216466378.00,2010-05-28,5,1,5.90,2020-01-01
+SY005,SY005 Corp,Consumer Defensive,Domestic Common Stock,51733982404.00,2016-08-03,14,1,5.23,2021-01-01
+SY005,SY005 Corp,Consumer Defensive,Domestic Common Stock,76778977228.00,2006-01-23,9,1,4.07,2022-01-01
+SY005,SY005 Corp,Consumer Defensive,Domestic Common Stock,65206540049.00,2017-08-08,13,1,3.71,2023-01-01
+SY005,SY005 Corp,Consumer Defensive,Domestic Common Stock,159900707914.00,2012-08-08,28,1,1.39,2024-01-01
+SY005,SY005 Corp,Consumer Defensive,Domestic Common Stock,79019646444.00,2010-04-06,6,1,4.45,2025-01-01
+SY006,SY006 Corp,Energy,Domestic Common Stock,347178108129.00,2009-05-31,6,1,2.39,2019-01-01
+SY006,SY006 Corp,Energy,Domestic Common Stock,323168781050.00,2017-02-07,13,1,4.33,2020-01-01
+SY006,SY006 Corp,Energy,Domestic Common Stock,64957185854.00,2012-07-02,9,1,5.92,2021-01-01
+SY006,SY006 Corp,Energy,Domestic Common Stock,56174216116.00,2005-07-27,18,1,5.77,2022-01-01
+SY006,SY006 Corp,Energy,Domestic Common Stock,198416775763.00,2007-03-28,19,1,5.19,2023-01-01
+SY006,SY006 Corp,Energy,Domestic Common Stock,235624274317.00,2016-04-05,12,1,2.49,2024-01-01
+SY006,SY006 Corp,Energy,Domestic Common Stock,72121809581.00,2003-03-14,3,1,3.73,2025-01-01
+SY007,SY007 Corp,Utilities,Domestic Common Stock,260607961148.00,2005-01-23,20,1,4.54,2019-01-01
+SY007,SY007 Corp,Utilities,Domestic Common Stock,123315228728.00,2016-02-09,6,1,2.50,2020-01-01
+SY007,SY007 Corp,Utilities,Domestic Common Stock,171339774525.00,2015-01-24,5,1,4.73,2021-01-01
+SY007,SY007 Corp,Utilities,Domestic Common Stock,306730090874.00,2009-03-13,28,1,4.64,2022-01-01
+SY007,SY007 Corp,Utilities,Domestic Common Stock,172818853130.00,2004-04-17,20,1,3.64,2023-01-01
+SY007,SY007 Corp,Utilities,Domestic Common Stock,231298750163.00,2017-09-28,11,1,3.57,2024-01-01
+SY007,SY007 Corp,Utilities,Domestic Common Stock,191402536306.00,2015-05-28,5,1,2.68,2025-01-01
+SY008,SY008 Corp,Communication Services,Domestic Common Stock,340366694596.00,2016-06-15,24,1,4.86,2019-01-01
+SY008,SY008 Corp,Communication Services,Domestic Common Stock,397684656438.00,2012-05-17,7,1,3.49,2020-01-01
+SY008,SY008 Corp,Communication Services,Domestic Common Stock,373628779348.00,2017-03-20,24,1,5.63,2021-01-01
+SY008,SY008 Corp,Communication Services,Domestic Common Stock,76069667202.00,2008-04-16,11,1,5.94,2022-01-01
+SY008,SY008 Corp,Communication Services,Domestic Common Stock,378106079080.00,2015-11-10,11,1,4.85,2023-01-01
+SY008,SY008 Corp,Communication Services,Domestic Common Stock,224805458045.00,2013-12-19,24,1,6.19,2024-01-01
+SY008,SY008 Corp,Communication Services,Domestic Common Stock,179393775405.00,2003-09-11,15,1,6.40,2025-01-01
+SY009,SY009 Corp,Basic Materials,Domestic Common Stock,87770850726.00,2004-12-05,16,1,1.87,2019-01-01
+SY009,SY009 Corp,Basic Materials,Domestic Common Stock,279055428932.00,2003-07-23,6,1,5.65,2020-01-01
+SY009,SY009 Corp,Basic Materials,Domestic Common Stock,376557886527.00,2013-08-31,29,1,6.97,2021-01-01
+SY009,SY009 Corp,Basic Materials,Domestic Common Stock,168857825033.00,2010-05-27,23,1,6.85,2022-01-01
+SY009,SY009 Corp,Basic Materials,Domestic Common Stock,58367599266.00,2008-07-26,12,1,6.84,2023-01-01
+SY009,SY009 Corp,Basic Materials,Domestic Common Stock,306909604196.00,2012-08-19,6,1,5.82,2024-01-01
+SY009,SY009 Corp,Basic Materials,Domestic Common Stock,315852824317.00,2017-08-02,9,1,3.60,2025-01-01
+SY010,SY010 Corp,Technology,Domestic Common Stock,104772445473.00,2010-07-18,21,1,6.62,2019-01-01
+SY010,SY010 Corp,Technology,Domestic Common Stock,329060295411.00,2010-10-02,16,1,1.07,2020-01-01
+SY010,SY010 Corp,Technology,Domestic Common Stock,249816832895.00,2004-05-23,5,1,4.40,2021-01-01
+SY010,SY010 Corp,Technology,Domestic Common Stock,193786881604.00,2008-02-29,14,1,2.49,2022-01-01
+SY010,SY010 Corp,Technology,Domestic Common Stock,398883575348.00,2012-01-31,18,1,5.27,2023-01-01
+SY010,SY010 Corp,Technology,Domestic Common Stock,86432016132.00,2008-02-08,23,1,6.04,2024-01-01
+SY010,SY010 Corp,Technology,Domestic Common Stock,321938944151.00,2010-07-20,24,1,1.71,2025-01-01
+SY011,SY011 Corp,Healthcare,Domestic Common Stock,190660363377.00,2017-02-12,20,1,1.23,2019-01-01
+SY011,SY011 Corp,Healthcare,Domestic Common Stock,19216968820.00,2002-09-08,9,1,6.55,2020-01-01
+SY011,SY011 Corp,Healthcare,Domestic Common Stock,66030866740.00,2011-12-20,29,1,5.50,2021-01-01
+SY011,SY011 Corp,Healthcare,Domestic Common Stock,70182234297.00,2008-03-19,13,1,5.11,2022-01-01
+SY011,SY011 Corp,Healthcare,Domestic Common Stock,58702849638.00,2002-09-10,10,1,4.29,2023-01-01
+SY011,SY011 Corp,Healthcare,Domestic Common Stock,40247236956.00,2011-12-30,7,1,6.90,2024-01-01
+SY011,SY011 Corp,Healthcare,Domestic Common Stock,89565240633.00,2010-03-24,16,1,5.56,2025-01-01
+SY012,SY012 Corp,Financial Services,Domestic Common Stock,190502619309.00,2013-10-09,5,1,2.73,2019-01-01
+SY012,SY012 Corp,Financial Services,Domestic Common Stock,161737406089.00,2006-05-16,18,1,5.54,2020-01-01
+SY012,SY012 Corp,Financial Services,Domestic Common Stock,202792554640.00,2003-09-20,23,1,4.03,2021-01-01
+SY012,SY012 Corp,Financial Services,Domestic Common Stock,381107480544.00,2010-07-20,23,1,6.30,2022-01-01
+SY012,SY012 Corp,Financial Services,Domestic Common Stock,78702528335.00,2009-07-01,16,1,6.11,2023-01-01
+SY012,SY012 Corp,Financial Services,Domestic Common Stock,292881800016.00,2016-05-01,3,1,2.12,2024-01-01
+SY012,SY012 Corp,Financial Services,Domestic Common Stock,270200578789.00,2004-01-09,26,1,2.33,2025-01-01
+SY013,SY013 Corp,Industrials,Domestic Common Stock,49436150028.00,2015-08-15,5,0,4.85,2019-01-01
+SY013,SY013 Corp,Industrials,Domestic Common Stock,322358215752.00,2014-10-15,29,0,3.29,2020-01-01
+SY013,SY013 Corp,Industrials,Domestic Common Stock,40303543559.00,2012-11-18,27,0,5.09,2021-01-01
+SY013,SY013 Corp,Industrials,Domestic Common Stock,249561300037.00,2012-08-25,26,0,5.98,2022-01-01
+SY013,SY013 Corp,Industrials,Domestic Common Stock,370772866556.00,2003-10-18,26,0,5.98,2023-01-01
+SY013,SY013 Corp,Industrials,Domestic Common Stock,357204825792.00,2016-11-10,26,0,1.13,2024-01-01
+SY013,SY013 Corp,Industrials,Domestic Common Stock,376570849773.00,2009-07-18,7,0,2.74,2025-01-01
+SY014,SY014 Corp,Consumer Cyclical,Domestic Common Stock,339282223194.00,2014-11-20,10,1,4.24,2019-01-01
+SY014,SY014 Corp,Consumer Cyclical,Domestic Common Stock,62500856781.00,2006-01-14,5,1,5.19,2020-01-01
+SY014,SY014 Corp,Consumer Cyclical,Domestic Common Stock,391860746645.00,2003-04-26,27,1,3.58,2021-01-01
+SY014,SY014 Corp,Consumer Cyclical,Domestic Common Stock,164051318848.00,2009-12-10,28,1,3.67,2022-01-01
+SY014,SY014 Corp,Consumer Cyclical,Domestic Common Stock,100826663585.00,2009-05-02,4,1,3.01,2023-01-01
+SY014,SY014 Corp,Consumer Cyclical,Domestic Common Stock,232929626808.00,2017-08-26,14,1,4.14,2024-01-01
+SY014,SY014 Corp,Consumer Cyclical,Domestic Common Stock,345337445802.00,2014-02-07,27,1,5.40,2025-01-01
+SY015,SY015 Corp,Consumer Defensive,Domestic Common Stock,52451549508.00,2011-02-01,24,1,4.03,2019-01-01
+SY015,SY015 Corp,Consumer Defensive,Domestic Common Stock,221462945335.00,2016-04-22,11,1,3.09,2020-01-01
+SY015,SY015 Corp,Consumer Defensive,Domestic Common Stock,92167815863.00,2014-11-29,7,1,2.32,2021-01-01
+SY015,SY015 Corp,Consumer Defensive,Domestic Common Stock,109187510605.00,2004-06-04,9,1,1.66,2022-01-01
+SY015,SY015 Corp,Consumer Defensive,Domestic Common Stock,213011572841.00,2015-01-27,15,1,5.18,2023-01-01
+SY015,SY015 Corp,Consumer Defensive,Domestic Common Stock,67521670333.00,2013-05-19,19,1,2.46,2024-01-01
+SY015,SY015 Corp,Consumer Defensive,Domestic Common Stock,188357965227.00,2012-03-28,5,1,1.26,2025-01-01
+SY016,SY016 Corp,Energy,Domestic Common Stock,157044241007.00,2003-02-06,16,1,5.57,2019-01-01
+SY016,SY016 Corp,Energy,Domestic Common Stock,226123440190.00,2007-02-09,21,1,1.98,2020-01-01
+SY016,SY016 Corp,Energy,Domestic Common Stock,343102344850.00,2004-05-28,27,1,6.03,2021-01-01
+SY016,SY016 Corp,Energy,Domestic Common Stock,186241134565.00,2013-05-22,12,1,4.19,2022-01-01
+SY016,SY016 Corp,Energy,Domestic Common Stock,237260325002.00,2011-10-04,5,1,1.75,2023-01-01
+SY016,SY016 Corp,Energy,Domestic Common Stock,398175604281.00,2012-12-06,24,1,5.88,2024-01-01
+SY016,SY016 Corp,Energy,Domestic Common Stock,384263295034.00,2009-02-02,20,1,4.59,2025-01-01
+SY017,SY017 Corp,Utilities,Domestic Common Stock,187509880785.00,2020-05-16,27,1,6.76,2019-01-01
+SY017,SY017 Corp,Utilities,Domestic Common Stock,203782000257.00,2020-05-16,25,1,4.95,2020-01-01
+SY017,SY017 Corp,Utilities,Domestic Common Stock,361060700679.00,2020-05-16,9,1,3.89,2021-01-01
+SY017,SY017 Corp,Utilities,Domestic Common Stock,393795675041.00,2020-05-16,24,1,1.48,2022-01-01
+SY017,SY017 Corp,Utilities,Domestic Common Stock,181970422650.00,2020-05-16,4,1,2.97,2023-01-01
+SY017,SY017 Corp,Utilities,Domestic Common Stock,152906243261.00,2020-05-16,24,1,1.41,2024-01-01
+SY017,SY017 Corp,Utilities,Domestic Common Stock,272424568675.00,2020-05-16,28,1,1.41,2025-01-01
+SY018,SY018 Corp,Communication Services,Domestic Common Stock,214384447321.00,2012-02-26,19,1,2.87,2019-01-01
+SY018,SY018 Corp,Communication Services,Domestic Common Stock,284169263935.00,2004-04-04,7,1,4.01,2020-01-01
+SY018,SY018 Corp,Communication Services,Domestic Common Stock,76433133476.00,2016-04-25,26,1,4.86,2021-01-01
+SY018,SY018 Corp,Communication Services,Domestic Common Stock,263973209571.00,2003-12-05,25,1,4.59,2022-01-01
+SY018,SY018 Corp,Communication Services,Domestic Common Stock,187451672004.00,2013-12-05,17,1,2.12,2023-01-01
+SY018,SY018 Corp,Communication Services,Domestic Common Stock,398413485541.00,2007-09-20,9,1,2.97,2024-01-01
+SY018,SY018 Corp,Communication Services,Domestic Common Stock,288940348175.00,2004-03-15,25,1,1.37,2025-01-01
+SY019,SY019 Corp,Basic Materials,Domestic Common Stock,224387756317.00,2011-06-19,4,1,3.97,2019-01-01
+SY019,SY019 Corp,Basic Materials,Domestic Common Stock,126899953403.00,2013-05-17,4,1,3.55,2020-01-01
+SY019,SY019 Corp,Basic Materials,Domestic Common Stock,289545690183.00,2005-07-08,11,1,2.20,2021-01-01
+SY019,SY019 Corp,Basic Materials,Domestic Common Stock,27244958036.00,2008-01-12,8,1,5.06,2022-01-01
+SY019,SY019 Corp,Basic Materials,Domestic Common Stock,160931059988.00,2005-11-29,22,1,5.93,2023-01-01
+SY019,SY019 Corp,Basic Materials,Domestic Common Stock,318756155585.00,2011-01-16,13,1,2.30,2024-01-01
+SY019,SY019 Corp,Basic Materials,Domestic Common Stock,146718738913.00,2008-06-28,4,1,2.23,2025-01-01
+SY020,SY020 Corp,Technology,Domestic Common Stock,140682036383.00,2015-12-25,18,1,4.15,2019-01-01
+SY020,SY020 Corp,Technology,Domestic Common Stock,122498492997.00,2017-10-20,7,1,6.33,2020-01-01
+SY020,SY020 Corp,Technology,Domestic Common Stock,254071100810.00,2012-11-25,13,1,1.59,2021-01-01
+SY020,SY020 Corp,Technology,Domestic Common Stock,358213371445.00,2009-09-05,14,1,5.31,2022-01-01
+SY020,SY020 Corp,Technology,Domestic Common Stock,264918136799.00,2004-08-23,4,1,5.80,2023-01-01
+SY020,SY020 Corp,Technology,Domestic Common Stock,60422280887.00,2003-04-04,25,1,1.14,2024-01-01
+SY020,SY020 Corp,Technology,Domestic Common Stock,259296963206.00,2011-05-13,4,1,2.17,2025-01-01
+SY021,SY021 Corp,Healthcare,Domestic Common Stock,52504989707.00,2008-12-02,17,1,3.18,2019-01-01
+SY021,SY021 Corp,Healthcare,Domestic Common Stock,377058324859.00,2006-03-26,9,1,4.06,2020-01-01
+SY021,SY021 Corp,Healthcare,Domestic Common Stock,375518002123.00,2011-01-21,17,1,4.82,2021-01-01
+SY021,SY021 Corp,Healthcare,Domestic Common Stock,33195178637.00,2008-03-09,21,1,3.68,2022-01-01
+SY021,SY021 Corp,Healthcare,Domestic Common Stock,59270681958.00,2011-11-19,28,1,4.47,2023-01-01
+SY021,SY021 Corp,Healthcare,Domestic Common Stock,352345668888.00,2006-05-02,27,1,4.12,2024-01-01
+SY021,SY021 Corp,Healthcare,Domestic Common Stock,111737895638.00,2007-04-21,20,1,1.86,2025-01-01
+SY022,SY022 Corp,Financial Services,Domestic Common Stock,24922000556.00,2012-09-04,8,1,2.29,2019-01-01
+SY022,SY022 Corp,Financial Services,Domestic Common Stock,116002911891.00,2010-10-14,24,1,2.57,2020-01-01
+SY022,SY022 Corp,Financial Services,Domestic Common Stock,15686615257.00,2015-09-19,18,1,4.10,2021-01-01
+SY022,SY022 Corp,Financial Services,Domestic Common Stock,7893088048.00,2006-03-28,10,1,6.72,2022-01-01
+SY022,SY022 Corp,Financial Services,Domestic Common Stock,187096066372.00,2004-08-30,29,1,5.35,2023-01-01
+SY022,SY022 Corp,Financial Services,Domestic Common Stock,41091566948.00,2008-10-19,19,1,6.05,2024-01-01
+SY022,SY022 Corp,Financial Services,Domestic Common Stock,86159468697.00,2010-06-05,24,1,1.08,2025-01-01
+SY023,SY023 Corp,Industrials,ADR Common Stock,84896551427.00,2006-08-14,29,1,5.44,2019-01-01
+SY023,SY023 Corp,Industrials,ADR Common Stock,148959932572.00,2009-09-29,18,1,3.62,2020-01-01
+SY023,SY023 Corp,Industrials,ADR Common Stock,399473837313.00,2013-02-15,11,1,2.23,2021-01-01
+SY023,SY023 Corp,Industrials,ADR Common Stock,50733845408.00,2011-08-31,27,1,4.89,2022-01-01
+SY023,SY023 Corp,Industrials,ADR Common Stock,100982710340.00,2008-11-16,29,1,1.64,2023-01-01
+SY023,SY023 Corp,Industrials,ADR Common Stock,222364961337.00,2003-02-22,9,1,4.96,2024-01-01
+SY023,SY023 Corp,Industrials,ADR Common Stock,365046021571.00,2016-08-11,10,1,4.63,2025-01-01
+SY024,SY024 Corp,Consumer Cyclical,Domestic Common Stock,296706258243.00,2009-12-31,9,1,3.57,2019-01-01
+SY024,SY024 Corp,Consumer Cyclical,Domestic Common Stock,143846854336.00,2004-12-11,11,1,1.61,2020-01-01
+SY024,SY024 Corp,Consumer Cyclical,Domestic Common Stock,377230965862.00,2015-04-12,11,1,4.25,2021-01-01
+SY024,SY024 Corp,Consumer Cyclical,Domestic Common Stock,206187899287.00,2015-12-31,17,1,4.91,2022-01-01
+SY024,SY024 Corp,Consumer Cyclical,Domestic Common Stock,128237028421.00,2014-03-27,19,1,4.41,2023-01-01
+SY024,SY024 Corp,Consumer Cyclical,Domestic Common Stock,172585069020.00,2016-09-21,6,1,3.39,2024-01-01
+SY024,SY024 Corp,Consumer Cyclical,Domestic Common Stock,24956433708.00,2004-04-06,5,1,1.95,2025-01-01
+SY025,SY025 Corp,Consumer Defensive,Domestic Common Stock,127838291932.00,2010-08-23,21,1,2.51,2019-01-01
+SY025,SY025 Corp,Consumer Defensive,Domestic Common Stock,399438872871.00,2003-09-13,8,1,2.51,2020-01-01
+SY025,SY025 Corp,Consumer Defensive,Domestic Common Stock,30994802756.00,2011-12-30,20,1,5.53,2021-01-01
+SY025,SY025 Corp,Consumer Defensive,Domestic Common Stock,105503062195.00,2017-04-07,20,1,1.83,2022-01-01
+SY025,SY025 Corp,Consumer Defensive,Domestic Common Stock,299976642026.00,2017-06-20,6,1,4.25,2023-01-01
+SY025,SY025 Corp,Consumer Defensive,Domestic Common Stock,335270022284.00,2003-06-28,26,1,2.26,2024-01-01
+SY025,SY025 Corp,Consumer Defensive,Domestic Common Stock,237582417958.00,2009-08-05,7,1,3.38,2025-01-01
+SY026,SY026 Corp,Energy,Domestic Common Stock,146347867908.00,2007-09-24,29,0,1.85,2019-01-01
+SY026,SY026 Corp,Energy,Domestic Common Stock,79617164354.00,2002-12-09,15,0,2.75,2020-01-01
+SY026,SY026 Corp,Energy,Domestic Common Stock,97095568475.00,2012-11-19,22,0,2.65,2021-01-01
+SY026,SY026 Corp,Energy,Domestic Common Stock,258083349047.00,2012-09-19,2,0,3.17,2022-01-01
+SY026,SY026 Corp,Energy,Domestic Common Stock,141101753323.00,2005-04-24,10,0,1.75,2023-01-01
+SY026,SY026 Corp,Energy,Domestic Common Stock,118418572831.00,2003-02-01,21,0,2.24,2024-01-01
+SY026,SY026 Corp,Energy,Domestic Common Stock,108741579118.00,2016-01-07,29,0,2.32,2025-01-01
+SY027,SY027 Corp,Utilities,Domestic Common Stock,226718677860.00,2011-12-15,6,1,3.80,2019-01-01
+SY027,SY027 Corp,Utilities,Domestic Common Stock,354976356425.00,2007-01-31,18,1,3.01,2020-01-01
+SY027,SY027 Corp,Utilities,Domestic Common Stock,300907860329.00,2002-08-02,2,1,4.58,2021-01-01
+SY027,SY027 Corp,Utilities,Domestic Common Stock,354907481364.00,2011-10-24,13,1,4.12,2022-01-01
+SY027,SY027 Corp,Utilities,Domestic Common Stock,338911995101.00,2014-08-02,10,1,6.66,2023-01-01
+SY027,SY027 Corp,Utilities,Domestic Common Stock,50123355858.00,2016-10-13,23,1,3.71,2024-01-01
+SY027,SY027 Corp,Utilities,Domestic Common Stock,76482056075.00,2014-01-31,19,1,1.37,2025-01-01
+SY028,SY028 Corp,Communication Services,Domestic Common Stock,191090312215.00,2005-09-14,22,1,5.99,2019-01-01
+SY028,SY028 Corp,Communication Services,Domestic Common Stock,121992665271.00,2004-11-08,2,1,1.75,2020-01-01
+SY028,SY028 Corp,Communication Services,Domestic Common Stock,273530239935.00,2007-03-07,26,1,5.65,2021-01-01
+SY028,SY028 Corp,Communication Services,Domestic Common Stock,205233170148.00,2009-07-05,22,1,1.74,2022-01-01
+SY028,SY028 Corp,Communication Services,Domestic Common Stock,55051684859.00,2012-10-04,5,1,5.71,2023-01-01
+SY028,SY028 Corp,Communication Services,Domestic Common Stock,148834146824.00,2009-09-23,5,1,4.75,2024-01-01
+SY028,SY028 Corp,Communication Services,Domestic Common Stock,131164947840.00,2006-04-28,9,1,6.50,2025-01-01
+SY029,SY029 Corp,Basic Materials,Domestic Common Stock,371791853179.00,2011-12-16,16,1,6.10,2019-01-01
+SY029,SY029 Corp,Basic Materials,Domestic Common Stock,363385814341.00,2017-08-26,24,1,3.95,2020-01-01
+SY029,SY029 Corp,Basic Materials,Domestic Common Stock,82900877504.00,2012-07-03,11,1,1.74,2021-01-01
+SY029,SY029 Corp,Basic Materials,Domestic Common Stock,328513923883.00,2006-12-19,7,1,4.62,2022-01-01
+SY029,SY029 Corp,Basic Materials,Domestic Common Stock,138179598929.00,2013-02-13,21,1,5.88,2023-01-01
+SY029,SY029 Corp,Basic Materials,Domestic Common Stock,84011775936.00,2010-03-06,13,1,4.86,2024-01-01
+SY029,SY029 Corp,Basic Materials,Domestic Common Stock,152690991722.00,2014-12-10,6,1,2.82,2025-01-01
+SY030,SY030 Corp,Technology,Domestic Common Stock,272189797861.00,2014-11-07,10,1,6.90,2019-01-01
+SY030,SY030 Corp,Technology,Domestic Common Stock,282682355665.00,2006-08-02,10,1,2.11,2020-01-01
+SY030,SY030 Corp,Technology,Domestic Common Stock,121758570853.00,2010-12-17,26,1,5.37,2021-01-01
+SY030,SY030 Corp,Technology,Domestic Common Stock,100242026142.00,2004-06-23,19,1,6.11,2022-01-01
+SY030,SY030 Corp,Technology,Domestic Common Stock,8996454057.00,2003-02-15,19,1,5.49,2023-01-01
+SY030,SY030 Corp,Technology,Domestic Common Stock,340537011939.00,2005-10-13,4,1,3.36,2024-01-01
+SY030,SY030 Corp,Technology,Domestic Common Stock,253896471772.00,2013-08-17,23,1,4.62,2025-01-01
+SY031,SY031 Corp,Healthcare,Domestic Common Stock,73144253119.00,2005-03-30,12,1,3.03,2019-01-01
+SY031,SY031 Corp,Healthcare,Domestic Common Stock,32914679820.00,2015-05-03,22,1,1.57,2020-01-01
+SY031,SY031 Corp,Healthcare,Domestic Common Stock,267544887147.00,2010-01-19,24,1,1.33,2021-01-01
+SY031,SY031 Corp,Healthcare,Domestic Common Stock,304572476863.00,2014-06-12,11,1,3.54,2022-01-01
+SY031,SY031 Corp,Healthcare,Domestic Common Stock,261608569021.00,2012-06-12,12,1,5.85,2023-01-01
+SY031,SY031 Corp,Healthcare,Domestic Common Stock,241195664814.00,2005-08-22,20,1,4.48,2024-01-01
+SY031,SY031 Corp,Healthcare,Domestic Common Stock,364975270910.00,2010-02-20,20,1,2.42,2025-01-01
+SY032,SY032 Corp,Financial Services,Domestic Common Stock,92075373228.00,2007-06-14,4,1,1.86,2019-01-01
+SY032,SY032 Corp,Financial Services,Domestic Common Stock,39501177875.00,2014-03-04,3,1,5.99,2020-01-01
+SY032,SY032 Corp,Financial Services,Domestic Common Stock,38264901802.00,2011-09-11,24,1,6.77,2021-01-01
+SY032,SY032 Corp,Financial Services,Domestic Common Stock,78344249121.00,2012-12-09,23,1,1.81,2022-01-01
+SY032,SY032 Corp,Financial Services,Domestic Common Stock,129285371028.00,2010-02-16,7,1,2.84,2023-01-01
+SY032,SY032 Corp,Financial Services,Domestic Common Stock,72836316141.00,2003-05-09,19,1,1.84,2024-01-01
+SY032,SY032 Corp,Financial Services,Domestic Common Stock,205837003830.00,2004-10-25,25,1,6.50,2025-01-01
+SY033,SY033 Corp,Industrials,Domestic Common Stock,40670983578.00,2014-03-16,27,1,5.47,2019-01-01
+SY033,SY033 Corp,Industrials,Domestic Common Stock,156700195360.00,2005-06-25,14,1,4.67,2020-01-01
+SY033,SY033 Corp,Industrials,Domestic Common Stock,20970607238.00,2007-05-13,16,1,3.08,2021-01-01
+SY033,SY033 Corp,Industrials,Domestic Common Stock,14963463723.00,2017-08-20,27,1,2.09,2022-01-01
+SY033,SY033 Corp,Industrials,Domestic Common Stock,128669853744.00,2014-06-16,9,1,6.77,2023-01-01
+SY033,SY033 Corp,Industrials,Domestic Common Stock,185864717588.00,2010-06-01,19,1,3.73,2024-01-01
+SY033,SY033 Corp,Industrials,Domestic Common Stock,81892296916.00,2010-03-03,8,1,4.29,2025-01-01
+SY034,SY034 Corp,Consumer Cyclical,Domestic Common Stock,193582623664.00,2020-05-16,6,1,4.86,2019-01-01
+SY034,SY034 Corp,Consumer Cyclical,Domestic Common Stock,196916056272.00,2020-05-16,22,1,4.57,2020-01-01
+SY034,SY034 Corp,Consumer Cyclical,Domestic Common Stock,135198636432.00,2020-05-16,7,1,1.28,2021-01-01
+SY034,SY034 Corp,Consumer Cyclical,Domestic Common Stock,115078295877.00,2020-05-16,2,1,2.62,2022-01-01
+SY034,SY034 Corp,Consumer Cyclical,Domestic Common Stock,288459881695.00,2020-05-16,13,1,4.22,2023-01-01
+SY034,SY034 Corp,Consumer Cyclical,Domestic Common Stock,204663913543.00,2020-05-16,25,1,4.55,2024-01-01
+SY034,SY034 Corp,Consumer Cyclical,Domestic Common Stock,143357514248.00,2020-05-16,19,1,5.77,2025-01-01
+SY035,SY035 Corp,Consumer Defensive,Domestic Common Stock,396253329340.00,2009-02-11,14,1,4.02,2019-01-01
+SY035,SY035 Corp,Consumer Defensive,Domestic Common Stock,82199493881.00,2005-09-20,25,1,4.36,2020-01-01
+SY035,SY035 Corp,Consumer Defensive,Domestic Common Stock,360647152088.00,2009-10-31,8,1,6.29,2021-01-01
+SY035,SY035 Corp,Consumer Defensive,Domestic Common Stock,172042676351.00,2017-01-30,4,1,3.36,2022-01-01
+SY035,SY035 Corp,Consumer Defensive,Domestic Common Stock,168575410205.00,2016-01-24,25,1,4.05,2023-01-01
+SY035,SY035 Corp,Consumer Defensive,Domestic Common Stock,253879621594.00,2007-03-27,28,1,4.33,2024-01-01
+SY035,SY035 Corp,Consumer Defensive,Domestic Common Stock,88447740435.00,2004-02-19,5,1,3.92,2025-01-01
+SY036,SY036 Corp,Energy,Domestic Common Stock,46358417795.00,2007-01-10,13,1,5.37,2019-01-01
+SY036,SY036 Corp,Energy,Domestic Common Stock,283070944556.00,2015-11-02,24,1,1.81,2020-01-01
+SY036,SY036 Corp,Energy,Domestic Common Stock,281321814517.00,2008-10-21,26,1,2.09,2021-01-01
+SY036,SY036 Corp,Energy,Domestic Common Stock,377743720367.00,2011-02-02,4,1,3.10,2022-01-01
+SY036,SY036 Corp,Energy,Domestic Common Stock,224265645173.00,2015-08-05,15,1,5.80,2023-01-01
+SY036,SY036 Corp,Energy,Domestic Common Stock,186087288583.00,2003-11-07,28,1,4.79,2024-01-01
+SY036,SY036 Corp,Energy,Domestic Common Stock,113722005878.00,2002-12-01,17,1,6.40,2025-01-01
+SY037,SY037 Corp,Utilities,Domestic Common Stock,17559237618.00,2017-10-14,9,1,4.58,2019-01-01
+SY037,SY037 Corp,Utilities,Domestic Common Stock,320759070968.00,2012-11-02,29,1,4.06,2020-01-01
+SY037,SY037 Corp,Utilities,Domestic Common Stock,98356482956.00,2003-08-15,2,1,4.17,2021-01-01
+SY037,SY037 Corp,Utilities,Domestic Common Stock,91405846565.00,2009-10-29,8,1,5.13,2022-01-01
+SY037,SY037 Corp,Utilities,Domestic Common Stock,329786639949.00,2012-11-03,27,1,5.55,2023-01-01
+SY037,SY037 Corp,Utilities,Domestic Common Stock,119798406183.00,2013-10-10,24,1,1.23,2024-01-01
+SY037,SY037 Corp,Utilities,Domestic Common Stock,107194370671.00,2009-04-30,12,1,3.72,2025-01-01
+SY038,SY038 Corp,Communication Services,Domestic Common Stock,34963113148.00,2009-06-17,26,1,4.06,2019-01-01
+SY038,SY038 Corp,Communication Services,Domestic Common Stock,186240404182.00,2006-06-30,23,1,6.77,2020-01-01
+SY038,SY038 Corp,Communication Services,Domestic Common Stock,20834627788.00,2009-06-01,4,1,6.38,2021-01-01
+SY038,SY038 Corp,Communication Services,Domestic Common Stock,368421117920.00,2015-04-08,20,1,4.40,2022-01-01
+SY038,SY038 Corp,Communication Services,Domestic Common Stock,317008106663.00,2011-02-06,2,1,2.42,2023-01-01
+SY038,SY038 Corp,Communication Services,Domestic Common Stock,118532132261.00,2009-10-02,13,1,6.84,2024-01-01
+SY038,SY038 Corp,Communication Services,Domestic Common Stock,80465101267.00,2008-02-21,17,1,6.31,2025-01-01
+SY039,SY039 Corp,Basic Materials,Domestic Common Stock,262950709545.00,2002-11-20,7,0,1.68,2019-01-01
+SY039,SY039 Corp,Basic Materials,Domestic Common Stock,156282840682.00,2011-10-15,5,0,2.65,2020-01-01
+SY039,SY039 Corp,Basic Materials,Domestic Common Stock,338338802174.00,2005-02-20,26,0,5.55,2021-01-01
+SY039,SY039 Corp,Basic Materials,Domestic Common Stock,394195341028.00,2005-02-11,6,0,6.35,2022-01-01
+SY039,SY039 Corp,Basic Materials,Domestic Common Stock,33817238571.00,2006-01-08,15,0,1.16,2023-01-01
+SY039,SY039 Corp,Basic Materials,Domestic Common Stock,146051675392.00,2003-08-28,22,0,2.69,2024-01-01
+SY039,SY039 Corp,Basic Materials,Domestic Common Stock,4894414514.00,2012-02-28,2,0,2.09,2025-01-01
+SY040,SY040 Corp,Technology,Domestic Common Stock,20128738355.00,2009-02-05,20,1,3.30,2019-01-01
+SY040,SY040 Corp,Technology,Domestic Common Stock,4184742503.00,2002-08-26,19,1,6.56,2020-01-01
+SY040,SY040 Corp,Technology,Domestic Common Stock,82572811086.00,2016-04-24,4,1,2.26,2021-01-01
+SY040,SY040 Corp,Technology,Domestic Common Stock,34383018617.00,2012-07-07,2,1,1.50,2022-01-01
+SY040,SY040 Corp,Technology,Domestic Common Stock,119752006543.00,2004-03-05,11,1,1.91,2023-01-01
+SY040,SY040 Corp,Technology,Domestic Common Stock,267999531166.00,2015-12-10,22,1,5.54,2024-01-01
+SY040,SY040 Corp,Technology,Domestic Common Stock,83332248650.00,2006-04-08,14,1,1.36,2025-01-01
+SY041,SY041 Corp,Healthcare,Domestic Common Stock,295044048160.00,2006-05-20,10,1,2.76,2019-01-01
+SY041,SY041 Corp,Healthcare,Domestic Common Stock,181485180589.00,2014-07-04,6,1,3.71,2020-01-01
+SY041,SY041 Corp,Healthcare,Domestic Common Stock,289350069209.00,2005-03-09,21,1,1.42,2021-01-01
+SY041,SY041 Corp,Healthcare,Domestic Common Stock,326095649684.00,2011-10-08,14,1,6.06,2022-01-01
+SY041,SY041 Corp,Healthcare,Domestic Common Stock,283084343910.00,2016-08-17,29,1,2.04,2023-01-01
+SY041,SY041 Corp,Healthcare,Domestic Common Stock,61661510052.00,2008-02-04,20,1,1.03,2024-01-01
+SY041,SY041 Corp,Healthcare,Domestic Common Stock,226703054509.00,2007-02-28,12,1,1.94,2025-01-01
+SY042,SY042 Corp,Financial Services,Domestic Common Stock,336252490233.00,2013-03-20,25,1,1.39,2019-01-01
+SY042,SY042 Corp,Financial Services,Domestic Common Stock,65393588096.00,2003-03-22,28,1,6.29,2020-01-01
+SY042,SY042 Corp,Financial Services,Domestic Common Stock,348883146562.00,2016-02-12,27,1,6.38,2021-01-01
+SY042,SY042 Corp,Financial Services,Domestic Common Stock,106569229240.00,2010-01-16,7,1,3.62,2022-01-01
+SY042,SY042 Corp,Financial Services,Domestic Common Stock,236383442046.00,2013-05-30,10,1,1.03,2023-01-01
+SY042,SY042 Corp,Financial Services,Domestic Common Stock,301706660710.00,2012-03-30,13,1,5.05,2024-01-01
+SY042,SY042 Corp,Financial Services,Domestic Common Stock,128258539459.00,2015-01-24,26,1,5.28,2025-01-01
+SY043,SY043 Corp,Industrials,Domestic Common Stock,135941923165.00,2011-10-13,7,1,5.91,2019-01-01
+SY043,SY043 Corp,Industrials,Domestic Common Stock,119781786423.00,2011-03-11,13,1,3.73,2020-01-01
+SY043,SY043 Corp,Industrials,Domestic Common Stock,217744765677.00,2008-04-29,22,1,6.63,2021-01-01
+SY043,SY043 Corp,Industrials,Domestic Common Stock,82066818071.00,2011-07-31,11,1,6.46,2022-01-01
+SY043,SY043 Corp,Industrials,Domestic Common Stock,205203180822.00,2003-12-30,29,1,3.74,2023-01-01
+SY043,SY043 Corp,Industrials,Domestic Common Stock,38547588210.00,2004-06-30,19,1,6.12,2024-01-01
+SY043,SY043 Corp,Industrials,Domestic Common Stock,86228791211.00,2004-02-24,22,1,1.63,2025-01-01
+SY044,SY044 Corp,Consumer Cyclical,Domestic Common Stock,80137687654.00,2015-07-31,13,1,1.11,2019-01-01
+SY044,SY044 Corp,Consumer Cyclical,Domestic Common Stock,44513820768.00,2006-07-16,14,1,4.22,2020-01-01
+SY044,SY044 Corp,Consumer Cyclical,Domestic Common Stock,79827159957.00,2008-04-02,6,1,6.64,2021-01-01
+SY044,SY044 Corp,Consumer Cyclical,Domestic Common Stock,102110860333.00,2015-09-05,12,1,2.31,2022-01-01
+SY044,SY044 Corp,Consumer Cyclical,Domestic Common Stock,181425124620.00,2003-12-13,23,1,6.01,2023-01-01
+SY044,SY044 Corp,Consumer Cyclical,Domestic Common Stock,77954990460.00,2014-05-30,7,1,4.79,2024-01-01
+SY044,SY044 Corp,Consumer Cyclical,Domestic Common Stock,110707866360.00,2006-09-11,8,1,1.68,2025-01-01
+SY045,SY045 Corp,Consumer Defensive,Domestic Common Stock,14521329694.00,2004-03-13,29,1,3.95,2019-01-01
+SY045,SY045 Corp,Consumer Defensive,Domestic Common Stock,80119399335.00,2013-01-16,21,1,5.01,2020-01-01
+SY045,SY045 Corp,Consumer Defensive,Domestic Common Stock,101627622342.00,2017-09-06,2,1,6.13,2021-01-01
+SY045,SY045 Corp,Consumer Defensive,Domestic Common Stock,305658841239.00,2002-10-17,15,1,2.59,2022-01-01
+SY045,SY045 Corp,Consumer Defensive,Domestic Common Stock,74797746893.00,2013-01-10,20,1,4.61,2023-01-01
+SY045,SY045 Corp,Consumer Defensive,Domestic Common Stock,123584152960.00,2003-01-09,13,1,5.77,2024-01-01
+SY045,SY045 Corp,Consumer Defensive,Domestic Common Stock,333270431478.00,2008-04-08,27,1,3.74,2025-01-01
+SY046,SY046 Corp,Energy,ADR Common Stock,99067939961.00,2002-08-19,13,1,1.96,2019-01-01
+SY046,SY046 Corp,Energy,ADR Common Stock,191216780021.00,2014-03-04,12,1,1.80,2020-01-01
+SY046,SY046 Corp,Energy,ADR Common Stock,399934241038.00,2010-09-02,5,1,1.59,2021-01-01
+SY046,SY046 Corp,Energy,ADR Common Stock,9261214034.00,2006-01-06,17,1,3.47,2022-01-01
+SY046,SY046 Corp,Energy,ADR Common Stock,300824845363.00,2004-04-17,9,1,6.98,2023-01-01
+SY046,SY046 Corp,Energy,ADR Common Stock,211771116556.00,2014-12-01,6,1,5.45,2024-01-01
+SY046,SY046 Corp,Energy,ADR Common Stock,364436566369.00,2006-10-12,25,1,2.76,2025-01-01
+SY047,SY047 Corp,Utilities,Domestic Common Stock,334061045232.00,2010-08-13,5,1,6.08,2019-01-01
+SY047,SY047 Corp,Utilities,Domestic Common Stock,226854464996.00,2015-08-16,16,1,5.18,2020-01-01
+SY047,SY047 Corp,Utilities,Domestic Common Stock,164331415918.00,2011-08-28,19,1,2.73,2021-01-01
+SY047,SY047 Corp,Utilities,Domestic Common Stock,194280902612.00,2006-06-24,13,1,3.90,2022-01-01
+SY047,SY047 Corp,Utilities,Domestic Common Stock,148954092648.00,2009-05-15,21,1,1.80,2023-01-01
+SY047,SY047 Corp,Utilities,Domestic Common Stock,388079635826.00,2013-02-17,23,1,2.38,2024-01-01
+SY047,SY047 Corp,Utilities,Domestic Common Stock,252220558059.00,2003-11-24,18,1,2.37,2025-01-01
+SY048,SY048 Corp,Communication Services,Domestic Common Stock,53455615742.00,2005-12-12,17,1,5.37,2019-01-01
+SY048,SY048 Corp,Communication Services,Domestic Common Stock,76241229998.00,2002-11-14,10,1,4.37,2020-01-01
+SY048,SY048 Corp,Communication Services,Domestic Common Stock,387726486908.00,2014-01-23,24,1,2.73,2021-01-01
+SY048,SY048 Corp,Communication Services,Domestic Common Stock,200455919939.00,2005-07-28,24,1,1.29,2022-01-01
+SY048,SY048 Corp,Communication Services,Domestic Common Stock,234915121483.00,2010-07-01,7,1,6.41,2023-01-01
+SY048,SY048 Corp,Communication Services,Domestic Common Stock,359998724680.00,2005-07-20,4,1,4.67,2024-01-01
+SY048,SY048 Corp,Communication Services,Domestic Common Stock,361797257109.00,2013-01-14,29,1,6.68,2025-01-01
+SY049,SY049 Corp,Basic Materials,Domestic Common Stock,113222939193.00,2009-11-12,2,1,5.68,2019-01-01
+SY049,SY049 Corp,Basic Materials,Domestic Common Stock,267289823417.00,2008-06-01,20,1,3.43,2020-01-01
+SY049,SY049 Corp,Basic Materials,Domestic Common Stock,57360204222.00,2005-10-22,15,1,5.79,2021-01-01
+SY049,SY049 Corp,Basic Materials,Domestic Common Stock,107713663380.00,2010-09-26,16,1,6.94,2022-01-01
+SY049,SY049 Corp,Basic Materials,Domestic Common Stock,49141471930.00,2016-06-07,25,1,4.62,2023-01-01
+SY049,SY049 Corp,Basic Materials,Domestic Common Stock,94688129520.00,2017-11-28,8,1,3.13,2024-01-01
+SY049,SY049 Corp,Basic Materials,Domestic Common Stock,236923508305.00,2012-11-14,14,1,2.68,2025-01-01
+SY050,SY050 Corp,Technology,Domestic Common Stock,132292142941.00,2010-10-22,16,1,2.21,2019-01-01
+SY050,SY050 Corp,Technology,Domestic Common Stock,376641340806.00,2012-11-01,6,1,4.40,2020-01-01
+SY050,SY050 Corp,Technology,Domestic Common Stock,50204518742.00,2007-05-29,5,1,3.57,2021-01-01
+SY050,SY050 Corp,Technology,Domestic Common Stock,94913580273.00,2006-05-27,9,1,1.88,2022-01-01
+SY050,SY050 Corp,Technology,Domestic Common Stock,265162575879.00,2016-10-05,28,1,3.51,2023-01-01
+SY050,SY050 Corp,Technology,Domestic Common Stock,374072951440.00,2010-06-04,8,1,6.90,2024-01-01
+SY050,SY050 Corp,Technology,Domestic Common Stock,54766095250.00,2017-02-26,12,1,5.96,2025-01-01
+SY051,SY051 Corp,Healthcare,Domestic Common Stock,369548131840.00,2020-05-16,11,1,5.44,2019-01-01
+SY051,SY051 Corp,Healthcare,Domestic Common Stock,185163100382.00,2020-05-16,22,1,6.38,2020-01-01
+SY051,SY051 Corp,Healthcare,Domestic Common Stock,49408819501.00,2020-05-16,28,1,4.53,2021-01-01
+SY051,SY051 Corp,Healthcare,Domestic Common Stock,151123836761.00,2020-05-16,9,1,1.44,2022-01-01
+SY051,SY051 Corp,Healthcare,Domestic Common Stock,266437077757.00,2020-05-16,21,1,5.03,2023-01-01
+SY051,SY051 Corp,Healthcare,Domestic Common Stock,110866908310.00,2020-05-16,10,1,3.16,2024-01-01
+SY051,SY051 Corp,Healthcare,Domestic Common Stock,276861921971.00,2020-05-16,9,1,4.81,2025-01-01
+SY052,SY052 Corp,Financial Services,Domestic Common Stock,383454426095.00,2003-12-30,3,0,6.04,2019-01-01
+SY052,SY052 Corp,Financial Services,Domestic Common Stock,98219334400.00,2008-11-24,9,0,3.59,2020-01-01
+SY052,SY052 Corp,Financial Services,Domestic Common Stock,56379556281.00,2013-03-13,12,0,3.25,2021-01-01
+SY052,SY052 Corp,Financial Services,Domestic Common Stock,151920151582.00,2007-09-30,19,0,3.33,2022-01-01
+SY052,SY052 Corp,Financial Services,Domestic Common Stock,326224063364.00,2008-09-23,9,0,1.33,2023-01-01
+SY052,SY052 Corp,Financial Services,Domestic Common Stock,228877031948.00,2009-09-28,12,0,3.24,2024-01-01
+SY052,SY052 Corp,Financial Services,Domestic Common Stock,138964680159.00,2002-10-09,26,0,2.83,2025-01-01
+SY053,SY053 Corp,Industrials,Domestic Common Stock,307628967256.00,2017-11-06,17,1,5.21,2019-01-01
+SY053,SY053 Corp,Industrials,Domestic Common Stock,209726002399.00,2013-06-04,16,1,6.15,2020-01-01
+SY053,SY053 Corp,Industrials,Domestic Common Stock,33752587341.00,2011-03-04,8,1,6.73,2021-01-01
+SY053,SY053 Corp,Industrials,Domestic Common Stock,311163554033.00,2006-03-01,21,1,2.69,2022-01-01
+SY053,SY053 Corp,Industrials,Domestic Common Stock,37225410170.00,2015-01-30,24,1,5.13,2023-01-01
+SY053,SY053 Corp,Industrials,Domestic Common Stock,116748420024.00,2016-02-05,24,1,4.25,2024-01-01
+SY053,SY053 Corp,Industrials,Domestic Common Stock,88470044763.00,2006-09-14,7,1,3.20,2025-01-01
+SY054,SY054 Corp,Consumer Cyclical,Domestic Common Stock,128731305521.00,2002-09-26,9,1,5.34,2019-01-01
+SY054,SY054 Corp,Consumer Cyclical,Domestic Common Stock,392055038247.00,2012-08-03,17,1,4.74,2020-01-01
+SY054,SY054 Corp,Consumer Cyclical,Domestic Common Stock,151764085273.00,2009-03-30,5,1,4.79,2021-01-01
+SY054,SY054 Corp,Consumer Cyclical,Domestic Common Stock,297059533746.00,2017-01-31,2,1,1.48,2022-01-01
+SY054,SY054 Corp,Consumer Cyclical,Domestic Common Stock,384648676663.00,2008-05-25,18,1,1.62,2023-01-01
+SY054,SY054 Corp,Consumer Cyclical,Domestic Common Stock,105902239580.00,2017-07-24,12,1,1.95,2024-01-01
+SY054,SY054 Corp,Consumer Cyclical,Domestic Common Stock,111426361825.00,2014-01-01,11,1,1.01,2025-01-01
+SY055,SY055 Corp,Consumer Defensive,Domestic Common Stock,171652101973.00,2010-02-09,19,1,1.62,2019-01-01
+SY055,SY055 Corp,Consumer Defensive,Domestic Common Stock,184889071966.00,2005-10-08,5,1,1.97,2020-01-01
+SY055,SY055 Corp,Consumer Defensive,Domestic Common Stock,84284873151.00,2007-05-07,12,1,4.28,2021-01-01
+SY055,SY055 Corp,Consumer Defensive,Domestic Common Stock,153714268737.00,2016-11-05,21,1,5.34,2022-01-01
+SY055,SY055 Corp,Consumer Defensive,Domestic Common Stock,124683289098.00,2011-10-06,3,1,5.05,2023-01-01
+SY055,SY055 Corp,Consumer Defensive,Domestic Common Stock,114382326213.00,2012-11-03,17,1,4.75,2024-01-01
+SY055,SY055 Corp,Consumer Defensive,Domestic Common Stock,179228171101.00,2011-04-01,24,1,1.16,2025-01-01
+SY056,SY056 Corp,Energy,Domestic Common Stock,384237993995.00,2014-12-23,16,1,5.40,2019-01-01
+SY056,SY056 Corp,Energy,Domestic Common Stock,285732783988.00,2011-05-12,12,1,5.94,2020-01-01
+SY056,SY056 Corp,Energy,Domestic Common Stock,61368140195.00,2015-12-13,18,1,1.26,2021-01-01
+SY056,SY056 Corp,Energy,Domestic Common Stock,290181871213.00,2006-12-16,28,1,6.01,2022-01-01
+SY056,SY056 Corp,Energy,Domestic Common Stock,224775495548.00,2007-04-10,22,1,3.44,2023-01-01
+SY056,SY056 Corp,Energy,Domestic Common Stock,220217064080.00,2008-01-30,15,1,4.84,2024-01-01
+SY056,SY056 Corp,Energy,Domestic Common Stock,39703560272.00,2017-07-25,5,1,4.85,2025-01-01
+SY057,SY057 Corp,Utilities,Domestic Common Stock,370462448818.00,2008-11-02,8,1,4.10,2019-01-01
+SY057,SY057 Corp,Utilities,Domestic Common Stock,203813757485.00,2015-01-06,6,1,5.96,2020-01-01
+SY057,SY057 Corp,Utilities,Domestic Common Stock,348467973240.00,2015-08-16,26,1,5.09,2021-01-01
+SY057,SY057 Corp,Utilities,Domestic Common Stock,335460297122.00,2015-04-17,20,1,5.70,2022-01-01
+SY057,SY057 Corp,Utilities,Domestic Common Stock,220027357936.00,2015-02-25,25,1,1.73,2023-01-01
+SY057,SY057 Corp,Utilities,Domestic Common Stock,90522977939.00,2005-09-21,22,1,1.47,2024-01-01
+SY057,SY057 Corp,Utilities,Domestic Common Stock,23824388202.00,2006-11-27,29,1,3.59,2025-01-01
+SY058,SY058 Corp,Communication Services,Domestic Common Stock,263166162734.00,2010-02-18,22,1,2.12,2019-01-01
+SY058,SY058 Corp,Communication Services,Domestic Common Stock,37698888944.00,2003-08-02,6,1,1.44,2020-01-01
+SY058,SY058 Corp,Communication Services,Domestic Common Stock,282832673695.00,2010-07-09,24,1,6.97,2021-01-01
+SY058,SY058 Corp,Communication Services,Domestic Common Stock,385206169681.00,2007-11-28,8,1,3.63,2022-01-01
+SY058,SY058 Corp,Communication Services,Domestic Common Stock,22108659064.00,2014-08-03,26,1,1.01,2023-01-01
+SY058,SY058 Corp,Communication Services,Domestic Common Stock,158161551922.00,2005-04-02,10,1,4.69,2024-01-01
+SY058,SY058 Corp,Communication Services,Domestic Common Stock,232116106741.00,2008-11-03,27,1,3.03,2025-01-01
+SY059,SY059 Corp,Basic Materials,Domestic Common Stock,94943114577.00,2014-11-10,2,1,1.57,2019-01-01
+SY059,SY059 Corp,Basic Materials,Domestic Common Stock,357548494603.00,2015-08-18,21,1,1.81,2020-01-01
+SY059,SY059 Corp,Basic Materials,Domestic Common Stock,267315770537.00,2013-08-01,13,1,1.75,2021-01-01
+SY059,SY059 Corp,Basic Materials,Domestic Common Stock,157556503352.00,2005-12-16,12,1,4.08,2022-01-01
+SY059,SY059 Corp,Basic Materials,Domestic Common Stock,322249639004.00,2012-10-11,5,1,1.39,2023-01-01
+SY059,SY059 Corp,Basic Materials,Domestic Common Stock,202589079719.00,2002-08-08,24,1,4.19,2024-01-01
+SY059,SY059 Corp,Basic Materials,Domestic Common Stock,324906991098.00,2004-01-05,4,1,2.38,2025-01-01
+SY060,SY060 Corp,Technology,Domestic Common Stock,239648605811.00,2016-01-12,24,1,5.01,2019-01-01
+SY060,SY060 Corp,Technology,Domestic Common Stock,26304308884.00,2008-09-15,18,1,5.90,2020-01-01
+SY060,SY060 Corp,Technology,Domestic Common Stock,389588114117.00,2007-07-21,3,1,5.97,2021-01-01
+SY060,SY060 Corp,Technology,Domestic Common Stock,312386042409.00,2017-07-22,29,1,3.32,2022-01-01
+SY060,SY060 Corp,Technology,Domestic Common Stock,127325926042.00,2005-06-21,16,1,3.18,2023-01-01
+SY060,SY060 Corp,Technology,Domestic Common Stock,180084477568.00,2015-02-10,17,1,2.38,2024-01-01
+SY060,SY060 Corp,Technology,Domestic Common Stock,263947358371.00,2010-10-31,19,1,4.60,2025-01-01
+SY061,SY061 Corp,Healthcare,Domestic Common Stock,147189978194.00,2006-12-09,28,1,5.52,2019-01-01
+SY061,SY061 Corp,Healthcare,Domestic Common Stock,43882131600.00,2007-10-21,6,1,4.69,2020-01-01
+SY061,SY061 Corp,Healthcare,Domestic Common Stock,34513006035.00,2004-05-14,26,1,3.15,2021-01-01
+SY061,SY061 Corp,Healthcare,Domestic Common Stock,205677068289.00,2003-01-10,6,1,5.56,2022-01-01
+SY061,SY061 Corp,Healthcare,Domestic Common Stock,309912483495.00,2006-08-11,24,1,3.47,2023-01-01
+SY061,SY061 Corp,Healthcare,Domestic Common Stock,102085587011.00,2015-06-29,24,1,6.27,2024-01-01
+SY061,SY061 Corp,Healthcare,Domestic Common Stock,188500205403.00,2008-03-16,11,1,5.78,2025-01-01
+SY062,SY062 Corp,Financial Services,Domestic Common Stock,338161336767.00,2017-05-23,15,1,2.43,2019-01-01
+SY062,SY062 Corp,Financial Services,Domestic Common Stock,364836414196.00,2014-03-12,15,1,2.67,2020-01-01
+SY062,SY062 Corp,Financial Services,Domestic Common Stock,357336920009.00,2003-03-25,18,1,3.84,2021-01-01
+SY062,SY062 Corp,Financial Services,Domestic Common Stock,37469907087.00,2008-07-10,4,1,4.38,2022-01-01
+SY062,SY062 Corp,Financial Services,Domestic Common Stock,167317864050.00,2005-04-27,17,1,1.83,2023-01-01
+SY062,SY062 Corp,Financial Services,Domestic Common Stock,369842289839.00,2003-08-02,3,1,3.62,2024-01-01
+SY062,SY062 Corp,Financial Services,Domestic Common Stock,79269433830.00,2011-10-26,18,1,1.26,2025-01-01
+SY063,SY063 Corp,Industrials,Domestic Common Stock,387945074464.00,2010-09-11,19,1,6.26,2019-01-01
+SY063,SY063 Corp,Industrials,Domestic Common Stock,245276025749.00,2013-12-29,4,1,4.25,2020-01-01
+SY063,SY063 Corp,Industrials,Domestic Common Stock,200757805852.00,2006-01-22,7,1,1.00,2021-01-01
+SY063,SY063 Corp,Industrials,Domestic Common Stock,4120859529.00,2003-08-31,11,1,5.41,2022-01-01
+SY063,SY063 Corp,Industrials,Domestic Common Stock,315496452193.00,2005-09-05,11,1,7.00,2023-01-01
+SY063,SY063 Corp,Industrials,Domestic Common Stock,299653688959.00,2011-02-03,12,1,5.52,2024-01-01
+SY063,SY063 Corp,Industrials,Domestic Common Stock,351501012717.00,2009-06-26,19,1,6.92,2025-01-01
+SY064,SY064 Corp,Consumer Cyclical,Domestic Common Stock,179451866534.00,2011-07-29,19,1,2.25,2019-01-01
+SY064,SY064 Corp,Consumer Cyclical,Domestic Common Stock,284660535655.00,2011-06-30,20,1,6.91,2020-01-01
+SY064,SY064 Corp,Consumer Cyclical,Domestic Common Stock,115401338298.00,2011-03-27,26,1,4.51,2021-01-01
+SY064,SY064 Corp,Consumer Cyclical,Domestic Common Stock,299228022827.00,2007-10-07,3,1,1.77,2022-01-01
+SY064,SY064 Corp,Consumer Cyclical,Domestic Common Stock,222071494181.00,2017-10-11,22,1,6.81,2023-01-01
+SY064,SY064 Corp,Consumer Cyclical,Domestic Common Stock,4998791884.00,2017-05-25,15,1,2.24,2024-01-01
+SY064,SY064 Corp,Consumer Cyclical,Domestic Common Stock,369499781079.00,2008-03-19,19,1,6.65,2025-01-01
+SY065,SY065 Corp,Consumer Defensive,Domestic Common Stock,95721411416.00,2011-09-08,28,0,3.36,2019-01-01
+SY065,SY065 Corp,Consumer Defensive,Domestic Common Stock,230742762047.00,2007-07-21,3,0,2.54,2020-01-01
+SY065,SY065 Corp,Consumer Defensive,Domestic Common Stock,259348522508.00,2017-08-22,13,0,3.93,2021-01-01
+SY065,SY065 Corp,Consumer Defensive,Domestic Common Stock,315906209336.00,2015-01-09,20,0,3.79,2022-01-01
+SY065,SY065 Corp,Consumer Defensive,Domestic Common Stock,377713793916.00,2003-10-31,25,0,1.75,2023-01-01
+SY065,SY065 Corp,Consumer Defensive,Domestic Common Stock,97819877292.00,2015-07-29,2,0,3.75,2024-01-01
+SY065,SY065 Corp,Consumer Defensive,Domestic Common Stock,242232985488.00,2008-06-16,27,0,5.15,2025-01-01
+SY066,SY066 Corp,Energy,Domestic Common Stock,184901124530.00,2008-11-02,20,1,1.27,2019-01-01
+SY066,SY066 Corp,Energy,Domestic Common Stock,79993435424.00,2016-02-09,23,1,3.52,2020-01-01
+SY066,SY066 Corp,Energy,Domestic Common Stock,122016506620.00,2002-09-08,25,1,4.09,2021-01-01
+SY066,SY066 Corp,Energy,Domestic Common Stock,14978186193.00,2014-10-04,10,1,6.94,2022-01-01
+SY066,SY066 Corp,Energy,Domestic Common Stock,60724528072.00,2008-01-14,16,1,6.58,2023-01-01
+SY066,SY066 Corp,Energy,Domestic Common Stock,84389822322.00,2017-11-07,23,1,3.16,2024-01-01
+SY066,SY066 Corp,Energy,Domestic Common Stock,153365208214.00,2007-12-22,22,1,1.23,2025-01-01
+SY067,SY067 Corp,Utilities,Domestic Common Stock,355955761785.00,2006-02-09,19,1,4.94,2019-01-01
+SY067,SY067 Corp,Utilities,Domestic Common Stock,32759462709.00,2012-12-12,23,1,6.10,2020-01-01
+SY067,SY067 Corp,Utilities,Domestic Common Stock,299687046049.00,2012-06-12,23,1,4.69,2021-01-01
+SY067,SY067 Corp,Utilities,Domestic Common Stock,352763641051.00,2016-10-26,8,1,1.18,2022-01-01
+SY067,SY067 Corp,Utilities,Domestic Common Stock,18909894378.00,2005-10-28,27,1,6.08,2023-01-01
+SY067,SY067 Corp,Utilities,Domestic Common Stock,106908661137.00,2003-01-09,26,1,1.57,2024-01-01
+SY067,SY067 Corp,Utilities,Domestic Common Stock,322475901961.00,2010-02-08,7,1,3.65,2025-01-01
+SY068,SY068 Corp,Communication Services,Domestic Common Stock,228368150622.00,2020-05-16,12,1,2.72,2019-01-01
+SY068,SY068 Corp,Communication Services,Domestic Common Stock,196350507996.00,2020-05-16,21,1,5.61,2020-01-01
+SY068,SY068 Corp,Communication Services,Domestic Common Stock,119117638593.00,2020-05-16,27,1,3.92,2021-01-01
+SY068,SY068 Corp,Communication Services,Domestic Common Stock,202300833947.00,2020-05-16,26,1,6.42,2022-01-01
+SY068,SY068 Corp,Communication Services,Domestic Common Stock,323745164257.00,2020-05-16,16,1,4.76,2023-01-01
+SY068,SY068 Corp,Communication Services,Domestic Common Stock,120879004433.00,2020-05-16,9,1,6.86,2024-01-01
+SY068,SY068 Corp,Communication Services,Domestic Common Stock,180036139426.00,2020-05-16,23,1,4.96,2025-01-01
+SY069,SY069 Corp,Basic Materials,ADR Common Stock,363958856966.00,2004-08-12,4,1,5.98,2019-01-01
+SY069,SY069 Corp,Basic Materials,ADR Common Stock,227797167757.00,2017-03-13,4,1,5.89,2020-01-01
+SY069,SY069 Corp,Basic Materials,ADR Common Stock,290478929953.00,2006-08-31,24,1,5.80,2021-01-01
+SY069,SY069 Corp,Basic Materials,ADR Common Stock,67727606439.00,2006-12-08,4,1,3.38,2022-01-01
+SY069,SY069 Corp,Basic Materials,ADR Common Stock,21707066523.00,2006-08-05,23,1,6.20,2023-01-01
+SY069,SY069 Corp,Basic Materials,ADR Common Stock,165555236125.00,2013-02-10,22,1,5.75,2024-01-01
+SY069,SY069 Corp,Basic Materials,ADR Common Stock,14390146064.00,2009-10-02,19,1,1.29,2025-01-01
+SY070,SY070 Corp,Technology,Domestic Common Stock,154803753090.00,2010-04-18,8,1,6.56,2019-01-01
+SY070,SY070 Corp,Technology,Domestic Common Stock,289849079208.00,2011-01-08,15,1,6.17,2020-01-01
+SY070,SY070 Corp,Technology,Domestic Common Stock,259090983148.00,2006-06-11,16,1,5.64,2021-01-01
+SY070,SY070 Corp,Technology,Domestic Common Stock,289359270281.00,2005-11-15,21,1,6.81,2022-01-01
+SY070,SY070 Corp,Technology,Domestic Common Stock,334079688486.00,2004-11-16,10,1,3.95,2023-01-01
+SY070,SY070 Corp,Technology,Domestic Common Stock,254788256646.00,2004-04-19,4,1,1.69,2024-01-01
+SY070,SY070 Corp,Technology,Domestic Common Stock,257524953054.00,2007-10-06,24,1,1.33,2025-01-01
+SY071,SY071 Corp,Healthcare,Domestic Common Stock,242702490867.00,2013-06-05,28,1,3.58,2019-01-01
+SY071,SY071 Corp,Healthcare,Domestic Common Stock,310218396396.00,2008-03-10,22,1,1.91,2020-01-01
+SY071,SY071 Corp,Healthcare,Domestic Common Stock,192109269055.00,2012-11-21,19,1,1.74,2021-01-01
+SY071,SY071 Corp,Healthcare,Domestic Common Stock,248343621411.00,2013-10-10,14,1,1.65,2022-01-01
+SY071,SY071 Corp,Healthcare,Domestic Common Stock,362702764954.00,2016-10-09,9,1,2.44,2023-01-01
+SY071,SY071 Corp,Healthcare,Domestic Common Stock,203939688249.00,2017-05-11,16,1,6.58,2024-01-01
+SY071,SY071 Corp,Healthcare,Domestic Common Stock,138512546871.00,2004-07-28,12,1,2.17,2025-01-01
+SY072,SY072 Corp,Financial Services,Domestic Common Stock,313608923414.00,2009-05-12,2,1,5.50,2019-01-01
+SY072,SY072 Corp,Financial Services,Domestic Common Stock,65182405824.00,2015-04-12,4,1,5.49,2020-01-01
+SY072,SY072 Corp,Financial Services,Domestic Common Stock,201069410846.00,2009-10-14,5,1,1.91,2021-01-01
+SY072,SY072 Corp,Financial Services,Domestic Common Stock,235957718225.00,2015-04-22,3,1,3.48,2022-01-01
+SY072,SY072 Corp,Financial Services,Domestic Common Stock,101081221975.00,2004-06-20,5,1,5.64,2023-01-01
+SY072,SY072 Corp,Financial Services,Domestic Common Stock,378755276731.00,2009-07-01,2,1,2.63,2024-01-01
+SY072,SY072 Corp,Financial Services,Domestic Common Stock,214420963492.00,2007-06-29,12,1,2.74,2025-01-01
+SY073,SY073 Corp,Industrials,Domestic Common Stock,390636518853.00,2007-12-10,27,1,5.47,2019-01-01
+SY073,SY073 Corp,Industrials,Domestic Common Stock,162306579733.00,2017-01-16,22,1,2.03,2020-01-01
+SY073,SY073 Corp,Industrials,Domestic Common Stock,216762128927.00,2007-07-15,14,1,5.34,2021-01-01
+SY073,SY073 Corp,Industrials,Domestic Common Stock,336935709745.00,2011-12-05,27,1,6.95,2022-01-01
+SY073,SY073 Corp,Industrials,Domestic Common Stock,358820297639.00,2005-09-28,25,1,6.70,2023-01-01
+SY073,SY073 Corp,Industrials,Domestic Common Stock,161774732953.00,2007-08-07,27,1,4.28,2024-01-01
+SY073,SY073 Corp,Industrials,Domestic Common Stock,193517089918.00,2017-08-31,10,1,1.91,2025-01-01
+SY074,SY074 Corp,Consumer Cyclical,Domestic Common Stock,20421950492.00,2007-07-28,26,1,6.83,2019-01-01
+SY074,SY074 Corp,Consumer Cyclical,Domestic Common Stock,318097245405.00,2007-07-03,29,1,6.19,2020-01-01
+SY074,SY074 Corp,Consumer Cyclical,Domestic Common Stock,92788681889.00,2003-03-28,14,1,6.47,2021-01-01
+SY074,SY074 Corp,Consumer Cyclical,Domestic Common Stock,82726114905.00,2002-10-17,11,1,5.60,2022-01-01
+SY074,SY074 Corp,Consumer Cyclical,Domestic Common Stock,377968816676.00,2007-08-20,2,1,4.80,2023-01-01
+SY074,SY074 Corp,Consumer Cyclical,Domestic Common Stock,257207728159.00,2014-02-02,17,1,2.55,2024-01-01
+SY074,SY074 Corp,Consumer Cyclical,Domestic Common Stock,97959704962.00,2013-06-25,25,1,1.21,2025-01-01
+SY075,SY075 Corp,Consumer Defensive,Domestic Common Stock,388686134859.00,2009-08-24,13,1,5.62,2019-01-01
+SY075,SY075 Corp,Consumer Defensive,Domestic Common Stock,32569015342.00,2007-09-30,2,1,2.47,2020-01-01
+SY075,SY075 Corp,Consumer Defensive,Domestic Common Stock,372014711019.00,2011-09-06,26,1,1.62,2021-01-01
+SY075,SY075 Corp,Consumer Defensive,Domestic Common Stock,238836819440.00,2010-06-10,9,1,1.08,2022-01-01
+SY075,SY075 Corp,Consumer Defensive,Domestic Common Stock,157420148758.00,2014-04-08,5,1,5.95,2023-01-01
+SY075,SY075 Corp,Consumer Defensive,Domestic Common Stock,15158290973.00,2002-12-03,27,1,4.05,2024-01-01
+SY075,SY075 Corp,Consumer Defensive,Domestic Common Stock,236001132265.00,2013-10-27,29,1,6.19,2025-01-01
+SY076,SY076 Corp,Energy,Domestic Common Stock,354216208981.00,2008-09-11,22,1,6.90,2019-01-01
+SY076,SY076 Corp,Energy,Domestic Common Stock,62170878594.00,2006-12-08,21,1,6.03,2020-01-01
+SY076,SY076 Corp,Energy,Domestic Common Stock,230963578731.00,2009-11-01,19,1,2.06,2021-01-01
+SY076,SY076 Corp,Energy,Domestic Common Stock,221760804939.00,2010-08-28,19,1,6.46,2022-01-01
+SY076,SY076 Corp,Energy,Domestic Common Stock,336388476437.00,2012-06-01,16,1,2.03,2023-01-01
+SY076,SY076 Corp,Energy,Domestic Common Stock,177800464009.00,2016-06-22,3,1,4.69,2024-01-01
+SY076,SY076 Corp,Energy,Domestic Common Stock,297539857647.00,2004-08-21,8,1,3.30,2025-01-01
+SY077,SY077 Corp,Utilities,Domestic Common Stock,158964298728.00,2011-07-20,25,1,5.65,2019-01-01
+SY077,SY077 Corp,Utilities,Domestic Common Stock,148398816340.00,2014-07-15,7,1,3.83,2020-01-01
+SY077,SY077 Corp,Utilities,Domestic Common Stock,179011956887.00,2004-05-31,21,1,2.82,2021-01-01
+SY077,SY077 Corp,Utilities,Domestic Common Stock,23913681801.00,2005-01-25,18,1,6.76,2022-01-01
+SY077,SY077 Corp,Utilities,Domestic Common Stock,41637751611.00,2009-04-25,24,1,2.27,2023-01-01
+SY077,SY077 Corp,Utilities,Domestic Common Stock,58655260436.00,2005-03-20,23,1,1.89,2024-01-01
+SY077,SY077 Corp,Utilities,Domestic Common Stock,141755595790.00,2010-11-25,3,1,6.68,2025-01-01
+SY078,SY078 Corp,Communication Services,Domestic Common Stock,107762153891.00,2005-03-13,9,0,4.98,2019-01-01
+SY078,SY078 Corp,Communication Services,Domestic Common Stock,258570393691.00,2006-07-13,10,0,2.50,2020-01-01
+SY078,SY078 Corp,Communication Services,Domestic Common Stock,244914038547.00,2013-10-29,10,0,5.71,2021-01-01
+SY078,SY078 Corp,Communication Services,Domestic Common Stock,37726855415.00,2017-08-25,3,0,4.56,2022-01-01
+SY078,SY078 Corp,Communication Services,Domestic Common Stock,36654330618.00,2012-11-12,10,0,1.57,2023-01-01
+SY078,SY078 Corp,Communication Services,Domestic Common Stock,338086703143.00,2002-12-27,16,0,1.79,2024-01-01
+SY078,SY078 Corp,Communication Services,Domestic Common Stock,72323572326.00,2014-11-24,21,0,4.71,2025-01-01
+SY079,SY079 Corp,Basic Materials,Domestic Common Stock,314956255213.00,2004-10-07,8,1,3.54,2019-01-01
+SY079,SY079 Corp,Basic Materials,Domestic Common Stock,293833482447.00,2014-11-22,23,1,3.00,2020-01-01
+SY079,SY079 Corp,Basic Materials,Domestic Common Stock,23355730863.00,2005-02-19,4,1,3.85,2021-01-01
+SY079,SY079 Corp,Basic Materials,Domestic Common Stock,99083786508.00,2011-09-09,22,1,3.23,2022-01-01
+SY079,SY079 Corp,Basic Materials,Domestic Common Stock,314008895137.00,2012-08-21,16,1,6.04,2023-01-01
+SY079,SY079 Corp,Basic Materials,Domestic Common Stock,333796307810.00,2006-05-12,17,1,2.81,2024-01-01
+SY079,SY079 Corp,Basic Materials,Domestic Common Stock,306015605061.00,2009-02-17,14,1,6.34,2025-01-01
+SY080,SY080 Corp,Technology,Domestic Common Stock,137137883112.00,2002-12-05,4,1,5.33,2019-01-01
+SY080,SY080 Corp,Technology,Domestic Common Stock,286604255346.00,2014-03-29,22,1,1.26,2020-01-01
+SY080,SY080 Corp,Technology,Domestic Common Stock,378754038911.00,2016-10-08,26,1,1.93,2021-01-01
+SY080,SY080 Corp,Technology,Domestic Common Stock,134415996168.00,2008-07-28,21,1,6.38,2022-01-01
+SY080,SY080 Corp,Technology,Domestic Common Stock,152445747478.00,2003-05-11,22,1,2.75,2023-01-01
+SY080,SY080 Corp,Technology,Domestic Common Stock,108493429795.00,2013-11-30,18,1,3.39,2024-01-01
+SY080,SY080 Corp,Technology,Domestic Common Stock,164319019996.00,2013-08-08,8,1,3.39,2025-01-01
+SY081,SY081 Corp,Healthcare,Domestic Common Stock,126738612676.00,2012-03-07,14,1,2.57,2019-01-01
+SY081,SY081 Corp,Healthcare,Domestic Common Stock,63665736910.00,2017-02-01,15,1,2.89,2020-01-01
+SY081,SY081 Corp,Healthcare,Domestic Common Stock,40033053739.00,2013-03-31,16,1,1.12,2021-01-01
+SY081,SY081 Corp,Healthcare,Domestic Common Stock,41395331660.00,2004-02-12,16,1,1.08,2022-01-01
+SY081,SY081 Corp,Healthcare,Domestic Common Stock,53244597639.00,2003-05-01,16,1,3.85,2023-01-01
+SY081,SY081 Corp,Healthcare,Domestic Common Stock,370939435635.00,2015-06-14,16,1,6.87,2024-01-01
+SY081,SY081 Corp,Healthcare,Domestic Common Stock,67054163792.00,2013-09-20,15,1,3.59,2025-01-01
+SY082,SY082 Corp,Financial Services,Domestic Common Stock,363710485051.00,2017-08-21,20,1,4.96,2019-01-01
+SY082,SY082 Corp,Financial Services,Domestic Common Stock,319228843547.00,2004-02-01,2,1,1.44,2020-01-01
+SY082,SY082 Corp,Financial Services,Domestic Common Stock,318136470971.00,2006-12-08,28,1,6.29,2021-01-01
+SY082,SY082 Corp,Financial Services,Domestic Common Stock,194684090974.00,2012-01-26,17,1,2.23,2022-01-01
+SY082,SY082 Corp,Financial Services,Domestic Common Stock,187686812894.00,2016-06-17,14,1,5.48,2023-01-01
+SY082,SY082 Corp,Financial Services,Domestic Common Stock,18927357873.00,2014-01-07,26,1,3.80,2024-01-01
+SY082,SY082 Corp,Financial Services,Domestic Common Stock,129458846803.00,2017-10-07,28,1,5.37,2025-01-01
+SY083,SY083 Corp,Industrials,Domestic Common Stock,24264211766.00,2016-10-16,22,1,2.63,2019-01-01
+SY083,SY083 Corp,Industrials,Domestic Common Stock,74592677036.00,2004-05-26,5,1,6.35,2020-01-01
+SY083,SY083 Corp,Industrials,Domestic Common Stock,202282718151.00,2003-10-20,15,1,1.06,2021-01-01
+SY083,SY083 Corp,Industrials,Domestic Common Stock,37848073630.00,2011-12-14,8,1,2.61,2022-01-01
+SY083,SY083 Corp,Industrials,Domestic Common Stock,270843430507.00,2007-01-11,5,1,4.60,2023-01-01
+SY083,SY083 Corp,Industrials,Domestic Common Stock,44163772729.00,2013-06-01,28,1,3.43,2024-01-01
+SY083,SY083 Corp,Industrials,Domestic Common Stock,60021814937.00,2011-03-04,26,1,4.08,2025-01-01
+SY084,SY084 Corp,Consumer Cyclical,Domestic Common Stock,392293099592.00,2012-09-09,18,1,5.91,2019-01-01
+SY084,SY084 Corp,Consumer Cyclical,Domestic Common Stock,175422083846.00,2002-12-30,26,1,2.31,2020-01-01
+SY084,SY084 Corp,Consumer Cyclical,Domestic Common Stock,210109739174.00,2013-07-11,3,1,6.44,2021-01-01
+SY084,SY084 Corp,Consumer Cyclical,Domestic Common Stock,125376867534.00,2017-05-12,22,1,6.19,2022-01-01
+SY084,SY084 Corp,Consumer Cyclical,Domestic Common Stock,118010718276.00,2015-03-30,12,1,2.85,2023-01-01
+SY084,SY084 Corp,Consumer Cyclical,Domestic Common Stock,133459730291.00,2008-08-15,15,1,1.61,2024-01-01
+SY084,SY084 Corp,Consumer Cyclical,Domestic Common Stock,25542014141.00,2011-06-16,22,1,6.06,2025-01-01
+SY085,SY085 Corp,Consumer Defensive,Domestic Common Stock,129133365959.00,2020-05-16,21,1,1.59,2019-01-01
+SY085,SY085 Corp,Consumer Defensive,Domestic Common Stock,208447552825.00,2020-05-16,3,1,2.06,2020-01-01
+SY085,SY085 Corp,Consumer Defensive,Domestic Common Stock,312903119212.00,2020-05-16,4,1,1.55,2021-01-01
+SY085,SY085 Corp,Consumer Defensive,Domestic Common Stock,351611225714.00,2020-05-16,29,1,5.21,2022-01-01
+SY085,SY085 Corp,Consumer Defensive,Domestic Common Stock,49327556106.00,2020-05-16,6,1,5.80,2023-01-01
+SY085,SY085 Corp,Consumer Defensive,Domestic Common Stock,76897724487.00,2020-05-16,9,1,5.62,2024-01-01
+SY085,SY085 Corp,Consumer Defensive,Domestic Common Stock,158763260211.00,2020-05-16,3,1,5.49,2025-01-01
+SY086,SY086 Corp,Energy,Domestic Common Stock,327634650603.00,2004-11-06,9,1,5.98,2019-01-01
+SY086,SY086 Corp,Energy,Domestic Common Stock,171767078089.00,2004-07-12,13,1,5.07,2020-01-01
+SY086,SY086 Corp,Energy,Domestic Common Stock,204436625023.00,2016-12-30,8,1,5.07,2021-01-01
+SY086,SY086 Corp,Energy,Domestic Common Stock,258366112085.00,2014-10-31,19,1,4.60,2022-01-01
+SY086,SY086 Corp,Energy,Domestic Common Stock,345999908141.00,2004-03-21,5,1,4.99,2023-01-01
+SY086,SY086 Corp,Energy,Domestic Common Stock,276774712537.00,2007-09-07,14,1,2.69,2024-01-01
+SY086,SY086 Corp,Energy,Domestic Common Stock,18791430468.00,2003-03-02,5,1,2.09,2025-01-01
+SY087,SY087 Corp,Utilities,Domestic Common Stock,316522269882.00,2013-12-11,13,1,5.91,2019-01-01
+SY087,SY087 Corp,Utilities,Domestic Common Stock,126253188886.00,2002-11-19,23,1,4.86,2020-01-01
+SY087,SY087 Corp,Utilities,Domestic Common Stock,52468537909.00,2004-08-23,3,1,3.88,2021-01-01
+SY087,SY087 Corp,Utilities,Domestic Common Stock,243999318870.00,2011-05-26,8,1,2.46,2022-01-01
+SY087,SY087 Corp,Utilities,Domestic Common Stock,67822326081.00,2003-05-09,2,1,1.86,2023-01-01
+SY087,SY087 Corp,Utilities,Domestic Common Stock,295641090862.00,2007-04-14,25,1,1.17,2024-01-01
+SY087,SY087 Corp,Utilities,Domestic Common Stock,129151355738.00,2013-02-09,7,1,4.92,2025-01-01
+SY088,SY088 Corp,Communication Services,Domestic Common Stock,51242971260.00,2009-01-28,21,1,1.56,2019-01-01
+SY088,SY088 Corp,Communication Services,Domestic Common Stock,156307494953.00,2010-03-22,18,1,5.69,2020-01-01
+SY088,SY088 Corp,Communication Services,Domestic Common Stock,56068786368.00,2015-08-02,7,1,4.18,2021-01-01
+SY088,SY088 Corp,Communication Services,Domestic Common Stock,30050207559.00,2011-08-09,13,1,1.48,2022-01-01
+SY088,SY088 Corp,Communication Services,Domestic Common Stock,164274355032.00,2016-04-02,25,1,5.83,2023-01-01
+SY088,SY088 Corp,Communication Services,Domestic Common Stock,124320497716.00,2008-04-26,3,1,4.71,2024-01-01
+SY088,SY088 Corp,Communication Services,Domestic Common Stock,11454910846.00,2017-02-07,2,1,1.60,2025-01-01
+SY089,SY089 Corp,Basic Materials,Domestic Common Stock,272731425099.00,2006-11-01,18,1,2.62,2019-01-01
+SY089,SY089 Corp,Basic Materials,Domestic Common Stock,98869973681.00,2010-02-05,26,1,5.73,2020-01-01
+SY089,SY089 Corp,Basic Materials,Domestic Common Stock,12896464000.00,2014-02-20,29,1,1.68,2021-01-01
+SY089,SY089 Corp,Basic Materials,Domestic Common Stock,182869814143.00,2015-02-26,12,1,1.78,2022-01-01
+SY089,SY089 Corp,Basic Materials,Domestic Common Stock,298150671599.00,2011-01-24,15,1,6.94,2023-01-01
+SY089,SY089 Corp,Basic Materials,Domestic Common Stock,209294885861.00,2010-02-24,27,1,1.68,2024-01-01
+SY089,SY089 Corp,Basic Materials,Domestic Common Stock,145058016709.00,2009-11-23,22,1,1.95,2025-01-01
+SY090,SY090 Corp,Technology,Domestic Common Stock,114008805446.00,2014-05-05,4,1,4.53,2019-01-01
+SY090,SY090 Corp,Technology,Domestic Common Stock,23907076468.00,2015-09-15,27,1,3.02,2020-01-01
+SY090,SY090 Corp,Technology,Domestic Common Stock,167220670707.00,2009-09-08,24,1,3.31,2021-01-01
+SY090,SY090 Corp,Technology,Domestic Common Stock,47589063758.00,2008-12-02,15,1,5.97,2022-01-01
+SY090,SY090 Corp,Technology,Domestic Common Stock,237822917907.00,2012-07-18,27,1,4.58,2023-01-01
+SY090,SY090 Corp,Technology,Domestic Common Stock,177899314523.00,2009-05-26,19,1,5.64,2024-01-01
+SY090,SY090 Corp,Technology,Domestic Common Stock,108385190400.00,2011-05-31,17,1,3.98,2025-01-01
+SY091,SY091 Corp,Healthcare,Domestic Common Stock,6543904535.00,2004-05-28,24,0,6.62,2019-01-01
+SY091,SY091 Corp,Healthcare,Domestic Common Stock,75212183925.00,2010-11-25,4,0,1.67,2020-01-01
+SY091,SY091 Corp,Healthcare,Domestic Common Stock,113803850461.00,2002-11-23,18,0,3.42,2021-01-01
+SY091,SY091 Corp,Healthcare,Domestic Common Stock,264134668225.00,2005-07-17,3,0,1.53,2022-01-01
+SY091,SY091 Corp,Healthcare,Domestic Common Stock,371328868346.00,2008-05-13,29,0,6.14,2023-01-01
+SY091,SY091 Corp,Healthcare,Domestic Common Stock,161509092536.00,2002-12-10,26,0,5.87,2024-01-01
+SY091,SY091 Corp,Healthcare,Domestic Common Stock,369718068608.00,2005-11-28,27,0,1.80,2025-01-01
+SY092,SY092 Corp,Financial Services,ADR Common Stock,111568065089.00,2016-07-20,21,1,2.35,2019-01-01
+SY092,SY092 Corp,Financial Services,ADR Common Stock,111307952538.00,2014-05-04,3,1,5.38,2020-01-01
+SY092,SY092 Corp,Financial Services,ADR Common Stock,248182457252.00,2017-05-21,8,1,4.61,2021-01-01
+SY092,SY092 Corp,Financial Services,ADR Common Stock,122698756719.00,2015-06-25,18,1,5.19,2022-01-01
+SY092,SY092 Corp,Financial Services,ADR Common Stock,150769905297.00,2003-09-24,25,1,4.96,2023-01-01
+SY092,SY092 Corp,Financial Services,ADR Common Stock,305407083435.00,2016-02-29,15,1,5.01,2024-01-01
+SY092,SY092 Corp,Financial Services,ADR Common Stock,79972558542.00,2010-06-04,20,1,1.39,2025-01-01
+SY093,SY093 Corp,Industrials,Domestic Common Stock,311691952419.00,2011-05-01,22,1,1.84,2019-01-01
+SY093,SY093 Corp,Industrials,Domestic Common Stock,78038267971.00,2005-01-30,24,1,2.57,2020-01-01
+SY093,SY093 Corp,Industrials,Domestic Common Stock,351889102597.00,2009-05-03,17,1,4.04,2021-01-01
+SY093,SY093 Corp,Industrials,Domestic Common Stock,260878035222.00,2006-10-27,28,1,4.56,2022-01-01
+SY093,SY093 Corp,Industrials,Domestic Common Stock,162876253119.00,2012-08-09,6,1,2.11,2023-01-01
+SY093,SY093 Corp,Industrials,Domestic Common Stock,244058883495.00,2010-10-23,8,1,5.85,2024-01-01
+SY093,SY093 Corp,Industrials,Domestic Common Stock,143108547423.00,2007-08-07,15,1,5.63,2025-01-01
+SY094,SY094 Corp,Consumer Cyclical,Domestic Common Stock,325467694110.00,2012-12-08,26,1,6.77,2019-01-01
+SY094,SY094 Corp,Consumer Cyclical,Domestic Common Stock,202066846391.00,2010-04-04,5,1,6.39,2020-01-01
+SY094,SY094 Corp,Consumer Cyclical,Domestic Common Stock,356374931176.00,2010-03-08,6,1,2.94,2021-01-01
+SY094,SY094 Corp,Consumer Cyclical,Domestic Common Stock,399045878791.00,2013-07-30,22,1,1.18,2022-01-01
+SY094,SY094 Corp,Consumer Cyclical,Domestic Common Stock,87600317172.00,2005-03-23,27,1,3.58,2023-01-01
+SY094,SY094 Corp,Consumer Cyclical,Domestic Common Stock,252318970692.00,2013-05-07,4,1,6.19,2024-01-01
+SY094,SY094 Corp,Consumer Cyclical,Domestic Common Stock,219342719285.00,2003-01-10,18,1,4.77,2025-01-01
+SY095,SY095 Corp,Consumer Defensive,Domestic Common Stock,247104491379.00,2008-07-13,25,1,4.25,2019-01-01
+SY095,SY095 Corp,Consumer Defensive,Domestic Common Stock,360669084447.00,2007-06-22,14,1,2.29,2020-01-01
+SY095,SY095 Corp,Consumer Defensive,Domestic Common Stock,232142780083.00,2007-01-09,19,1,6.99,2021-01-01
+SY095,SY095 Corp,Consumer Defensive,Domestic Common Stock,134232273141.00,2003-11-20,22,1,1.70,2022-01-01
+SY095,SY095 Corp,Consumer Defensive,Domestic Common Stock,227896050674.00,2012-02-11,16,1,1.21,2023-01-01
+SY095,SY095 Corp,Consumer Defensive,Domestic Common Stock,20311852233.00,2010-11-13,25,1,4.19,2024-01-01
+SY095,SY095 Corp,Consumer Defensive,Domestic Common Stock,63873724125.00,2017-04-19,23,1,6.06,2025-01-01
+SY096,SY096 Corp,Energy,Domestic Common Stock,126321718977.00,2002-10-25,20,1,5.78,2019-01-01
+SY096,SY096 Corp,Energy,Domestic Common Stock,167976847907.00,2014-12-01,2,1,1.13,2020-01-01
+SY096,SY096 Corp,Energy,Domestic Common Stock,61486403800.00,2003-02-10,23,1,2.69,2021-01-01
+SY096,SY096 Corp,Energy,Domestic Common Stock,173770872583.00,2006-12-23,27,1,6.86,2022-01-01
+SY096,SY096 Corp,Energy,Domestic Common Stock,397362648438.00,2010-08-07,7,1,1.09,2023-01-01
+SY096,SY096 Corp,Energy,Domestic Common Stock,253326644362.00,2013-03-24,12,1,2.47,2024-01-01
+SY096,SY096 Corp,Energy,Domestic Common Stock,237793754345.00,2005-02-08,16,1,1.30,2025-01-01
+SY097,SY097 Corp,Utilities,Domestic Common Stock,188045275172.00,2002-12-19,10,1,6.70,2019-01-01
+SY097,SY097 Corp,Utilities,Domestic Common Stock,238788543149.00,2006-04-08,13,1,1.01,2020-01-01
+SY097,SY097 Corp,Utilities,Domestic Common Stock,67328777020.00,2017-03-08,21,1,1.46,2021-01-01
+SY097,SY097 Corp,Utilities,Domestic Common Stock,348035371376.00,2017-07-16,28,1,6.34,2022-01-01
+SY097,SY097 Corp,Utilities,Domestic Common Stock,237196919018.00,2005-05-08,2,1,4.04,2023-01-01
+SY097,SY097 Corp,Utilities,Domestic Common Stock,214319310057.00,2009-02-27,4,1,4.77,2024-01-01
+SY097,SY097 Corp,Utilities,Domestic Common Stock,234124395648.00,2008-02-08,29,1,6.88,2025-01-01
+SY098,SY098 Corp,Communication Services,Domestic Common Stock,37403871773.00,2013-11-17,5,1,6.01,2019-01-01
+SY098,SY098 Corp,Communication Services,Domestic Common Stock,107364403867.00,2007-06-24,9,1,1.79,2020-01-01
+SY098,SY098 Corp,Communication Services,Domestic Common Stock,389062183536.00,2007-04-03,12,1,5.67,2021-01-01
+SY098,SY098 Corp,Communication Services,Domestic Common Stock,307022168864.00,2017-10-05,21,1,6.40,2022-01-01
+SY098,SY098 Corp,Communication Services,Domestic Common Stock,101228700694.00,2004-11-04,9,1,2.48,2023-01-01
+SY098,SY098 Corp,Communication Services,Domestic Common Stock,393075563985.00,2013-07-17,28,1,4.86,2024-01-01
+SY098,SY098 Corp,Communication Services,Domestic Common Stock,119082848182.00,2015-09-26,9,1,2.14,2025-01-01
+SY099,SY099 Corp,Basic Materials,Domestic Common Stock,135412281356.00,2016-07-05,12,1,5.69,2019-01-01
+SY099,SY099 Corp,Basic Materials,Domestic Common Stock,154048246256.00,2008-05-20,27,1,2.82,2020-01-01
+SY099,SY099 Corp,Basic Materials,Domestic Common Stock,182725672239.00,2014-06-08,14,1,6.04,2021-01-01
+SY099,SY099 Corp,Basic Materials,Domestic Common Stock,158732980092.00,2016-03-23,28,1,5.73,2022-01-01
+SY099,SY099 Corp,Basic Materials,Domestic Common Stock,166652064372.00,2003-12-04,25,1,5.97,2023-01-01
+SY099,SY099 Corp,Basic Materials,Domestic Common Stock,165145010027.00,2009-05-28,4,1,2.35,2024-01-01
+SY099,SY099 Corp,Basic Materials,Domestic Common Stock,114657844549.00,2012-06-27,28,1,2.41,2025-01-01
+SY100,SY100 Corp,Technology,Domestic Common Stock,124161644803.00,2005-11-11,21,1,1.38,2019-01-01
+SY100,SY100 Corp,Technology,Domestic Common Stock,137607111459.00,2006-03-11,20,1,6.50,2020-01-01
+SY100,SY100 Corp,Technology,Domestic Common Stock,304289630030.00,2009-11-08,22,1,4.81,2021-01-01
+SY100,SY100 Corp,Technology,Domestic Common Stock,313429701705.00,2008-05-12,29,1,1.14,2022-01-01
+SY100,SY100 Corp,Technology,Domestic Common Stock,381842866395.00,2004-02-10,13,1,4.69,2023-01-01
+SY100,SY100 Corp,Technology,Domestic Common Stock,250916537926.00,2003-02-17,21,1,4.67,2024-01-01
+SY100,SY100 Corp,Technology,Domestic Common Stock,212164713544.00,2009-07-22,7,1,6.04,2025-01-01
+SY101,SY101 Corp,Healthcare,Domestic Common Stock,10510835556.00,2006-03-08,9,1,2.66,2019-01-01
+SY101,SY101 Corp,Healthcare,Domestic Common Stock,278674756244.00,2008-01-05,15,1,3.21,2020-01-01
+SY101,SY101 Corp,Healthcare,Domestic Common Stock,62443486916.00,2016-04-03,17,1,1.84,2021-01-01
+SY101,SY101 Corp,Healthcare,Domestic Common Stock,51709692751.00,2010-07-29,8,1,1.10,2022-01-01
+SY101,SY101 Corp,Healthcare,Domestic Common Stock,297035442329.00,2012-10-05,13,1,5.62,2023-01-01
+SY101,SY101 Corp,Healthcare,Domestic Common Stock,29861159399.00,2006-02-22,10,1,2.85,2024-01-01
+SY101,SY101 Corp,Healthcare,Domestic Common Stock,392076165663.00,2006-03-24,2,1,2.66,2025-01-01
+SY102,SY102 Corp,Financial Services,Domestic Common Stock,303492826089.00,2020-05-16,28,1,5.96,2019-01-01
+SY102,SY102 Corp,Financial Services,Domestic Common Stock,262844010334.00,2020-05-16,8,1,1.32,2020-01-01
+SY102,SY102 Corp,Financial Services,Domestic Common Stock,284307618477.00,2020-05-16,12,1,3.17,2021-01-01
+SY102,SY102 Corp,Financial Services,Domestic Common Stock,65144443480.00,2020-05-16,21,1,1.70,2022-01-01
+SY102,SY102 Corp,Financial Services,Domestic Common Stock,241733075612.00,2020-05-16,18,1,3.62,2023-01-01
+SY102,SY102 Corp,Financial Services,Domestic Common Stock,153639385697.00,2020-05-16,4,1,4.15,2024-01-01
+SY102,SY102 Corp,Financial Services,Domestic Common Stock,8709529585.00,2020-05-16,26,1,3.82,2025-01-01
+SY103,SY103 Corp,Industrials,Domestic Common Stock,264458764394.00,2017-08-23,24,1,2.25,2019-01-01
+SY103,SY103 Corp,Industrials,Domestic Common Stock,305128664564.00,2008-08-29,9,1,5.87,2020-01-01
+SY103,SY103 Corp,Industrials,Domestic Common Stock,151443042206.00,2017-06-23,20,1,3.38,2021-01-01
+SY103,SY103 Corp,Industrials,Domestic Common Stock,203155815473.00,2016-11-03,20,1,5.45,2022-01-01
+SY103,SY103 Corp,Industrials,Domestic Common Stock,394194468993.00,2004-09-07,7,1,3.81,2023-01-01
+SY103,SY103 Corp,Industrials,Domestic Common Stock,120304417538.00,2004-02-05,15,1,3.27,2024-01-01
+SY103,SY103 Corp,Industrials,Domestic Common Stock,51449179708.00,2017-02-21,17,1,5.18,2025-01-01
+SY104,SY104 Corp,Consumer Cyclical,Domestic Common Stock,154989489871.00,2009-04-21,18,0,2.65,2019-01-01
+SY104,SY104 Corp,Consumer Cyclical,Domestic Common Stock,65391425676.00,2003-06-07,29,0,6.23,2020-01-01
+SY104,SY104 Corp,Consumer Cyclical,Domestic Common Stock,226997631169.00,2003-12-10,24,0,6.13,2021-01-01
+SY104,SY104 Corp,Consumer Cyclical,Domestic Common Stock,226190278688.00,2009-08-04,22,0,6.26,2022-01-01
+SY104,SY104 Corp,Consumer Cyclical,Domestic Common Stock,82316147934.00,2007-07-10,9,0,5.28,2023-01-01
+SY104,SY104 Corp,Consumer Cyclical,Domestic Common Stock,387720181685.00,2016-05-18,11,0,3.74,2024-01-01
+SY104,SY104 Corp,Consumer Cyclical,Domestic Common Stock,164268261153.00,2017-05-25,5,0,1.26,2025-01-01
+SY105,SY105 Corp,Consumer Defensive,Domestic Common Stock,216759475078.00,2010-09-22,13,1,6.43,2019-01-01
+SY105,SY105 Corp,Consumer Defensive,Domestic Common Stock,21803353101.00,2002-09-16,23,1,1.65,2020-01-01
+SY105,SY105 Corp,Consumer Defensive,Domestic Common Stock,6535288467.00,2009-07-10,14,1,6.47,2021-01-01
+SY105,SY105 Corp,Consumer Defensive,Domestic Common Stock,38557874751.00,2014-09-17,7,1,4.91,2022-01-01
+SY105,SY105 Corp,Consumer Defensive,Domestic Common Stock,141795672172.00,2010-08-17,20,1,3.96,2023-01-01
+SY105,SY105 Corp,Consumer Defensive,Domestic Common Stock,102080753590.00,2005-01-21,15,1,2.65,2024-01-01
+SY105,SY105 Corp,Consumer Defensive,Domestic Common Stock,170937414696.00,2016-12-16,23,1,3.03,2025-01-01
+SY106,SY106 Corp,Energy,Domestic Common Stock,136651044604.00,2005-11-04,14,1,2.07,2019-01-01
+SY106,SY106 Corp,Energy,Domestic Common Stock,372507965698.00,2008-02-06,18,1,1.46,2020-01-01
+SY106,SY106 Corp,Energy,Domestic Common Stock,56884743533.00,2008-12-09,12,1,2.29,2021-01-01
+SY106,SY106 Corp,Energy,Domestic Common Stock,328619518971.00,2017-02-15,7,1,1.37,2022-01-01
+SY106,SY106 Corp,Energy,Domestic Common Stock,387587439230.00,2009-03-01,29,1,5.50,2023-01-01
+SY106,SY106 Corp,Energy,Domestic Common Stock,200042459938.00,2002-08-20,13,1,6.37,2024-01-01
+SY106,SY106 Corp,Energy,Domestic Common Stock,10515860343.00,2015-04-09,13,1,5.48,2025-01-01
+SY107,SY107 Corp,Utilities,Domestic Common Stock,244285460370.00,2013-05-10,9,1,3.34,2019-01-01
+SY107,SY107 Corp,Utilities,Domestic Common Stock,27287759815.00,2006-12-08,11,1,6.06,2020-01-01
+SY107,SY107 Corp,Utilities,Domestic Common Stock,303762529966.00,2016-04-27,27,1,4.77,2021-01-01
+SY107,SY107 Corp,Utilities,Domestic Common Stock,158997061100.00,2012-09-03,16,1,2.43,2022-01-01
+SY107,SY107 Corp,Utilities,Domestic Common Stock,240942409872.00,2012-11-08,2,1,2.19,2023-01-01
+SY107,SY107 Corp,Utilities,Domestic Common Stock,75022032859.00,2017-10-04,15,1,4.58,2024-01-01
+SY107,SY107 Corp,Utilities,Domestic Common Stock,359663959473.00,2007-09-16,23,1,2.37,2025-01-01
+SY108,SY108 Corp,Communication Services,Domestic Common Stock,136058164315.00,2013-12-01,19,1,6.62,2019-01-01
+SY108,SY108 Corp,Communication Services,Domestic Common Stock,25943358413.00,2010-04-02,29,1,4.33,2020-01-01
+SY108,SY108 Corp,Communication Services,Domestic Common Stock,11674715748.00,2017-05-08,14,1,1.58,2021-01-01
+SY108,SY108 Corp,Communication Services,Domestic Common Stock,380608778800.00,2017-11-25,25,1,1.86,2022-01-01
+SY108,SY108 Corp,Communication Services,Domestic Common Stock,177543659815.00,2016-02-22,22,1,3.57,2023-01-01
+SY108,SY108 Corp,Communication Services,Domestic Common Stock,172993928794.00,2013-04-20,10,1,4.42,2024-01-01
+SY108,SY108 Corp,Communication Services,Domestic Common Stock,339164610962.00,2009-01-17,20,1,1.99,2025-01-01
+SY109,SY109 Corp,Basic Materials,Domestic Common Stock,361033205885.00,2009-09-06,23,1,5.90,2019-01-01
+SY109,SY109 Corp,Basic Materials,Domestic Common Stock,84814817669.00,2013-01-13,16,1,6.17,2020-01-01
+SY109,SY109 Corp,Basic Materials,Domestic Common Stock,250165993408.00,2007-07-09,14,1,4.35,2021-01-01
+SY109,SY109 Corp,Basic Materials,Domestic Common Stock,59893471704.00,2008-09-16,10,1,2.42,2022-01-01
+SY109,SY109 Corp,Basic Materials,Domestic Common Stock,279854830279.00,2017-03-13,10,1,4.92,2023-01-01
+SY109,SY109 Corp,Basic Materials,Domestic Common Stock,12482938728.00,2008-12-14,27,1,2.25,2024-01-01
+SY109,SY109 Corp,Basic Materials,Domestic Common Stock,282918471923.00,2007-08-23,11,1,3.79,2025-01-01
+SY110,SY110 Corp,Technology,Domestic Common Stock,178821385243.00,2005-01-20,29,1,4.64,2019-01-01
+SY110,SY110 Corp,Technology,Domestic Common Stock,187963710665.00,2005-01-28,3,1,6.01,2020-01-01
+SY110,SY110 Corp,Technology,Domestic Common Stock,54053019433.00,2016-04-09,12,1,4.61,2021-01-01
+SY110,SY110 Corp,Technology,Domestic Common Stock,143877849322.00,2015-12-16,3,1,5.36,2022-01-01
+SY110,SY110 Corp,Technology,Domestic Common Stock,35705602599.00,2007-08-11,12,1,4.08,2023-01-01
+SY110,SY110 Corp,Technology,Domestic Common Stock,113923813815.00,2011-12-27,19,1,4.08,2024-01-01
+SY110,SY110 Corp,Technology,Domestic Common Stock,42701728782.00,2013-02-28,19,1,3.76,2025-01-01
+SY111,SY111 Corp,Healthcare,Domestic Common Stock,88885117483.00,2006-02-09,25,1,2.18,2019-01-01
+SY111,SY111 Corp,Healthcare,Domestic Common Stock,279195973629.00,2005-10-24,9,1,2.44,2020-01-01
+SY111,SY111 Corp,Healthcare,Domestic Common Stock,281768592842.00,2005-01-25,4,1,3.35,2021-01-01
+SY111,SY111 Corp,Healthcare,Domestic Common Stock,167357583724.00,2014-01-15,17,1,1.07,2022-01-01
+SY111,SY111 Corp,Healthcare,Domestic Common Stock,38332850642.00,2012-11-18,24,1,5.22,2023-01-01
+SY111,SY111 Corp,Healthcare,Domestic Common Stock,114283801900.00,2010-07-03,15,1,6.64,2024-01-01
+SY111,SY111 Corp,Healthcare,Domestic Common Stock,292852406386.00,2011-06-30,14,1,6.71,2025-01-01
+SY112,SY112 Corp,Financial Services,Domestic Common Stock,258682446507.00,2003-12-12,25,1,6.38,2019-01-01
+SY112,SY112 Corp,Financial Services,Domestic Common Stock,84591131787.00,2003-09-11,22,1,6.92,2020-01-01
+SY112,SY112 Corp,Financial Services,Domestic Common Stock,374550222956.00,2017-04-15,14,1,3.09,2021-01-01
+SY112,SY112 Corp,Financial Services,Domestic Common Stock,23657886856.00,2004-05-13,17,1,3.21,2022-01-01
+SY112,SY112 Corp,Financial Services,Domestic Common Stock,153920013595.00,2009-07-15,15,1,2.44,2023-01-01
+SY112,SY112 Corp,Financial Services,Domestic Common Stock,64414811602.00,2016-04-30,22,1,4.57,2024-01-01
+SY112,SY112 Corp,Financial Services,Domestic Common Stock,9722195533.00,2007-02-01,12,1,1.21,2025-01-01
+SY113,SY113 Corp,Industrials,Domestic Common Stock,64901052945.00,2014-09-22,21,1,4.22,2019-01-01
+SY113,SY113 Corp,Industrials,Domestic Common Stock,264934013162.00,2014-11-16,27,1,3.49,2020-01-01
+SY113,SY113 Corp,Industrials,Domestic Common Stock,221479350321.00,2010-09-11,19,1,5.38,2021-01-01
+SY113,SY113 Corp,Industrials,Domestic Common Stock,163224139560.00,2012-07-07,29,1,2.96,2022-01-01
+SY113,SY113 Corp,Industrials,Domestic Common Stock,274075611112.00,2007-12-17,9,1,3.21,2023-01-01
+SY113,SY113 Corp,Industrials,Domestic Common Stock,122399064291.00,2012-03-03,21,1,3.37,2024-01-01
+SY113,SY113 Corp,Industrials,Domestic Common Stock,112867023593.00,2010-09-19,15,1,3.73,2025-01-01
+SY114,SY114 Corp,Consumer Cyclical,Domestic Common Stock,21325170754.00,2008-11-13,13,1,4.98,2019-01-01
+SY114,SY114 Corp,Consumer Cyclical,Domestic Common Stock,80918212943.00,2005-02-15,10,1,5.82,2020-01-01
+SY114,SY114 Corp,Consumer Cyclical,Domestic Common Stock,138530563715.00,2009-02-16,12,1,2.97,2021-01-01
+SY114,SY114 Corp,Consumer Cyclical,Domestic Common Stock,344909487739.00,2009-11-06,20,1,3.60,2022-01-01
+SY114,SY114 Corp,Consumer Cyclical,Domestic Common Stock,50600797326.00,2013-12-06,2,1,4.71,2023-01-01
+SY114,SY114 Corp,Consumer Cyclical,Domestic Common Stock,62777594227.00,2013-12-16,2,1,3.36,2024-01-01
+SY114,SY114 Corp,Consumer Cyclical,Domestic Common Stock,292748737008.00,2003-02-01,8,1,6.64,2025-01-01
+SY115,SY115 Corp,Consumer Defensive,ADR Common Stock,275769492570.00,2008-04-06,12,1,6.71,2019-01-01
+SY115,SY115 Corp,Consumer Defensive,ADR Common Stock,292481831644.00,2004-09-13,24,1,5.47,2020-01-01
+SY115,SY115 Corp,Consumer Defensive,ADR Common Stock,207835127187.00,2017-08-22,14,1,5.66,2021-01-01
+SY115,SY115 Corp,Consumer Defensive,ADR Common Stock,251279229602.00,2007-01-06,5,1,5.03,2022-01-01
+SY115,SY115 Corp,Consumer Defensive,ADR Common Stock,301415416186.00,2008-12-14,16,1,6.15,2023-01-01
+SY115,SY115 Corp,Consumer Defensive,ADR Common Stock,43795574007.00,2008-06-06,7,1,5.62,2024-01-01
+SY115,SY115 Corp,Consumer Defensive,ADR Common Stock,77138362816.00,2014-06-03,28,1,1.19,2025-01-01
+SY116,SY116 Corp,Energy,Domestic Common Stock,371494274952.00,2003-02-18,21,1,2.64,2019-01-01
+SY116,SY116 Corp,Energy,Domestic Common Stock,370656118486.00,2006-01-07,12,1,2.27,2020-01-01
+SY116,SY116 Corp,Energy,Domestic Common Stock,36190806324.00,2013-08-21,2,1,5.82,2021-01-01
+SY116,SY116 Corp,Energy,Domestic Common Stock,73127968585.00,2014-04-17,9,1,6.82,2022-01-01
+SY116,SY116 Corp,Energy,Domestic Common Stock,140864874854.00,2014-08-23,24,1,5.26,2023-01-01
+SY116,SY116 Corp,Energy,Domestic Common Stock,349570196124.00,2016-10-26,3,1,5.12,2024-01-01
+SY116,SY116 Corp,Energy,Domestic Common Stock,104684820754.00,2012-08-29,8,1,3.30,2025-01-01
+SY117,SY117 Corp,Utilities,Domestic Common Stock,354828571479.00,2016-07-06,12,0,6.09,2019-01-01
+SY117,SY117 Corp,Utilities,Domestic Common Stock,88452064829.00,2010-05-16,18,0,4.28,2020-01-01
+SY117,SY117 Corp,Utilities,Domestic Common Stock,298135797050.00,2006-03-07,24,0,3.16,2021-01-01
+SY117,SY117 Corp,Utilities,Domestic Common Stock,88470682637.00,2011-08-10,11,0,4.80,2022-01-01
+SY117,SY117 Corp,Utilities,Domestic Common Stock,279849996079.00,2013-01-01,8,0,4.58,2023-01-01
+SY117,SY117 Corp,Utilities,Domestic Common Stock,39327890958.00,2010-07-11,9,0,2.19,2024-01-01
+SY117,SY117 Corp,Utilities,Domestic Common Stock,179972742259.00,2009-08-08,27,0,1.51,2025-01-01
+SY118,SY118 Corp,Communication Services,Domestic Common Stock,106834248647.00,2004-06-29,4,1,3.67,2019-01-01
+SY118,SY118 Corp,Communication Services,Domestic Common Stock,197722123841.00,2012-04-08,19,1,1.15,2020-01-01
+SY118,SY118 Corp,Communication Services,Domestic Common Stock,76841478374.00,2015-02-15,14,1,1.31,2021-01-01
+SY118,SY118 Corp,Communication Services,Domestic Common Stock,244764872094.00,2003-04-02,15,1,4.25,2022-01-01
+SY118,SY118 Corp,Communication Services,Domestic Common Stock,66274303248.00,2003-11-20,6,1,3.29,2023-01-01
+SY118,SY118 Corp,Communication Services,Domestic Common Stock,220626482212.00,2006-11-27,15,1,3.33,2024-01-01
+SY118,SY118 Corp,Communication Services,Domestic Common Stock,324028895592.00,2011-10-31,8,1,6.74,2025-01-01
+SY119,SY119 Corp,Basic Materials,Domestic Common Stock,17258215030.00,2020-05-16,3,1,2.15,2019-01-01
+SY119,SY119 Corp,Basic Materials,Domestic Common Stock,157381117472.00,2020-05-16,20,1,6.93,2020-01-01
+SY119,SY119 Corp,Basic Materials,Domestic Common Stock,320112958498.00,2020-05-16,24,1,6.67,2021-01-01
+SY119,SY119 Corp,Basic Materials,Domestic Common Stock,326867211966.00,2020-05-16,12,1,1.47,2022-01-01
+SY119,SY119 Corp,Basic Materials,Domestic Common Stock,179488051487.00,2020-05-16,6,1,6.03,2023-01-01
+SY119,SY119 Corp,Basic Materials,Domestic Common Stock,341219638757.00,2020-05-16,13,1,6.54,2024-01-01
+SY119,SY119 Corp,Basic Materials,Domestic Common Stock,335412455592.00,2020-05-16,9,1,2.76,2025-01-01

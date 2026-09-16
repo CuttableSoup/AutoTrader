@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "autotrader:v1/portfolio.state",
+  "title": "portfolio.state payload",
+  "description": "Snapshot published on every fill and on a 60 s timer. Money in integer cents. Derived from broker account + positions, enriched with strategy metadata (entry timestamps, deadlines, stops).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["as_of_utc", "session_date", "reconciled", "equity_cents", "cash_cents", "buying_power_cents", "positions", "gross_exposure_cents", "gross_exposure_pct", "sector_exposure_pct", "hwm_equity_cents", "drawdown_pct", "day_start_equity_cents", "daily_pnl_pct", "open_orders", "counters"],
+  "properties": {
+    "as_of_utc": { "type": "string" },
+    "session_date": { "type": "string" },
+    "reconciled": { "type": "boolean", "description": "False until broker.reconcile reported CLEAN after the last startup. Nothing trades while false." },
+    "equity_cents": { "type": "integer" },
+    "cash_cents": { "type": "integer" },
+    "buying_power_cents": { "type": "integer", "description": "Alpaca non_marginable_buying_power (no margin in v1). PDT fields are never read." },
+    "positions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["symbol", "qty", "avg_px_cents", "last_px_cents", "market_value_cents", "unrealized_cents", "entry_ts_utc", "exit_deadline_date"],
+        "properties": {
+          "symbol": { "type": "string" },
+          "qty": { "type": "integer" },
+          "avg_px_cents": { "type": "integer" },
+          "last_px_cents": { "type": "integer" },
+          "market_value_cents": { "type": "integer" },
+          "unrealized_cents": { "type": "integer" },
+          "entry_ts_utc": { "type": "string" },
+          "entry_session_date": { "type": "string" },
+          "sessions_held": { "type": "integer", "minimum": 0 },
+          "exit_deadline_date": { "type": "string", "description": "min(entry + drift_window sessions, next_report_date - 1 session)." },
+          "next_report_date": { "type": ["string", "null"] },
+          "stop_px_cents": { "type": ["integer", "null"] },
+          "stop_broker_order_id": { "type": ["string", "null"] },
+          "hwm_px_cents": { "type": ["integer", "null"], "description": "Highest close since entry, for the trailing ratchet." },
+          "atr20_cents": { "type": ["integer", "null"] },
+          "sector": { "type": ["string", "null"] },
+          "candidate_msg_id": { "type": ["string", "null"] },
+          "scaled_down": { "type": "boolean" }
+        }
+      }
+    },
+    "gross_exposure_cents": { "type": "integer" },
+    "gross_exposure_pct": { "type": "number" },
+    "sector_exposure_pct": { "type": "object", "additionalProperties": { "type": "number" } },
+    "hwm_equity_cents": { "type": "integer" },
+    "drawdown_pct": { "type": "number", "description": "(equity / hwm - 1) * 100, <= 0." },
+    "day_start_equity_cents": { "type": "integer" },
+    "daily_pnl_pct": { "type": "number" },
+    "open_orders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["client_order_id", "broker_order_id", "symbol", "side", "qty", "status"],
+        "properties": {
+          "client_order_id": { "type": "string" },
+          "broker_order_id": { "type": "string" },
+          "symbol": { "type": "string" },
+          "side": { "type": "string" },
+          "qty": { "type": "integer" },
+          "status": { "type": "string" },
+          "order_type": { "type": "string" },
+          "stop_px_cents": { "type": ["integer", "null"] },
+          "limit_px_cents": { "type": ["integer", "null"] }
+        }
+      }
+    },
+    "counters": {
+      "type": "object",
+      "required": ["new_positions_today", "orders_today", "consecutive_losers", "closed_trades_total"],
+      "properties": {
+        "new_positions_today": { "type": "integer" },
+        "orders_today": { "type": "integer" },
+        "consecutive_losers": { "type": "integer" },
+        "closed_trades_total": { "type": "integer" },
+        "rejects_today": { "type": "integer" }
+      }
+    },
+    "spy_above_trend": { "type": ["boolean", "null"] },
+    "realized_vol_annual_pct": { "type": ["number", "null"], "description": "Trailing 20-session realised book vol, for vol targeting." }
+  }
+}

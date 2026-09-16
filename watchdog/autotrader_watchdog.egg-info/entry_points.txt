@@ -1,0 +1,2 @@
+[console_scripts]
+at-watchdog = watchdog.main:main

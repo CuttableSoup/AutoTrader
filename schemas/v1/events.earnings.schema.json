@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "autotrader:v1/events.earnings",
+  "title": "events.earnings payload",
+  "description": "One earnings event. Published when scheduled (actuals null) and again when actuals arrive. event_id is stable across both. Consensus must be as-of the day before the report (no look-ahead); EPS is as-reported, never restated.",
+  "type": "object",
+  "required": ["event_id", "symbol", "report_date", "timing", "timing_sources", "source", "as_of_utc"],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 8, "description": "Deterministic: sha256(symbol|fiscal_period|report_date)[0:32]." },
+    "symbol": { "type": "string", "pattern": "^[A-Z][A-Z0-9.\\-]{0,9}$" },
+    "report_date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "timing": { "type": "string", "enum": ["BMO", "AMC", "UNKNOWN"], "description": "Before market open / after market close. Determines day 0." },
+    "timing_sources": {
+      "type": "array",
+      "description": "Every vendor consulted. Timing is only trusted when two vendors agree; otherwise UNKNOWN.",
+      "items": {
+        "type": "object",
+        "required": ["vendor", "timing"],
+        "properties": {
+          "vendor": { "type": "string", "enum": ["fmp", "finnhub", "alpaca", "synthetic"] },
+          "timing": { "type": "string", "enum": ["BMO", "AMC", "UNKNOWN"] },
+          "report_date": { "type": "string" }
+        }
+      }
+    },
+    "fiscal_period": { "type": "string", "description": "e.g. 2026Q2" },
+    "eps_actual": { "type": ["number", "null"] },
+    "eps_consensus": { "type": ["number", "null"] },
+    "eps_consensus_asof": { "type": ["string", "null"], "description": "Date the consensus snapshot was taken. Must be <= report_date - 1." },
+    "revenue_actual_cents": { "type": ["integer", "null"] },
+    "revenue_consensus_cents": { "type": ["integer", "null"] },
+    "next_report_date": { "type": ["string", "null"], "description": "Next scheduled earnings, for the earnings-gate exit." },
+    "material_8k_dates": { "type": "array", "items": { "type": "string" }, "description": "Dates of 8-K filings other than the earnings release, as known at as_of_utc." },
+    "source": { "type": "string", "enum": ["fmp", "finnhub", "synthetic", "replay"] },
+    "as_of_utc": { "type": "string" }
+  }
+}

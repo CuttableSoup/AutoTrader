@@ -1,0 +1,12 @@
+pyproject.toml
+autotrader_watchdog.egg-info/PKG-INFO
+autotrader_watchdog.egg-info/SOURCES.txt
+autotrader_watchdog.egg-info/dependency_links.txt
+autotrader_watchdog.egg-info/entry_points.txt
+autotrader_watchdog.egg-info/requires.txt
+autotrader_watchdog.egg-info/top_level.txt
+tests/test_watchdog.py
+watchdog/__init__.py
+watchdog/alpaca.py
+watchdog/main.py
+watchdog/natspub.py

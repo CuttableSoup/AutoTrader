@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "autotrader:v1/watchdog.heartbeat",
+  "title": "watchdog.heartbeat payload",
+  "description": "Liveness beacon from the portfolio service every 10 s. Also POSTed to the watchdog over HTTP (the action path never depends on the bus).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seq", "service", "healthy", "reconciled", "equity_cents", "drawdown_pct", "sent_at_utc"],
+  "properties": {
+    "seq": { "type": "integer", "minimum": 0 },
+    "service": { "type": "string" },
+    "healthy": { "type": "boolean" },
+    "reconciled": { "type": "boolean" },
+    "equity_cents": { "type": "integer" },
+    "drawdown_pct": { "type": "number" },
+    "last_market_data_utc": { "type": ["string", "null"] },
+    "validator_error_streak": { "type": "integer", "minimum": 0 },
+    "sent_at_utc": { "type": "string" }
+  }
+}

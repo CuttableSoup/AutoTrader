@@ -1,0 +1,48 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "windows-release",
+      "displayName": "Windows MSVC + vcpkg (Release)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/windows-release",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "VCPKG_TARGET_TRIPLET": "x64-windows", "AT_DEPS": "vcpkg" },
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+    },
+    {
+      "name": "linux-release",
+      "displayName": "Linux GCC/Clang + vcpkg (Release)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/linux-release",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "VCPKG_TARGET_TRIPLET": "x64-linux", "AT_DEPS": "vcpkg" },
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" }
+    },
+    {
+      "name": "fetchcontent-release",
+      "displayName": "Any GCC/Clang, deps via FetchContent + system OpenSSL/libcurl (Release)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/fetchcontent-release",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "AT_DEPS": "fetchcontent" }
+    },
+    {
+      "name": "fetchcontent-debug",
+      "inherits": "fetchcontent-release",
+      "binaryDir": "${sourceDir}/build/fetchcontent-debug",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "AT_DEPS": "fetchcontent" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "windows-release", "configurePreset": "windows-release" },
+    { "name": "linux-release", "configurePreset": "linux-release" },
+    { "name": "fetchcontent-release", "configurePreset": "fetchcontent-release" },
+    { "name": "fetchcontent-debug", "configurePreset": "fetchcontent-debug" }
+  ],
+  "testPresets": [
+    { "name": "windows-release", "configurePreset": "windows-release", "output": { "outputOnFailure": true } },
+    { "name": "linux-release", "configurePreset": "linux-release", "output": { "outputOnFailure": true } },
+    { "name": "fetchcontent-release", "configurePreset": "fetchcontent-release", "output": { "outputOnFailure": true } },
+    { "name": "fetchcontent-debug", "configurePreset": "fetchcontent-debug", "output": { "outputOnFailure": true } }
+  ]
+}

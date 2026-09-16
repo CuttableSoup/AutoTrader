@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "autotrader:v1/orders.approved",
+  "title": "orders.approved payload",
+  "description": "An order the risk manager has cleared. client_order_id is deterministic so retries dedupe at the broker: entries hash the candidate msg_id, exits hash (symbol, intent, session_date).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["client_order_id", "intent", "symbol", "side", "qty", "order_type", "tif", "reason", "risk_checks", "equity_at_approval_cents"],
+  "properties": {
+    "client_order_id": { "type": "string", "minLength": 8, "maxLength": 48 },
+    "candidate_msg_id": { "type": ["string", "null"], "description": "Set for ENTRY; null for exits." },
+    "validated_msg_id": { "type": ["string", "null"] },
+    "intent": { "type": "string", "enum": ["ENTRY", "EXIT_TIME", "EXIT_EARNINGS", "EXIT_TREND_SCALE", "EXIT_DRAWDOWN", "FLATTEN", "STOP_REPLACE"] },
+    "symbol": { "type": "string", "pattern": "^[A-Z][A-Z0-9.\\-]{0,9}$" },
+    "side": { "type": "string", "enum": ["buy", "sell"] },
+    "qty": { "type": "integer", "minimum": 1 },
+    "order_type": { "type": "string", "enum": ["oto", "bracket", "market", "limit"] },
+    "limit_px_cents": { "type": ["integer", "null"], "minimum": 1 },
+    "stop_px_cents": { "type": ["integer", "null"], "minimum": 1, "description": "Stop leg for oto/bracket entries; new stop price for STOP_REPLACE." },
+    "take_profit_px_cents": { "type": ["integer", "null"], "minimum": 1 },
+    "linked_broker_order_id": { "type": ["string", "null"], "description": "STOP_REPLACE: the resting stop leg to PATCH. EXIT_*: the resting stop leg to cancel before selling." },
+    "tif": { "type": "string", "enum": ["gtc", "day"] },
+    "extended_hours": { "type": "boolean", "const": false },
+    "reason": { "type": "string", "maxLength": 300 },
+    "risk_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "ok"],
+        "properties": {
+          "name": { "type": "string" },
+          "ok": { "type": "boolean" },
+          "value": { "type": ["number", "string", "null"] },
+          "limit": { "type": ["number", "string", "null"] }
+        }
+      }
+    },
+    "equity_at_approval_cents": { "type": "integer" },
+    "atr20_cents": { "type": ["integer", "null"] }
+  }
+}

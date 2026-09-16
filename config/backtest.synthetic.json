@@ -1,0 +1,48 @@
+{
+  "_doc": "Backtest run config. Data dir must contain bars.csv, earnings.csv, universe.csv, securities.csv in the Sharadar-like layout documented in docs/TESTING.md. Synthetic data from scripts/gen_synthetic_data.py exists only to exercise the machinery; it has no edge by construction.",
+  "run_name": "synthetic-smoke",
+  "data_dir": "data/synthetic",
+  "out_dir": "var/backtest/synthetic-smoke",
+  "strategy_config": "config/strategy.v1.json",
+  "risk_config": "config/risk.v1.json",
+  "start_date": "2020-01-02",
+  "end_date": "2025-12-31",
+  "initial_equity_cents": 100000000,
+
+  "costs": {
+    "commission_bps_per_side": 5.0,
+    "sec_fee_per_million_dollars_sold_cents": 2780,
+    "finra_taf_per_share_cents": 0.0166,
+    "finra_taf_max_per_trade_cents": 833,
+    "half_spread_slippage": true,
+    "default_spread_bps": 4.0
+  },
+
+  "validator": {
+    "mode": "mock",
+    "mock": {
+      "reject_revenue_miss_with_large_ear": true,
+      "large_ear_pct": 8.0,
+      "reject_second_8k_in_window": true,
+      "reject_counter_gap_atr_mult": 1.5,
+      "counter_gap_window_sessions": 3,
+      "reject_over_optioned": true
+    }
+  },
+
+  "walk_forward": {
+    "folds": 3,
+    "train_years": 2,
+    "test_years": 1,
+    "purge_sessions": 40,
+    "embargo_sessions": 10,
+    "tune": ["ear_threshold_pct", "momentum_top_pct"],
+    "objective": "sharpe_net"
+  },
+
+  "report": {
+    "haircut_pct": 50.0,
+    "risk_free_annual_pct": 0.0,
+    "min_gross_sharpe_after_haircut": 0.4
+  }
+}

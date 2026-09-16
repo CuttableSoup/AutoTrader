@@ -1,0 +1,23 @@
+[project]
+name = "autotrader-watchdog"
+version = "0.1.0"
+description = "Standalone kill switch for AutoTrader. Python stdlib only. Shares NO code with the trading system."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+at-watchdog = "watchdog.main:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["watchdog*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

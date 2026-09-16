@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "autotrader-cpp",
+  "version-string": "0.1.0",
+  "description": "AutoTrader C++20 services: ingestor, strategy, risk, execution, portfolio, reconciler, backtester",
+  "dependencies": [
+    "nlohmann-json",
+    "json-schema-validator",
+    "spdlog",
+    "catch2",
+    "cnats",
+    { "name": "curl", "default-features": false, "features": ["ssl"] },
+    "ixwebsocket"
+  ],
+  "builtin-baseline": "4b6825283f814d7f522aafd11990454ed39e9983"
+}

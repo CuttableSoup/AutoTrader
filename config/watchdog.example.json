@@ -1,0 +1,15 @@
+{
+  "_doc": "Watchdog config. Lives ONLY on the watchdog host. Copy to config/watchdog.json. The Alpaca key here must be a different key from the trading system's, scoped to the same paper/live account.",
+  "listen": "127.0.0.1:8787",
+  "token": "change-me-shared-bearer-token",
+  "alpaca_base_url": "https://paper-api.alpaca.markets",
+  "alpaca_key_id": "",
+  "alpaca_secret_key": "",
+  "_keys_doc": "leave empty to read WATCHDOG_ALPACA_KEY_ID / WATCHDOG_ALPACA_SECRET_KEY from the environment or a secrets manager wrapper",
+  "heartbeat_interval_s": 10,
+  "miss_threshold": 6,
+  "drawdown_flatten_pct": -12.0,
+  "account_poll_s": 30,
+  "state_file": "var/watchdog_state.json",
+  "nats_url": "nats://127.0.0.1:4222"
+}

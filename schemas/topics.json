@@ -1,0 +1,36 @@
+{
+  "registry_version": 1,
+  "notes": [
+    "Every message on every subject is an envelope (v1/envelope.schema.json) whose payload validates against the subject's payload schema.",
+    "Publishers set the NATS header Nats-Msg-Id = envelope.msg_id so JetStream dedupes redeliveries inside duplicate_window; consumers additionally dedupe on msg_id because the bus is at-least-once.",
+    "Retention below is JetStream hot storage. The logger service archives every subject to JSONL for >= 2 years (docs/DESIGN.md section 10)."
+  ],
+  "streams": [
+    { "name": "MARKET",    "subjects": ["market.data.>"],  "max_age_days": 14,  "max_msgs": 5000000, "duplicate_window_s": 600 },
+    { "name": "EVENTS",    "subjects": ["events.>"],       "max_age_days": 400, "max_msgs": 2000000, "duplicate_window_s": 600 },
+    { "name": "SIGNALS",   "subjects": ["signals.>"],      "max_age_days": 400, "max_msgs": 2000000, "duplicate_window_s": 600 },
+    { "name": "ORDERS",    "subjects": ["orders.>"],       "max_age_days": 400, "max_msgs": 5000000, "duplicate_window_s": 600 },
+    { "name": "PORTFOLIO", "subjects": ["portfolio.>"],    "max_age_days": 30,  "max_msgs": 1000000, "duplicate_window_s": 120 },
+    { "name": "BROKER",    "subjects": ["broker.>"],       "max_age_days": 400, "max_msgs": 1000000, "duplicate_window_s": 600 },
+    { "name": "CONTROL",   "subjects": ["control.>"],      "max_age_days": 400, "max_msgs": 100000,  "duplicate_window_s": 600 },
+    { "name": "WATCHDOG",  "subjects": ["watchdog.>"],     "max_age_days": 2,   "max_msgs": 200000,  "duplicate_window_s": 60 }
+  ],
+  "topics": [
+    { "subject": "market.data.bar.*",   "schema": "v1/market.data.schema.json",        "producer": "ingestor",        "consumers": ["strategy", "portfolio", "logger"] },
+    { "subject": "market.data.quote.*", "schema": "v1/market.data.schema.json",        "producer": "ingestor",        "consumers": ["risk", "logger"] },
+    { "subject": "events.earnings",     "schema": "v1/events.earnings.schema.json",    "producer": "events-feed",     "consumers": ["strategy", "portfolio", "logger"] },
+    { "subject": "signals.candidate",   "schema": "v1/signals.candidate.schema.json",  "producer": "strategy",        "consumers": ["validator", "risk", "logger"] },
+    { "subject": "signals.validated",   "schema": "v1/signals.validated.schema.json",  "producer": "validator",       "consumers": ["risk", "logger"] },
+    { "subject": "orders.approved",     "schema": "v1/orders.approved.schema.json",    "producer": "risk",            "consumers": ["execution", "logger"] },
+    { "subject": "orders.submitted",    "schema": "v1/orders.submitted.schema.json",   "producer": "execution",       "consumers": ["portfolio", "reconciler", "logger"] },
+    { "subject": "orders.status",       "schema": "v1/orders.status.schema.json",      "producer": "execution",       "consumers": ["portfolio", "risk", "logger"] },
+    { "subject": "orders.filled",       "schema": "v1/orders.filled.schema.json",      "producer": "execution",       "consumers": ["portfolio", "risk", "logger"] },
+    { "subject": "portfolio.state",     "schema": "v1/portfolio.state.schema.json",    "producer": "portfolio",       "consumers": ["risk", "strategy", "reconciler", "logger"] },
+    { "subject": "broker.reconcile",    "schema": "v1/broker.reconcile.schema.json",   "producer": "reconciler",      "consumers": ["risk", "portfolio", "execution", "logger"] },
+    { "subject": "control.halt",        "schema": "v1/control.schema.json",            "producer": "watchdog|risk",   "consumers": ["*"] },
+    { "subject": "control.flatten",     "schema": "v1/control.schema.json",            "producer": "watchdog|risk",   "consumers": ["execution", "logger"] },
+    { "subject": "control.pause_new",   "schema": "v1/control.schema.json",            "producer": "risk|reconciler|validator|watchdog", "consumers": ["risk", "logger"] },
+    { "subject": "control.resume",      "schema": "v1/control.schema.json",            "producer": "operator",        "consumers": ["risk", "logger"] },
+    { "subject": "watchdog.heartbeat",  "schema": "v1/watchdog.heartbeat.schema.json", "producer": "portfolio",       "consumers": ["watchdog", "logger"] }
+  ]
+}

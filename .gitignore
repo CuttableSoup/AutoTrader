@@ -1,0 +1,16 @@
+# build / deps
+cpp/build/
+cpp/vcpkg_installed/
+cpp/vcpkg-install.log
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+tools/nats/nats-server.exe
+# runtime state
+var/
+*.log
+secrets*.json
+!config/secrets.example.json
+data/raw/
+data/cache/

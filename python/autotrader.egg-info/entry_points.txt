@@ -1,0 +1,8 @@
+[console_scripts]
+at-evaluate-claude = autotrader.evaluation.counterfactual:main
+at-events-feed = autotrader.events_feed.feed:main
+at-fake-alpaca = autotrader.fake_alpaca.server:main
+at-logger = autotrader.logger_service:main
+at-pager = autotrader.pager:main
+at-universe = autotrader.universe.builder:main
+at-validator = autotrader.validator.sidecar:main

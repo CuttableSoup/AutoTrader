@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: autotrader-watchdog
+Version: 0.1.0
+Summary: Standalone kill switch for AutoTrader. Python stdlib only. Shares NO code with the trading system.
+Requires-Python: >=3.11
+Provides-Extra: dev
+Requires-Dist: pytest>=8; extra == "dev"

@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: autotrader
+Version: 0.1.0
+Summary: AutoTrader Python sidecars: logger, event feed, universe builder, Claude validator, evaluation, fake Alpaca
+Requires-Python: >=3.12
+Requires-Dist: nats-py>=2.9
+Requires-Dist: anthropic>=0.60
+Requires-Dist: jsonschema>=4.23
+Requires-Dist: httpx>=0.27
+Requires-Dist: websockets>=13
+Requires-Dist: aiohttp>=3.10
+Requires-Dist: numpy>=2.0
+Requires-Dist: pandas>=2.2
+Requires-Dist: scipy>=1.14
+Provides-Extra: dev
+Requires-Dist: pytest>=8; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.24; extra == "dev"

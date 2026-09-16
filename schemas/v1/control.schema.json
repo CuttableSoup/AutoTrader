@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "autotrader:v1/control",
+  "title": "control.* payload",
+  "description": "Control-plane commands. Subject = control.<command>. halt: stop everything, cancel all, no resume without operator. flatten: close all positions (implies pause_new). pause_new: no new entries; exits and stop management continue. resume: clears pause_new only, never a halt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["command", "reason", "source", "issued_at_utc"],
+  "properties": {
+    "command": { "type": "string", "enum": ["halt", "flatten", "pause_new", "resume"] },
+    "reason": { "type": "string", "maxLength": 500 },
+    "source": { "type": "string", "enum": ["watchdog", "risk", "reconciler", "validator", "operator", "drill", "execution", "portfolio"] },
+    "issued_at_utc": { "type": "string" },
+    "trigger": { "type": ["string", "null"], "enum": ["HEARTBEAT_LOSS", "DRAWDOWN_HALVE", "DRAWDOWN_FLATTEN", "DAILY_LOSS", "CONSECUTIVE_LOSERS", "RECONCILE_MISMATCH", "VALIDATOR_ERROR_STREAK", "DATA_STALE", "REJECT_RATE", "MANUAL", "DRILL", null] },
+    "details": { "type": "object" },
+    "drill": { "type": "boolean", "description": "True when issued by the weekly watchdog drill; consumers act exactly as if real, the flag exists only for the logs." }
+  }
+}

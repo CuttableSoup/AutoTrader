@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "autotrader:v1/broker.reconcile",
+  "title": "broker.reconcile payload",
+  "description": "Result of comparing broker truth (GET /v2/positions, GET /v2/orders?status=open, GET /v2/account) with the internal ledger. CLEAN unblocks trading after startup; MISMATCH pauses new entries and pages.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "trigger", "checked_at_utc", "broker_positions", "internal_positions", "diffs", "open_orders_count", "orphan_orders"],
+  "properties": {
+    "status": { "type": "string", "enum": ["CLEAN", "MISMATCH", "ERROR"] },
+    "trigger": { "type": "string", "enum": ["STARTUP", "TIMER", "MANUAL", "POST_FILL"] },
+    "checked_at_utc": { "type": "string" },
+    "broker_positions": { "type": "array", "items": { "$ref": "#/definitions/pos" } },
+    "internal_positions": { "type": "array", "items": { "$ref": "#/definitions/pos" } },
+    "diffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["symbol", "field", "broker", "internal"],
+        "properties": {
+          "symbol": { "type": "string" },
+          "field": { "type": "string", "enum": ["qty", "missing_internal", "missing_broker", "avg_px_cents", "unprotected_position", "equity_cents"] },
+          "broker": { "type": ["number", "string", "null"] },
+          "internal": { "type": ["number", "string", "null"] }
+        }
+      }
+    },
+    "open_orders_count": { "type": "integer" },
+    "orphan_orders": { "type": "array", "items": { "type": "string" }, "description": "Broker orders with a client_order_id this system never approved." },
+    "error": { "type": ["string", "null"] }
+  },
+  "definitions": {
+    "pos": {
+      "type": "object",
+      "required": ["symbol", "qty"],
+      "properties": {
+        "symbol": { "type": "string" },
+        "qty": { "type": "integer" },
+        "avg_px_cents": { "type": ["integer", "null"] }
+      }
+    }
+  }
+}

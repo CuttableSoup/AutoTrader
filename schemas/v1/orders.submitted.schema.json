@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "autotrader:v1/orders.submitted",
+  "title": "orders.submitted payload",
+  "description": "Broker acknowledged the submission (HTTP 200 on POST /v2/orders or PATCH /v2/orders/{id}). Not a fill.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["client_order_id", "broker_order_id", "approved_msg_id", "symbol", "side", "qty", "order_type", "submitted_ts_utc", "legs", "attempt"],
+  "properties": {
+    "client_order_id": { "type": "string" },
+    "broker_order_id": { "type": "string" },
+    "approved_msg_id": { "type": "string" },
+    "symbol": { "type": "string" },
+    "side": { "type": "string", "enum": ["buy", "sell"] },
+    "qty": { "type": "integer", "minimum": 1 },
+    "order_type": { "type": "string", "enum": ["oto", "bracket", "market", "limit", "stop"] },
+    "limit_px_cents": { "type": ["integer", "null"] },
+    "stop_px_cents": { "type": ["integer", "null"] },
+    "submitted_ts_utc": { "type": "string" },
+    "legs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["broker_order_id", "leg_type"],
+        "properties": {
+          "broker_order_id": { "type": "string" },
+          "leg_type": { "type": "string", "enum": ["stop_loss", "take_profit"] },
+          "px_cents": { "type": ["integer", "null"] }
+        }
+      }
+    },
+    "attempt": { "type": "integer", "minimum": 1, "description": "Retry attempt number. Same client_order_id on every attempt." },
+    "deduped_at_broker": { "type": "boolean", "description": "True if the broker already had this client_order_id (retry after lost response)." }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "_doc": "Gate G2 config: the whole stack against at-fake-alpaca (python -m autotrader.fake_alpaca.server --port 8790). Copy to config/paper.fake.json. Validator runs in MOCK mode so no API key is needed; secrets backend 'env' with any non-empty AT_ALPACA_KEY_ID / AT_ALPACA_SECRET_KEY / AT_WATCHDOG_TOKEN.",
+  "env": "paper",
+  "nats_url": "nats://127.0.0.1:4222",
+  "schemas_dir": "schemas",
+  "strategy_config": "config/strategy.v1.json",
+  "risk_config": "config/risk.v1.json",
+  "state_dir": "var/state-fake",
+  "log_dir": "var/log-fake",
+  "secrets": { "backend": "env" },
+  "alpaca": {
+    "trading_base_url": "http://127.0.0.1:8790",
+    "data_base_url": "http://127.0.0.1:8790",
+    "trade_updates_ws_url": "ws://127.0.0.1:8790/stream",
+    "data_feed": "iex",
+    "rate_limit_per_min": 600,
+    "http_timeout_s": 10
+  },
+  "ingestor": { "bar_pull_times_et": ["09:20", "16:30"], "bar_lookback_sessions": 60, "quote_max_age_s": 30 },
+  "portfolio": { "publish_interval_s": 15, "heartbeat_interval_s": 10, "watchdog_url": "http://127.0.0.1:8787", "stop_ratchet_time_et": "15:45" },
+  "reconciler": { "interval_s": 60, "startup_wait_s": 10 },
+  "execution": { "max_submit_attempts": 3, "retry_backoff_ms": [500, 1500, 4000] },
+  "validator": { "mode": "MOCK" },
+  "events_feed": { "poll_interval_s": 900, "vendors": [] },
+  "paging": { "backend": "log" }
+}
