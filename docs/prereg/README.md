@@ -45,3 +45,8 @@ Secondary horizons, reference arms and single-signal arms are reported and never
 * [H3-relaxed-pead.md](H3-relaxed-pead.md)
 * [H4-trend-overlay.md](H4-trend-overlay.md)
 * H5 (insider purchases): the Sharadar insiders table is entitled (docs/DECISIONS.md). No pre-registration yet; H5 is a follow-up and is not run in this stage.
+* [BRUTEFORCE-v1.md](BRUTEFORCE-v1.md): after all four hypotheses above failed, a
+  wider frozen grid search over signal families H1-H4 did not test (including H5's
+  insider data), with Deflated Sharpe Ratio and Probability of Backtest Overfitting
+  in place of a per-hypothesis pass rule. Its own file documents why the method
+  differs from H1-H4's.

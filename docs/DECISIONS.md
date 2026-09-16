@@ -105,3 +105,41 @@ The v2 hypothesis pre-tests (plan: ranked hypotheses H1–H5, Stage 0/1) run on 
 * **Trial ledger** `docs/trials.jsonl`, seeded with 437 prior configurations (v1.0 on the Dow-30 sample 24; v1.0, v1.1, v1.2 walk-forwards 84 each; the 519-candidate raw check 1; the event-study sweep 160). Every later pre-test and backtest appends to it, and Stage 2's deflated Sharpe must be penalised for the total.
 * **Fama-French factors** from the Ken French library, `data/factors/` with sha256 in `SOURCE.md`. The daily file currently ends 2026-07-31.
 * **Sharadar insiders table is entitled** (probed 2026-09-16: `data/insiders` returns Form 4 rows). `institutions` is not ("Unknown table"). H5 (insider-purchase drift) is therefore testable without a new subscription.
+
+## Methodology shift: brute-force grid with DSR + PBO, after H1-H4 (2026-09-16)
+
+All four pre-registered v2 hypotheses failed (`docs/STAGE1-RESULT.md`); the trial
+ledger stood at 627 configurations. `docs/STAGE1-RESULT.md`'s own conclusion left
+two paths: accept the negative result and stop, or spend the sealed hold-out year
+on one more pre-registered re-specification. The owner chose a third path instead:
+stop hand-picking hypotheses one at a time and search the signal space
+exhaustively in one shot, using data already licensed but not fully used (full SF1
+fundamentals beyond `gp`/`assets`/`sharesbas`, Sharadar insiders, broader 8-K event
+codes), correcting for the overfitting a wide search creates rather than avoiding
+it by pre-registration.
+
+* **What changed.** `docs/prereg/BRUTEFORCE-v1.md` is a frozen grid (19 signal
+  arms x 3 bucket counts x 6 horizons x 4 bands = 1,368 configurations), committed
+  before it runs like every other prereg file, but with no per-cell pass rule.
+  Instead: Deflated Sharpe Ratio (needs > 0, reusing `cpp/src/backtester/metrics.cpp`
+  via a new `at_dsr` CLI so Python does not reimplement the formula) **and**
+  Probability of Backtest Overfitting via Combinatorially Symmetric
+  Cross-Validation (needs < 0.5, `python/autotrader/research/pbo.py`, new --
+  nothing in this repo did CSCV before). Both, not either.
+* **Why DSR alone was not enough.** DSR corrects the significance bar for how many
+  configurations were tried; it says nothing about whether the specific winner a
+  search selects then degrades out of sample, which is exactly what a search over
+  1,368 configurations needs checked. PBO/CSCV is the literature's standard
+  companion for that (Bailey, Borwein, Lopez de Prado & Zhu 2014), not previously
+  used here because H1-H4 each tested one fixed hypothesis with nothing to select
+  among.
+* **What stayed the same.** The grid still runs only on the pre-seal panel; the
+  sealed year is still spent at most once, under the existing Stage-2 hold-out
+  criterion (`docs/prereg/README.md`); the grid file is still committed and frozen
+  before it touches data, exactly like H1-H4's pre-registrations; a run still
+  appends exactly one ledger entry sized to the grid.
+* **Scope boundary.** EAR, announcement volume, SUE and SRUE are deliberately not
+  re-run in the new grid: H3 already tested all four with proper event-triggered
+  timing and found nothing in any band, and re-testing them through a monthly
+  cross-sectional proxy would use worse timing precision while still spending
+  trial-count budget. The new grid's budget goes to families H1-H4 did not test.

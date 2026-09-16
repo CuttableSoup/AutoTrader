@@ -1,6 +1,7 @@
 add_library(at_backtest STATIC
   mock_validator.cpp
   metrics.cpp
+  dsr_cli.cpp
   backtester.cpp
   walk_forward.cpp
 )

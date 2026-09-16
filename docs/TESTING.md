@@ -5,7 +5,7 @@ Maps docs/DESIGN.md section 7 to concrete commands. Every gate has a runnable ch
 ## Unit and component tests
 
 ```
-# C++ (54 test cases; strategy, risk, sizing, exits, calendar, money, schemas, backtester, DSR)
+# C++ (58 test cases; strategy, risk, sizing, exits, calendar, money, schemas, backtester, DSR, DSR CLI)
 cmake --preset fetchcontent-release -S cpp && cmake --build --preset fetchcontent-release && ctest --preset fetchcontent-release
 # Python sidecars + watchdog (17 tests)
 .venv/Scripts/python -m pytest python/tests watchdog/tests -q
@@ -36,6 +36,27 @@ Outputs in `out_dir`: `walk_forward.json`, `oos_trades.csv`, `report.md`. The wa
 On the synthetic data G1 **fails by construction** (random reactions); that is the expected result and a sanity check on the gate itself.
 
 The mock validator's COUNTER_GAP and SECOND_8K rules use post-signal data and are labelled `lookahead` in every verdict; the counterfactual they produce is an upper bound on what a real validator could add.
+
+## v2 research: brute-force signal grid
+
+After all four pre-registered v2 hypotheses failed (docs/STAGE1-RESULT.md), the
+research method shifted from one pre-registered hypothesis at a time to a frozen
+grid searched in one shot, corrected for overfitting after the fact rather than
+avoided by pre-registration (docs/DECISIONS.md, "Methodology shift"). Grid, arms
+and thresholds: `docs/prereg/BRUTEFORCE-v1.md`.
+
+```
+python scripts/fetch_insiders_bulk.py                        # optional; without it insider_buy/ownership_family report no data, loudly
+.venv/Scripts/python -m autotrader.research.cli build-panel --rebuild   # only needed after a panel.py schema change
+at-research sweep --grid docs/prereg/BRUTEFORCE-v1.md         # exit 0 = PASS (DSR > 0 and PBO < 0.5), 2 = FAIL
+```
+
+Deflated Sharpe reuses `cpp/src/backtester/metrics.cpp` via a small CLI
+(`at_dsr`, built as part of `at_tests`'s target set) so the Python sweep does not
+reimplement the formula; `at-research sweep` looks for it at
+`cpp/build/cyg-full/bin/at_dsr(.exe)` or `cpp/build/fetchcontent-release/bin/at_dsr(.exe)`
+and fails loudly if neither exists. Probability of Backtest Overfitting via CSCV
+(`python/autotrader/research/pbo.py`) has no C++ dependency.
 
 ## Gate G2: infrastructure fault injection
 

@@ -1,6 +1,9 @@
 add_executable(at_backtester backtester_main.cpp)
 target_link_libraries(at_backtester PRIVATE at_backtest)
 
+add_executable(at_dsr at_dsr_main.cpp)
+target_link_libraries(at_dsr PRIVATE at_backtest)
+
 if(AT_WITH_NATS)
   add_library(at_service_common STATIC service_common.cpp)
   target_link_libraries(at_service_common PUBLIC at_risk at_strategy at_natsbus at_common)

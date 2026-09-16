@@ -3,6 +3,8 @@
   at-research build-panel [--rebuild]                 clean point-in-time panel from data/raw (sealed)
   at-research pretest H1 --prereg docs/prereg/H1-residual-momentum.md
                                                       run a committed pre-registration once; logs to docs/trials.jsonl
+  at-research sweep --grid docs/prereg/BRUTEFORCE-v1.md
+                                                      run the frozen brute-force grid once; logs to docs/trials.jsonl
   at-research check-trials --config <backtest.json>   backtest report.prior_trials must cover the ledger
 """
 from __future__ import annotations
@@ -71,6 +73,32 @@ def cmd_pretest(a: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_sweep(a: argparse.Namespace) -> int:
+    from autotrader.research import pretest, sweep
+    from autotrader.research.panel import build_panel, root
+
+    grid = Path(a.grid)
+    commit = pretest.prereg_commit(grid)
+    end = seal.data_end(a.unseal, a.reason, hypothesis="BRUTEFORCE-v1")
+    panel = build_panel(end=seal.SEAL_DATE if end == seal.SEAL_DATE else "2099-12-31")
+    ledger = Ledger()
+    before = ledger.count()
+    cells = sweep.run_grid(panel)
+    dsr = sweep.run_dsr(cells)
+    pbo_result = sweep.run_pbo(cells)
+    window = f"{panel.dates[0]}..{panel.dates[-1]}"
+    path = sweep.write_outputs(cells, dsr, pbo_result, root() / "var" / "research")
+    passed = dsr["deflated_sharpe_annual"] > 0 and pbo_result["pbo"] < 0.5
+    ledger.append(kind="sweep", hypothesis="BRUTEFORCE-v1", n_configs=sweep.N_CONFIGS, data_window=window,
+                  spec_hash=f"{grid.as_posix()}@{commit[:12]}", var_sr_trials=dsr["var_sr_trials"],
+                  notes=f"{'PASS' if passed else 'FAIL'} DSR={dsr['deflated_sharpe_annual']:+.3f} "
+                        f"PBO={pbo_result['pbo']:.3f} report {path.relative_to(root()).as_posix()}")
+    print(f"grid: {grid.as_posix()} at commit {commit[:12]}\nledger before: {before}; after: {before + sweep.N_CONFIGS}\n")
+    print((path.read_text(encoding="utf-8")))
+    print(f"\nwritten: {path}")
+    return 0 if passed else 2
+
+
 def cmd_check_trials(a: argparse.Namespace) -> int:
     cfg = json.loads(Path(a.config).read_text(encoding="utf-8"))
     prior = int(cfg.get("report", {}).get("prior_trials", 0))
@@ -97,6 +125,11 @@ def main() -> None:
     t.add_argument("--unseal", action="store_true")
     t.add_argument("--reason", default=None)
     t.set_defaults(fn=cmd_pretest)
+    sw = sub.add_parser("sweep")
+    sw.add_argument("--grid", required=True)
+    sw.add_argument("--unseal", action="store_true")
+    sw.add_argument("--reason", default=None)
+    sw.set_defaults(fn=cmd_sweep)
     c = sub.add_parser("check-trials")
     c.add_argument("--config", required=True)
     c.set_defaults(fn=cmd_check_trials)

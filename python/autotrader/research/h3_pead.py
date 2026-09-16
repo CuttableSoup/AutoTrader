@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 
 from autotrader.research import pretest, stats
-from autotrader.research.panel import Panel, root
+from autotrader.research.panel import Panel, load_event_dates
 
 N_BUCKETS = 10
 HORIZONS = [2, 5, 10, 20]
@@ -44,13 +44,7 @@ EAR_BUCKETS = [("< -5%", -1e9, -5), ("-5% to -2%", -5, -2), ("-2% to +2%", -2, 2
 
 def load_announcements(panel: Panel, events_csv=None) -> dict[str, np.ndarray]:
     """symbol -> sorted datetime64[D] of item 2.02 8-K dates."""
-    path = events_csv or sorted((root() / "data" / "raw").glob("events-*.csv"))[-1]
-    ev = pd.read_csv(path, dtype=str)
-    ev = ev[ev["eventcodes"].fillna("").str.split("|").apply(lambda c: "22" in c) & ev["ticker"].isin(set(panel.symbols))]
-    out: dict[str, np.ndarray] = {}
-    for sym, g in ev.groupby("ticker"):
-        out[sym] = np.sort(pd.to_datetime(g["date"]).to_numpy().astype("datetime64[D]"))
-    return out
+    return load_event_dates(panel.symbols, {"22"}, events_csv=events_csv)
 
 
 def surprise(values: pd.Series, cal: pd.Series) -> np.ndarray:

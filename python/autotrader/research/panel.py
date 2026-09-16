@@ -37,7 +37,10 @@ log = logging.getLogger("autotrader.research.panel")
 
 COMMON_CATEGORIES = ("Domestic Common Stock", "Domestic Common Stock Primary Class", "Domestic Common Stock Secondary Class")
 PRICE_FIELDS = ("open", "close", "closeadj", "closeunadj", "volume")
-FUND_COLS = ["ticker", "dimension", "calendardate", "date", "fiscalperiod", "eps", "revenue", "gp", "assets", "sharesbas", "sharefactor"]
+# equity/debt/netinc/ncfo/capex added for the brute-force signal grid (docs/prereg/BRUTEFORCE-v1.md):
+# book-to-market, accruals, leverage change. Same raw file already on disk -- no new vendor pull.
+FUND_COLS = ["ticker", "dimension", "calendardate", "date", "fiscalperiod", "eps", "revenue", "gp", "assets", "sharesbas",
+            "sharefactor", "equity", "debt", "netinc", "ncfo", "capex"]
 
 # Universe rules for the v2 pre-tests (docs/prereg/*). Deliberately NOT the v1 C++ rules.
 MIN_MCAP = 5e8
@@ -181,6 +184,81 @@ def _raw_files(raw_dir: Path) -> dict[str, Path]:
             raise FileNotFoundError(f"no {prefix}-*.csv in {raw_dir}; run `at-universe backtest --bulk` first")
         return hits[-1]
     return {"tickers": one("tickers"), "stocks": one("stocks"), "fundamentals": one("fundamentals")}
+
+
+def events_path(raw_dir: Path | None = None) -> Path | None:
+    raw_dir = raw_dir or root() / "data" / "raw"
+    hits = sorted(raw_dir.glob("events-*.csv"))
+    if not hits:
+        log.warning("no events-*.csv in %s; event-code signals/filters unavailable", raw_dir)
+        return None
+    return hits[-1]
+
+
+def insiders_path(raw_dir: Path | None = None) -> Path | None:
+    """Sharadar SF2 (Form 4 insider transactions) bulk export, if fetched (scripts/fetch_insiders_bulk.py).
+
+    Optional: a brute-force run without it simply excludes the insider-buying signal,
+    logged loudly here rather than silently substituting a neutral value.
+    """
+    raw_dir = raw_dir or root() / "data" / "raw"
+    hits = sorted(raw_dir.glob("insiders-*.csv"))
+    if not hits:
+        log.warning("no insiders-*.csv in %s; insider-buying signal unavailable (run scripts/fetch_insiders_bulk.py)", raw_dir)
+        return None
+    return hits[-1]
+
+
+def load_event_dates(symbols: np.ndarray, codes: set[str], raw_dir: Path | None = None,
+                     events_csv: Path | None = None) -> dict[str, np.ndarray]:
+    """symbol -> sorted datetime64[D] of 8-K filing dates carrying any of `codes`.
+
+    `codes` are Sharadar's 2-digit item codes (events.csv `eventcodes`, pipe-separated;
+    see autotrader.universe.sharadar.MATERIAL_8K_CODES for the "material" set). Generalises
+    what h3_pead.load_announcements did inline with a single hardcoded code ({"22"}, 2.02
+    results of operations).
+    """
+    path = events_csv or events_path(raw_dir)
+    if path is None:
+        return {}
+    ev = pd.read_csv(path, dtype=str)
+    symset = set(symbols)
+    hit = ev["eventcodes"].fillna("").str.split("|").apply(lambda c: bool(codes & set(c)))
+    ev = ev[hit & ev["ticker"].isin(symset)]
+    out: dict[str, np.ndarray] = {}
+    for sym, g in ev.groupby("ticker"):
+        out[sym] = np.sort(pd.to_datetime(g["date"]).to_numpy().astype("datetime64[D]"))
+    return out
+
+
+def load_insider_transactions(symbols: np.ndarray, raw_dir: Path | None = None,
+                              insiders_csv: Path | None = None) -> pd.DataFrame:
+    """Open-market insider buys/sells from Sharadar SF2 (Form 4), point-in-time by filing date.
+
+    Column names (ticker, filingdate, transactioncode, transactionshares,
+    transactionpricepershare) are Sharadar's published SF2 schema -- UNVERIFIED against
+    this account's actual response, unlike every other table this module reads (see
+    DECISIONS.md's "measured against the live API" entries for tickers/stocks/fundamentals/
+    events). Probe scripts/fetch_insiders_bulk.py's output once fetched and correct the
+    names here if they differ before trusting any signal built on this.
+
+    transactioncode: Form 4 codes -- kept 'P' (open-market purchase) and 'S' (sale) only;
+    grants, option exercises and gifts are not open-market conviction. Returns one row per
+    kept transaction: ticker, filingdate (datetime64[D]), signed_dollars (+ for P, - for S).
+    """
+    path = insiders_csv or insiders_path(raw_dir)
+    if path is None:
+        return pd.DataFrame(columns=["ticker", "filingdate", "signed_dollars"])
+    df = pd.read_csv(path, dtype=str)
+    symset = set(symbols)
+    df = df[df["ticker"].isin(symset) & df["transactioncode"].isin(["P", "S"])]
+    shares = pd.to_numeric(df["transactionshares"], errors="coerce")
+    price = pd.to_numeric(df["transactionpricepershare"], errors="coerce")
+    sign = np.where(df["transactioncode"] == "P", 1.0, -1.0)
+    out = pd.DataFrame({"ticker": df["ticker"].to_numpy(),
+                        "filingdate": pd.to_datetime(df["filingdate"], errors="coerce").to_numpy().astype("datetime64[D]"),
+                        "signed_dollars": sign * (shares * price).to_numpy()})
+    return out[np.isfinite(out["signed_dollars"])].reset_index(drop=True)
 
 
 def _manifest(files: dict[str, Path], end: str, spy: Path) -> dict:

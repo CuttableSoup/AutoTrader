@@ -40,10 +40,16 @@ class MonthlyData:
         self.month_of_session = np.searchsorted(self.months, month_ids)
 
 
-def residual_momentum_scores(md: MonthlyData, m: int, candidates: np.ndarray) -> np.ndarray:
-    """(N,) residual momentum at the end of month index m for the candidate columns."""
+def ff3_residual_window(md: MonthlyData, m: int, candidates: np.ndarray) -> np.ndarray:
+    """(N, MOM_MONTHS) FF3 regression residuals over months m-11..m-1 for the candidate columns.
+
+    A row is all-NaN where the regression could not be run (fewer than MIN_REG_MONTHS valid
+    months). Factored out of residual_momentum_scores so a second statistic (idiosyncratic
+    volatility, autotrader.research.signals.idio_vol_ff3) can reuse one regression rather than
+    running its own.
+    """
     N = md.ret.shape[1]
-    out = np.full(N, np.nan)
+    out = np.full((N, MOM_MONTHS), np.nan)
     lo = m - REG_MONTHS + 1
     if lo < 0:
         return out
@@ -59,8 +65,16 @@ def residual_momentum_scores(md: MonthlyData, m: int, candidates: np.ndarray) ->
             continue
         beta, *_ = np.linalg.lstsq(Xc[ok], y[ok], rcond=None)
         resid = y - Xc @ beta                                  # NaN where y is NaN
-        window = resid[REG_MONTHS - 1 - MOM_MONTHS:REG_MONTHS - 1]   # months m-11 .. m-1
-        w = window[np.isfinite(window)]
+        out[j] = resid[REG_MONTHS - 1 - MOM_MONTHS:REG_MONTHS - 1]   # months m-11 .. m-1
+    return out
+
+
+def residual_momentum_scores(md: MonthlyData, m: int, candidates: np.ndarray) -> np.ndarray:
+    """(N,) residual momentum at the end of month index m for the candidate columns."""
+    window = ff3_residual_window(md, m, candidates)
+    out = np.full(window.shape[0], np.nan)
+    for j in range(window.shape[0]):
+        w = window[j][np.isfinite(window[j])]
         if len(w) < MIN_MOM_MONTHS:
             continue
         sd = w.std(ddof=1)

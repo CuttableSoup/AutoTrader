@@ -7,6 +7,7 @@ add_executable(at_tests
   test_exits_sizing.cpp
   test_risk.cpp
   test_metrics.cpp
+  test_dsr_cli.cpp
   test_mock_validator.cpp
   test_schema.cpp
   test_backtest_smoke.cpp
