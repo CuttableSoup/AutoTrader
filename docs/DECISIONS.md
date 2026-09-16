@@ -6,10 +6,11 @@ run against it; changing a frozen entry bumps `strategy_version`.
 
 ## Resolved §12 decisions (v0.1 defaults, frozen in `config/strategy.v1.json`)
 
-> **Data entitlements as of 2026-09-15.** The keys supplied do not yet cover what
-> §8 assumes. See "Vendor entitlements" at the bottom of this file: Gate G1 is
-> blocked on a Sharadar subscription, and the Claude layer is blocked on Anthropic
-> credit. Nothing in the design changed because of this; only what can be run today.
+> **Data entitlements as of 2026-09-15.** See "Vendor entitlements" below for what
+> each key actually returns. The Claude layer is verified working end to end. Gate
+> G1 remains blocked on a Sharadar subscription that covers more than the ~30 free
+> sample tickers. Nothing in the design changed because of this; only what can be
+> run today.
 
 | # | Decision | Choice | Rationale |
 |---|---|---|---|
