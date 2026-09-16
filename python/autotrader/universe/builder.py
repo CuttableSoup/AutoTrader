@@ -20,7 +20,8 @@ import statistics
 from pathlib import Path
 
 from ..config import Config, Secrets
-from .sharadar import bulk_download, write_bars_csv, write_events_from_sharadar, write_securities_csv
+from .sharadar import (SharadarClient, SharadarFreeTier, append_alpaca_bars, fmp_coverage, write_bars_csv,
+                       write_earnings_csv, write_securities_csv)
 
 log = logging.getLogger("autotrader.universe")
 
@@ -89,22 +90,74 @@ def adv20_from_bars(bars_csv: Path, as_of: dt.date) -> dict[str, float]:
 
 
 def cmd_backtest(a: argparse.Namespace) -> None:
+    """Pull point-in-time Sharadar data into the CSV layout the C++ backtester reads."""
     cfg = Config.load(a.config)
     secrets = Secrets.load(cfg)
-    key = secrets.require("nasdaq_data_link_api_key")
-    raw = Path(a.data_dir) / "raw"
-    tickers = bulk_download("TICKERS", key, raw)
-    sf1 = bulk_download("SF1", key, raw, **{"dimension": "ARQ"})
-    sep = bulk_download("SEP", key, raw)
-    events = bulk_download("EVENTS", key, raw)
+    strat = load_strategy(cfg)
+    client = SharadarClient(secrets.require("nasdaq_data_link_api_key"))
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    strat = load_strategy(cfg)
-    n_sec = write_securities_csv(tickers, sf1, out / "securities.csv", None, None, strat["universe"]["min_analyst_coverage"])
-    n_bars = write_bars_csv(sep, out / "bars.csv")
-    n_ev = write_events_from_sharadar(events, sf1, out / "earnings.csv")
-    log.warning("analyst coverage and transcript availability defaulted to neutral values; join an FMP snapshot before trusting the universe size")
-    log.info("wrote %d security rows, %d bars, %d earnings skeleton rows to %s", n_sec, n_bars, n_ev, out)
+    start = dt.date.fromisoformat(a.start)
+    end = dt.date.fromisoformat(a.end) if a.end else dt.date.today()
+    # Bars need a warm-up before `start` for the 252-session momentum lookback and the 200-day trend MA.
+    bars_start = start - dt.timedelta(days=int(a.warmup_days))
+
+    tickers = client.stock_tickers()
+    log.info("sharadar: %d tickers with a price history", len(tickers))
+    entitled = [t for t in tickers if (t.get("isdelisted") in ("N", None) or a.include_delisted)]
+    symbols = sorted({t["ticker"] for t in entitled})
+    if a.symbols:
+        want = {s.strip().upper() for s in a.symbols.split(",")}
+        symbols = [s for s in symbols if s in want]
+    if a.max_symbols:
+        symbols = symbols[: int(a.max_symbols)]
+    benchmark = strat["universe"].get("benchmark", "SPY")
+
+    # What can this key actually read? A free-tier key covers ~30 names; probing first
+    # avoids marching through thousands of 403s and reports the real coverage up front.
+    if not a.no_probe:
+        readable = client.entitled_symbols(end)
+        kept = [s for s in symbols if s in readable]
+        if len(kept) < len(symbols):
+            log.warning("Sharadar subscription covers %d of %d tickers; building only those", len(kept), len(symbols))
+        symbols = kept
+    if not symbols:
+        log.error("Sharadar subscription covers none of the requested tickers")
+        raise SystemExit(3)
+    log.info("building %d symbols (+ benchmark %s) from %s to %s", len(symbols), benchmark, bars_start, end)
+
+    coverage = None
+    if secrets.has("fmp_api_key") and a.enrich:
+        # Two FMP calls per symbol: only worth it once the symbol list is final.
+        coverage = fmp_coverage(secrets.get("fmp_api_key"), symbols)
+        counts = sorted(c for c, _ in coverage.values())
+        log.info("fmp coverage: %d symbols, median analysts=%s", len(coverage), counts[len(counts) // 2] if counts else "n/a")
+
+    benchmark_from_sharadar = benchmark in readable if not a.no_probe else True
+    try:
+        n_bars = write_bars_csv(client, out / "bars.csv", symbols + ([benchmark] if benchmark_from_sharadar else []), bars_start, end)
+        if not benchmark_from_sharadar:
+            # Sharadar's cheaper tiers exclude ETFs; without the benchmark there is no EAR and no trend filter.
+            log.warning("benchmark %s not in the Sharadar subscription; pulling it from Alpaca instead", benchmark)
+            n_bars += append_alpaca_bars(out / "bars.csv", benchmark, secrets.require("alpaca_key_id"),
+                                         secrets.require("alpaca_secret_key"), bars_start, end,
+                                         cfg.get("alpaca.data_base_url", "https://data.alpaca.markets"),
+                                         cfg.get("alpaca.data_feed", "iex"))
+        n_sec = write_securities_csv(client, out / "securities.csv", tickers, symbols, bars_start, coverage, None,
+                                     strat["universe"]["min_analyst_coverage"], 0.0)
+        n_ev = write_earnings_csv(client, out / "earnings.csv", symbols, bars_start)
+    except SharadarFreeTier as e:
+        log.error("Sharadar subscription does not cover the requested universe: %s", e)
+        raise SystemExit(3) from None
+    finally:
+        client.close()
+
+    if coverage is None:
+        log.warning("analyst coverage defaulted to the universe minimum; the coverage rule is NOT being enforced")
+    log.warning("quoted spreads are not in Sharadar; the median-spread rule is NOT being enforced (median_spread_bps=0)")
+    log.info("wrote %d bars, %d security rows, %d earnings rows to %s", n_bars, n_sec, n_ev, out)
+    if len(symbols) < 200:
+        log.warning("only %d symbols: too small for a meaningful cross-sectional momentum percentile or Gate G1", len(symbols))
 
 
 def cmd_live(a: argparse.Namespace) -> None:
@@ -128,10 +181,17 @@ def cmd_live(a: argparse.Namespace) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
-    b = sub.add_parser("backtest")
+    b = sub.add_parser("backtest", help="pull point-in-time Sharadar data into bars/securities/earnings CSVs")
     b.add_argument("--config", default=None)
-    b.add_argument("--data-dir", default="data/sharadar")
     b.add_argument("--out", default="data/sharadar")
+    b.add_argument("--start", default="2019-01-01", help="first session the backtest will evaluate")
+    b.add_argument("--end", default=None)
+    b.add_argument("--warmup-days", default=500, help="extra calendar days of bars before --start for the 12-1 and 200-day lookbacks")
+    b.add_argument("--symbols", default=None, help="comma-separated subset")
+    b.add_argument("--max-symbols", default=None)
+    b.add_argument("--include-delisted", action="store_true", help="keep delisted tickers (survivorship-free; recommended)")
+    b.add_argument("--enrich", action="store_true", help="join FMP analyst coverage (2 API calls per symbol)")
+    b.add_argument("--no-probe", action="store_true", help="skip the entitlement probe and attempt every ticker")
     l = sub.add_parser("live")
     l.add_argument("--config", default=None)
     l.add_argument("--securities", required=True)

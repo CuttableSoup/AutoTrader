@@ -1,0 +1,50 @@
+{
+  "_doc": "Backtest over real Sharadar data. NOT a Gate G1 attempt: the current Sharadar subscription is free-tier (the ~30 Dow constituents, ~5 years of history, no ETFs), so the cross-sectional momentum percentile is computed over a handful of mega-caps, eleven of which the over-optioned rule excludes. It exists to run the real pipeline on real market data. See docs/DECISIONS.md, 'Vendor entitlements'.",
+  "run_name": "sharadar-dow30",
+  "data_dir": "data/sharadar",
+  "out_dir": "var/backtest/sharadar-dow30",
+  "strategy_config": "config/strategy.v1.json",
+  "risk_config": "config/risk.v1.json",
+  "start_date": "2022-10-03",
+  "_start_date_doc": "Stock history begins 2021-09-16 on this tier; the 252-session momentum lookback needs a year of warm-up before the first evaluated session.",
+  "end_date": "2026-09-15",
+  "initial_equity_cents": 100000000,
+
+  "costs": {
+    "commission_bps_per_side": 5.0,
+    "sec_fee_per_million_dollars_sold_cents": 2780,
+    "finra_taf_per_share_cents": 0.0166,
+    "finra_taf_max_per_trade_cents": 833,
+    "half_spread_slippage": true,
+    "default_spread_bps": 4.0
+  },
+
+  "validator": {
+    "mode": "mock",
+    "mock": {
+      "reject_revenue_miss_with_large_ear": true,
+      "large_ear_pct": 8.0,
+      "reject_second_8k_in_window": true,
+      "reject_counter_gap_atr_mult": 1.5,
+      "counter_gap_window_sessions": 3,
+      "reject_over_optioned": true
+    }
+  },
+
+  "walk_forward": {
+    "folds": 2,
+    "train_years": 1,
+    "test_years": 1,
+    "_folds_doc": "Two 1-year folds, not the designed three 2-year folds: only ~4 usable years exist on this tier. A real G1 run uses the config/backtest.*.json produced from a full subscription.",
+    "purge_sessions": 40,
+    "embargo_sessions": 10,
+    "tune": ["ear_threshold_pct", "momentum_top_pct"],
+    "objective": "sharpe_net"
+  },
+
+  "report": {
+    "haircut_pct": 50.0,
+    "risk_free_annual_pct": 0.0,
+    "min_gross_sharpe_after_haircut": 0.4
+  }
+}
