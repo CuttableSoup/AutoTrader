@@ -14,3 +14,11 @@ secrets*.json
 !config/secrets.example.json
 data/raw/
 data/cache/
+
+# never commit keys
+api_keys.md
+config/secrets.json
+config/watchdog.json
+config/paper.json
+config/paper.fake.json
+config/watchdog.fake.json
