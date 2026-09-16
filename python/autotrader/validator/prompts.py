@@ -51,8 +51,8 @@ VERDICT_SCHEMA = {
     "type": "object",
     "properties": {
         "verdict": {"type": "string", "enum": ["APPROVE", "REJECT"]},
-        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
-        "reasons": {"type": "array", "items": {"type": "string"}, "maxItems": 5},
+        "confidence": {"type": "number"},   # structured outputs reject minimum/maximum; clamped in Verdict.to_payload
+        "reasons": {"type": "array", "items": {"type": "string"}},
         "flags": {
             "type": "array",
             "items": {"type": "string", "enum": ["ONE_OFF_ITEM", "GUIDANCE_CUT", "GOING_CONCERN", "FRAUD_ALLEGATION", "BINARY_EVENT_IN_WINDOW", "SECOND_8K_IN_WINDOW", "REVENUE_MISS", "INSUFFICIENT_INFORMATION"]},

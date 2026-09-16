@@ -1,5 +1,12 @@
 """Two-step Claude validator (docs/DESIGN.md section 4).
 
+LOOK-AHEAD WARNING. Step 1 searches the live web, so it answers about the most
+recent earnings for a symbol, not the one as of the candidate's session_date.
+That is correct in live and shadow mode, where the candidate IS the most recent
+report. It makes the validator USELESS on historical candidates: replaying past
+candidates through it to build a Gate G4 sample faster would score them with
+information from after the fact. G4 accrues forward, in shadow mode, only.
+
 Step 1: web search + reasoning with citations (server tool, max_uses=3, domain
         allowlist). Output: a factual summary + citations.
 Step 2: strict-JSON verdict via output_config.format, no tools.
@@ -29,6 +36,12 @@ PRICES = {
 }
 WEB_SEARCH_USD_PER_CALL = 0.01  # $10 per 1,000 searches
 
+# Primary sources first. Several major wires (Reuters, AP, WSJ, FT, MarketWatch,
+# Barron's) block Anthropic's crawler and the API rejects the whole request if one
+# of them is in allowed_domains, so they are deliberately absent. Opinion sites
+# are excluded on quality grounds, matching the research prompt.
+DEFAULT_ALLOWED_DOMAINS = ['sec.gov', 'businesswire.com', 'prnewswire.com', 'globenewswire.com', 'bloomberg.com', 'cnbc.com', 'nasdaq.com']
+
 
 def _price_key(model: str) -> str:
     for k in PRICES:
@@ -45,9 +58,9 @@ def _web_search_tool_type(model: str) -> str:
 @dataclass
 class ValidatorConfig:
     model: str = "claude-haiku-4-5-20251001"
-    timeout_s: float = 20.0
+    timeout_s: float = 60.0   # see docs/DECISIONS.md: measured 10-17s, and validation runs overnight
     max_search_uses: int = 3
-    allowed_domains: list[str] = field(default_factory=lambda: ["sec.gov", "reuters.com", "bloomberg.com", "wsj.com", "ft.com", "apnews.com", "businesswire.com", "prnewswire.com", "globenewswire.com"])
+    allowed_domains: list[str] = field(default_factory=lambda: list(DEFAULT_ALLOWED_DOMAINS))
     injection_prescreen: bool = True
     include_transcript: bool = False
     max_tokens_research: int = 2048

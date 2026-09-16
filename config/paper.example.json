@@ -7,14 +7,12 @@
   "risk_config": "config/risk.v1.json",
   "state_dir": "var/state",
   "log_dir": "var/log",
-
   "secrets": {
     "backend": "file",
     "_backends": "file (config/secrets.json, gitignored) | env (AT_ALPACA_KEY_ID / AT_ALPACA_SECRET_KEY / AT_ANTHROPIC_API_KEY / AT_FMP_API_KEY / AT_FINNHUB_API_KEY / AT_WATCHDOG_TOKEN) | aws-secretsmanager (secret name in 'aws_secret_name')",
     "file": "config/secrets.json",
     "aws_secret_name": "autotrader/paper"
   },
-
   "alpaca": {
     "trading_base_url": "https://paper-api.alpaca.markets",
     "data_base_url": "https://data.alpaca.markets",
@@ -23,46 +21,59 @@
     "rate_limit_per_min": 200,
     "http_timeout_s": 10
   },
-
   "ingestor": {
-    "bar_pull_times_et": ["09:20", "16:30"],
+    "bar_pull_times_et": [
+      "09:20",
+      "16:30"
+    ],
     "bar_lookback_sessions": 300,
     "quote_max_age_s": 30
   },
-
   "portfolio": {
     "publish_interval_s": 60,
     "heartbeat_interval_s": 10,
     "watchdog_url": "http://127.0.0.1:8787",
     "stop_ratchet_time_et": "15:45"
   },
-
   "reconciler": {
     "interval_s": 900
   },
-
   "execution": {
     "max_submit_attempts": 3,
-    "retry_backoff_ms": [500, 1500, 4000]
+    "retry_backoff_ms": [
+      500,
+      1500,
+      4000
+    ]
   },
-
   "validator": {
     "mode": "SHADOW",
     "model": "claude-haiku-4-5-20251001",
     "anthropic_workspace_id": "",
     "_anthropic_workspace_id_doc": "Required when the Anthropic API key is org-level (not scoped to a workspace); the API rejects such requests without the anthropic-workspace-id header.",
-    "timeout_s": 20,
+    "timeout_s": 60,
     "max_search_uses": 3,
     "include_transcript": false,
     "injection_prescreen": true,
-    "allowed_domains": ["sec.gov", "reuters.com", "bloomberg.com", "wsj.com", "ft.com", "apnews.com", "businesswire.com", "prnewswire.com", "globenewswire.com", "investor.*", "ir.*"]
+    "allowed_domains": [
+      "sec.gov",
+      "businesswire.com",
+      "prnewswire.com",
+      "globenewswire.com",
+      "bloomberg.com",
+      "cnbc.com",
+      "nasdaq.com"
+    ],
+    "_allowed_domains_doc": "Reuters/AP/WSJ/FT/MarketWatch/Barron's block Anthropic's crawler; including any of them makes the API reject the whole search request.",
+    "_timeout_doc": "Measured 10-17s per candidate (2 API calls + up to 3 web searches). Validation runs overnight between the 16:20 ET signal and the 09:31 ET entry, so a tight deadline only manufactures ERROR verdicts."
   },
-
   "events_feed": {
     "poll_interval_s": 900,
-    "vendors": ["fmp", "finnhub"]
+    "vendors": [
+      "fmp",
+      "finnhub"
+    ]
   },
-
   "paging": {
     "backend": "log",
     "_backends": "log | webhook (url in 'webhook_url')",

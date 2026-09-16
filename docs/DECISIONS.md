@@ -47,13 +47,32 @@ Every vendor was called with the live keys. What §8 assumes vs what the keys re
 | Analyst coverage | FMP `stable/analyst-estimates` | **OK** (`numAnalystsEps`, `numAnalystsRevenue`), current values only, so a small look-ahead on a slow-moving rule. |
 | Point-in-time fundamentals, prices, constituents (backtest) | Sharadar | **Free tier: the ~30 Dow constituents only.** Everything else returns `403 Exceeds free tier`. |
 | Quoted spreads | none | **Not available.** `median_spread_bps` is written as 0 and the rule is logged as not enforced. |
-| Claude validator | Anthropic | **Blocked.** Key is workspace-scoped now, but the account has no credit balance (`400 credit balance is too low`). |
+| Claude validator | Anthropic | **Working** (verified end to end 2026-09-15, $0.066 per candidate). See "Claude validator, measured against the live API" below. |
 
 Consequences:
 
 * **Gate G1 cannot be attempted** until Sharadar covers the real universe. Thirty mega-caps are not a cross-sectional universe: eleven of them are on the over-optioned exclusion list, the momentum percentile is computed over a handful of names, and there is no survivorship-free breadth. The pipeline itself is exercised on those thirty so the code path is proven.
-* **Gate G4 accrual cannot start** until the Anthropic account has credit. The sidecar runs in MOCK mode meanwhile, which exercises the bus contract but produces no counterfactual signal.
+* **Gate G4 accrual can start as soon as paper trading starts**, but only forward: the validator reads the live web and so cannot be replayed over history (see below).
 * The two universe rules that cannot be sourced (transcript, spread) are **reported as unenforced on every build** rather than defaulted silently, so the universe size is never mistaken for a filtered one.
+
+### Claude validator, measured against the live API (2026-09-15)
+
+One real candidate (IBM's 2025-10-27 reaction) run through the real two-step call:
+
+| | |
+|---|---|
+| Verdict | REJECT, flag `ONE_OFF_ITEM`, confidence 0.95, 4 citations |
+| Finding | the GAAP EPS jump was aided by a tax benefit rather than operations |
+| Latency | 10–17 s per candidate |
+| Cost | $0.066 per candidate, about $1.30/day at 20 candidates, roughly $40/month |
+
+Three things the live run changed:
+
+* **Domain allowlist.** Reuters, AP, WSJ, FT, MarketWatch and Barron's block Anthropic's crawler, and naming any of them makes the API reject the *entire* search request with a 400. The allowlist is now SEC plus the PR wires plus Bloomberg, CNBC and Nasdaq, all verified reachable. Opinion sites stay out on quality grounds.
+* **Timeout 20 s → 60 s** (deviation from §4). Measured latency is 10–17 s, so a 20 s deadline manufactures `ERROR` verdicts, and three in a row pause new entries. There is no latency pressure at all: the strategy publishes candidates at 16:20 ET and entries are placed at 09:31 ET the next morning.
+* **Structured outputs reject `minimum`/`maximum` on numbers.** `confidence` is now an unconstrained number in the schema and is clamped in `Verdict.to_payload`.
+
+**The validator cannot be run on historical candidates.** Its research step searches the live web, so for a past candidate it returns information published after that candidate's session date. In the IBM test it reported on the Q4 report from January 2026 while judging the October 2025 reaction. That is correct in live and shadow mode, where the candidate is the most recent report, and fatal for any attempt to backfill a Gate G4 sample by replaying history. G4 accrues forward only, which is what §7.3's 12–18 months assumes.
 
 ### Sharadar API migration
 
