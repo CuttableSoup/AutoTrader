@@ -16,6 +16,13 @@ extreme cell is expected to look good by luck alone. A cell is only interesting 
 it is large, monotone across neighbouring buckets, and stable across sub-periods.
 Anything acted on must then be frozen and re-tested on data this sweep never saw.
 
+CORRECTED 2026-09-16 (docs/STAGE1-RESULT.md). The original version started the forward
+return at open(i0+1) while the reaction it sorted on runs to close(i0+1), so the sort saw
+part of the return it was credited with. Entry is now open(i0+2). Separately, running it on
+data/sharadar/ below that dataset's floor is survivor-selected (names were kept for LATER
+exceeding it); use the clean panel in python/autotrader/research/ for any size comparison.
+The commit 3c0a9fd numbers were produced by the uncorrected version.
+
 usage: python scripts/event_study.py --data data/sharadar
 """
 from __future__ import annotations
@@ -113,10 +120,10 @@ def main() -> None:
         dates, opens, closes, vols = b
         # day 0 = first session strictly after the filing date (timing is UNKNOWN in this data)
         i0 = bisect.bisect_right(dates, rd)
-        if i0 < 25 or i0 + 1 >= len(dates):
+        if i0 < 25 or i0 + 2 >= len(dates):
             continue
         j0 = bidx.get(dates[i0])
-        if j0 is None or j0 < 1 or j0 + 1 >= len(bdates):
+        if j0 is None or j0 < 1 or j0 + 2 >= len(bdates):
             continue
         # announcement reaction: close(day0-1) -> close(day0+1), minus the benchmark
         stock = closes[i0 + 1] / closes[i0 - 1] - 1
@@ -126,12 +133,12 @@ def main() -> None:
         vol_ratio = vols[i0] / adv20 if adv20 > 0 else 0
         mom = (closes[i0 - 21] / closes[i0 - 252] - 1) * 100 if i0 >= 252 and closes[i0 - 252] > 0 else None
         eps = float(e["eps_actual"]) if e.get("eps_actual") else None
-        # forward excess returns from the next open
+        # forward excess returns from the open AFTER the reaction window closes (i0+1 close)
         fwd = {}
         for h in HORIZONS:
-            if i0 + 1 + h < len(dates) and j0 + 1 + h < len(bdates):
-                s = closes[i0 + 1 + h] / opens[i0 + 1] - 1
-                m = bcloses[j0 + 1 + h] / bopens[j0 + 1] - 1
+            if i0 + 2 + h < len(dates) and j0 + 2 + h < len(bdates):
+                s = closes[i0 + 2 + h] / opens[i0 + 2] - 1
+                m = bcloses[j0 + 2 + h] / bopens[j0 + 2] - 1
                 fwd[h] = (s - m) * 100
         recs.append({"sym": sym, "date": rd, "ear": ear, "vol_ratio": vol_ratio, "mom": mom,
                      "eps": eps, "cap": cap_asof(caps, sym, rd), "fwd": fwd})

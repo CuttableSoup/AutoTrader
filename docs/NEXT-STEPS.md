@@ -1,5 +1,7 @@
 # Where the project stands, and what to do next
 
+> **Update 2026-09-16, later the same day: the "strong in companies worth $1–5 billion" finding below is withdrawn.** It came from an event study that let its sort see part of the return it measured and that ran on a survivor-selected symbol set. On a clean universe with corrected timing the drift is not there. Four pre-registered v2 hypotheses (residual momentum, a momentum/quality/issuance composite, small-cap SUE drift, a trend overlay) were also tested and all fail. See [STAGE1-RESULT.md](STAGE1-RESULT.md). Recommendation 1 below (paper trading as an operations test) is unaffected.
+
 Written 2026-09-16, after Gate G1 was run for real.
 
 ## In one paragraph
