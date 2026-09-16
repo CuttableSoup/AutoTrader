@@ -2,6 +2,8 @@
 
 > **Update 2026-09-16, later the same day: the "strong in companies worth $1–5 billion" finding below is withdrawn.** It came from an event study that let its sort see part of the return it measured and that ran on a survivor-selected symbol set. On a clean universe with corrected timing the drift is not there. Four pre-registered v2 hypotheses (residual momentum, a momentum/quality/issuance composite, small-cap SUE drift, a trend overlay) were also tested and all fail. See [STAGE1-RESULT.md](STAGE1-RESULT.md). Recommendation 1 below (paper trading as an operations test) is unaffected.
 
+> **Update 2026-09-16, still the same day: recommendation 2's "one more pre-registered attempt" path is now closed.** Instead of a fifth narrow hypothesis, a frozen 1,368-configuration brute-force grid was run across price/technical, fundamental and event-based signal families (including two H1-H4 did not test: SF1 fields beyond gross profit/issuance, and Sharadar insider/event data), corrected for overfitting with Deflated Sharpe Ratio and Probability of Backtest Overfitting instead of pre-registration. It also fails: DSR -0.635, PBO 0.630 (worse than a coin flip). See [BRUTEFORCE-RESULT.md](BRUTEFORCE-RESULT.md). The sealed hold-out year is still unspent. Option A below (accept and stop) is now the only path this data supports; option B is superseded by this run.
+
 Written 2026-09-16, after Gate G1 was run for real.
 
 ## In one paragraph
@@ -126,6 +128,14 @@ it, then run it once against the held-out period. If it fails there, stop for re
 My view: B is worth one attempt, on the condition that the hold-out is genuinely
 untouched until the end. If that is not going to be respected, A is the better
 choice, because a strategy tuned until it passes will fail with real money instead.
+
+> **Superseded 2026-09-16.** The owner chose a third path instead of a single
+> re-specification: a frozen brute-force grid across signal families, corrected
+> for overfitting with DSR and PBO in place of pre-registration
+> (docs/BRUTEFORCE-RESULT.md). It fails on both checks. That result folds the
+> intent of B (search harder before giving up) into an honestly corrected form and
+> comes back negative, so A stands without needing a further single-hypothesis
+> attempt.
 
 ### 3. Things worth fixing regardless
 
