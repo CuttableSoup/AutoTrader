@@ -5,6 +5,7 @@
                                                       run a committed pre-registration once; logs to docs/trials.jsonl
   at-research sweep --grid docs/prereg/BRUTEFORCE-v1.md
                                                       run the frozen brute-force grid once; logs to docs/trials.jsonl
+  at-research trend --prereg docs/prereg/TSMOM-v1.md  run the frozen TSMOM-v1 spec once; logs to docs/trials.jsonl
   at-research check-trials --config <backtest.json>   backtest report.prior_trials must cover the ledger
 """
 from __future__ import annotations
@@ -99,6 +100,33 @@ def cmd_sweep(a: argparse.Namespace) -> int:
     return 0 if passed else 2
 
 
+def cmd_trend(a: argparse.Namespace) -> int:
+    from autotrader.research import pretest, tsmom
+    from autotrader.research.etf_panel import build_etf_panel
+    from autotrader.research.panel import root
+
+    prereg = Path(a.prereg)
+    commit = pretest.prereg_commit(prereg)
+    end = seal.data_end(a.unseal, a.reason, hypothesis="TSMOM-v1")
+    panel = build_etf_panel(tsmom.UNIVERSE, end=seal.SEAL_DATE if end == seal.SEAL_DATE else "2099-12-31")
+    ledger = Ledger()
+    before = ledger.count()
+    result, markdown, n_configs = tsmom.run(panel)
+    window = f"{panel.dates[0]}..{panel.dates[-1]}"
+    header = (f"# TSMOM-v1\n\n* Pre-registration: `{prereg.as_posix()}` at commit `{commit[:12]}`\n"
+              f"* Data: ETF panel {window} ({'UNSEALED' if a.unseal else 'sealed at ' + seal.SEAL_DATE})\n"
+              f"* Configurations in this run: {n_configs}; ledger before this run: {before}; after: {before + n_configs}\n\n")
+    result.update({"prereg": prereg.as_posix(), "prereg_commit": commit, "data_window": window, "n_configs": n_configs,
+                   "ledger_before": before})
+    path = pretest.write_outputs("TSMOM-v1", result, header + markdown, root() / "var" / "research")
+    ledger.append(kind="holdout" if a.unseal else "pretest", hypothesis="TSMOM-v1", n_configs=n_configs, data_window=window,
+                  spec_hash=f"{prereg.as_posix()}@{commit[:12]}", notes=f"{'PASS' if result['pass'] else 'FAIL'} "
+                  f"report {path.relative_to(root()).as_posix()}")
+    print(header + markdown)
+    print(f"\nwritten: {path}")
+    return 0 if result["pass"] else 2
+
+
 def cmd_check_trials(a: argparse.Namespace) -> int:
     cfg = json.loads(Path(a.config).read_text(encoding="utf-8"))
     prior = int(cfg.get("report", {}).get("prior_trials", 0))
@@ -130,6 +158,11 @@ def main() -> None:
     sw.add_argument("--unseal", action="store_true")
     sw.add_argument("--reason", default=None)
     sw.set_defaults(fn=cmd_sweep)
+    tr = sub.add_parser("trend")
+    tr.add_argument("--prereg", required=True)
+    tr.add_argument("--unseal", action="store_true")
+    tr.add_argument("--reason", default=None)
+    tr.set_defaults(fn=cmd_trend)
     c = sub.add_parser("check-trials")
     c.add_argument("--config", required=True)
     c.set_defaults(fn=cmd_check_trials)

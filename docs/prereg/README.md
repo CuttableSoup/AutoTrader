@@ -50,3 +50,9 @@ Secondary horizons, reference arms and single-signal arms are reported and never
   insider data), with Deflated Sharpe Ratio and Probability of Backtest Overfitting
   in place of a per-hypothesis pass rule. Its own file documents why the method
   differs from H1-H4's.
+* [TSMOM-v1.md](TSMOM-v1.md): after the brute-force grid also failed, a strategy-family
+  pivot away from single-name equity stock-picking entirely — time-series
+  trend-following on a fixed 18-ETF universe. One pre-registered specification (not a
+  grid), since trend-following is a narrow, literature-established hypothesis rather
+  than a family to search. Its own file documents why this pre-registration's shape
+  and pass rule differ from every hypothesis before it.

@@ -143,3 +143,44 @@ it by pre-registration.
   timing and found nothing in any band, and re-testing them through a monthly
   cross-sectional proxy would use worse timing precision while still spending
   trial-count budget. The new grid's budget goes to families H1-H4 did not test.
+
+## Strategy-family pivot: ETF time-series trend-following, after the brute-force grid (2026-09-16)
+
+The brute-force grid also failed (`docs/BRUTEFORCE-RESULT.md`: DSR -0.635, PBO
+0.630; ledger at 1,995 configurations). Every strategy tried on single-name US
+equities — the plan's entire original scope (`docs/DESIGN.md` §1) — has now
+failed. The owner chose to pivot strategy families entirely rather than search
+equities further: **time-series trend-following** (each instrument traded
+against its own trend, not ranked against peers) on a small, fixed universe of
+18 liquid ETFs spanning equities, bonds, commodities and currencies — the
+classic managed-futures/CTA approach, historically more durable live than
+cross-sectional equity factor-picking, and a materially narrower hypothesis
+space (one literature-established formulation, not a family to search).
+
+* **What changed.** `docs/prereg/TSMOM-v1.md` pre-registers one specification
+  (Moskowitz, Ooi & Pedersen 2012, 12-month sign-of-return, inverse-vol scaled,
+  gross exposure capped at 1.0x — no leverage, a stated departure from the
+  paper's own ~40%-vol target, since this is a cash account not a futures
+  book) plus three named secondary variants, reported only. This is a return to
+  the H1-H4 discipline (one frozen idea, not a grid) rather than a continuation
+  of the brute-force pattern: PBO/CSCV is explicitly not run, because there is
+  no search and no in-sample winner for it to interrogate.
+* **New research infrastructure, Python-only.** `python/autotrader/research/
+  etf_panel.py` (a small bespoke ETF loader from Sharadar `funds` — deliberately
+  not a reuse of `panel.py`'s `Panel`, which exists to answer a point-in-time
+  stock-universe-membership question this doesn't have), `tsmom.py` (signal,
+  turnover-based cost model sourced from a Corwin & Schultz 2012 spread
+  estimate on `funds`' own high/low fields, portfolio construction), and
+  `walkforward.py` (purge/embargo fold geometry ported from
+  `cpp/src/backtester/walk_forward.cpp`, and the shared `at_dsr` CLI caller).
+  Wired as `at-research trend --prereg docs/prereg/TSMOM-v1.md`.
+* **Data limitation, accepted in advance.** Probed 2026-09-16: all 18 ETFs are
+  entitled in Sharadar `funds`, but every one's data starts exactly 2016-09-19 —
+  the subscription's 10-year entitlement window, not each ETF's real listing
+  date. The usable backtest window is ~9 years, not the longer history a
+  CTA-style strategy would ideally want, though it does span two real stress
+  regimes (the 2020 COVID crash, the 2022 bond bear market).
+* **No C++, schema, or live-service work yet.** This is explicitly scoped as a
+  cheap Python validation phase before any of the live system changes; see
+  `docs/prereg/TSMOM-v1.md`'s "Out of scope for this phase." The owner does not
+  want to deploy even paper trading without a genuinely validated strategy.
