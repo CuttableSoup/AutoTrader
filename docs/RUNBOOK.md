@@ -11,9 +11,10 @@ base URLs and the 10% capital start (Gate G5).
 | nats-server | Go (binary) | `tools/nats/nats-server -c config/nats/nats-server.conf` | | `var/jetstream/` |
 | logger | Python | `at-logger` | every stream | `var/log/topics/<subject>/<day>.jsonl(.gz)` |
 | pager | Python | `at-pager` | `control.>`, `broker.reconcile` | log / webhook |
-| ingestor | C++ | `at_ingestor_svc` | Alpaca data, `signals.candidate`, `portfolio.state`, `var/state/universe.json` | `market.data.>` |
+| ingestor | C++ | `at_ingestor_svc` | Alpaca data, `signals.candidate`, `portfolio.state`, `var/state/universe.json` | `market.data.bar.*` (split-adjusted), `market.data.bar_tr.*` (dividend-adjusted, the fixed 18-ETF TSMOM universe -- SPY needs both: it is also the earnings strategy's trend_symbol), `market.data.shortable.*` (TSMOM universe, once/day), `market.data.quote.*` |
 | events feed | Python | `at-events-feed` | FMP, Finnhub | `events.earnings` |
 | strategy | C++ | `at_strategy_svc` | `market.data.bar.*`, `events.earnings`, `var/state/universe.json` | `signals.candidate` (16:20 ET) |
+| tsmom | C++ | `at_tsmom_svc` | `market.data.bar.*` (fixed 18-ETF universe, `strategy/tsmom_universe.cpp`) | `signals.candidate` (16:25 ET, month-end formation sessions only) |
 | validator | Python | `at-validator` | `signals.candidate` | `signals.validated`, `control.pause_new` |
 | risk | C++ | `at_risk_svc` | candidates, verdicts, `portfolio.state`, `broker.reconcile`, quotes, `control.>` | `orders.approved` (09:31 / 16:10 ET), `control.>` |
 | execution | C++ | `at_execution_svc` | `orders.approved`, `control.>`, Alpaca WS | `orders.submitted`, `orders.status`, `orders.filled` |
@@ -21,7 +22,7 @@ base URLs and the 10% capital start (Gate G5).
 | reconciler | C++ | `at_reconciler_svc` | Alpaca, `portfolio.state` | `broker.reconcile`, `control.pause_new`, watchdog `/alert` |
 | watchdog | Python (stdlib) | `at-watchdog config/watchdog.json` | HTTP heartbeats, Alpaca (own key) | Alpaca cancel/close, `control.halt` |
 
-Start order: nats-server, `scripts/bootstrap_streams.py`, logger, pager, watchdog, portfolio, reconciler, ingestor, events feed, strategy, validator, risk, execution. `scripts/run_paper.ps1` / `.sh` do this.
+Start order: nats-server, `scripts/bootstrap_streams.py`, logger, pager, watchdog, portfolio, reconciler, ingestor, events feed, strategy, tsmom, validator, risk, execution. `scripts/run_paper.ps1` / `.sh` do this. `tsmom` has no ordering dependency relative to `strategy` (both are candidate producers feeding `risk`), but both must start before `risk`.
 
 **Nothing trades until `broker.reconcile` reports `CLEAN`.** After any restart, watch for that message before expecting orders.
 
@@ -31,11 +32,12 @@ Start order: nats-server, `scripts/bootstrap_streams.py`, logger, pager, watchdo
 |---|---|
 | 09:20 | ingestor pulls bars (incremental) |
 | 09:30–09:45 | ingestor publishes quotes every 10 s for pending candidates |
-| 09:31 | risk processes pending entries (retry at 09:36 for transient quote failures) |
+| 09:31 | risk processes pending entries -- both earnings candidates and any pending TSMOM rebalance candidates from the prior close (retry at 09:36 for transient quote failures) |
 | 15:45 | (portfolio) nothing; stop ratchets are decided at the close sweep |
 | 16:05 | portfolio end-of-session: marks, sessions held, HWMs |
 | 16:10 | risk exit sweep: time/earnings exits, trend scale-down, stop ratchets -> execution |
 | 16:20 | strategy evaluates the session -> candidates -> validator overnight |
+| 16:25 (month-end formation sessions only) | tsmom evaluates the monthly rebalance -> candidates straight to risk (no validator -- TSMOM bypasses the Claude sidecar entirely) |
 | 16:30 | ingestor pulls closing bars |
 | every 15 min | reconciler |
 | every 60 s | portfolio.state |

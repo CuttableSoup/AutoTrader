@@ -5,17 +5,27 @@
   "description": "A candidate entry produced by the strategy engine. thesis_facts are neutral, numeric statements only. No adjectives: the validator must not be nudged.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["symbol", "side", "signal_type", "strategy_version", "event_id", "session_date", "ear_pct", "vol_ratio", "mom_pct", "entry_px_ref_cents", "atr20_cents", "adv20_shares", "spy_above_trend", "thesis_facts", "data_as_of_utc"],
+  "required": ["symbol", "side", "signal_type", "strategy_version", "event_id", "session_date", "entry_deadline_date", "thesis_facts", "data_as_of_utc"],
+  "allOf": [
+    {
+      "if": { "properties": { "signal_type": { "const": "EARNINGS_MOMENTUM_V1" } } },
+      "then": { "required": ["ear_pct", "vol_ratio", "mom_pct", "entry_px_ref_cents", "atr20_cents", "adv20_shares", "spy_above_trend"] }
+    },
+    {
+      "if": { "properties": { "signal_type": { "const": "TSMOM_ETF_V1" } } },
+      "then": { "required": ["mom_sign", "vol_annual_pct", "target_weight_pct", "asset_class"] }
+    }
+  ],
   "properties": {
     "symbol": { "type": "string", "pattern": "^[A-Z][A-Z0-9.\\-]{0,9}$" },
-    "side": { "type": "string", "enum": ["BUY"] },
-    "signal_type": { "type": "string", "enum": ["EARNINGS_MOMENTUM_V1", "MOMENTUM_SLEEVE_V2"] },
+    "side": { "type": "string", "enum": ["BUY"], "description": "Always BUY: a candidate is computed state, not an order. For TSMOM, direction lives in the sign of target_weight_pct; the actual order side is derived downstream from the sign of (target - current)." },
+    "signal_type": { "type": "string", "enum": ["EARNINGS_MOMENTUM_V1", "MOMENTUM_SLEEVE_V2", "TSMOM_ETF_V1"] },
     "strategy_version": { "type": "string" },
-    "event_id": { "type": "string" },
+    "event_id": { "type": "string", "description": "Earnings: the EarningsEvent id. TSMOM: the rebalance idempotency key \"{universe_id}|{symbol}|{yyyy-mm}\" -- there is no EarningsEvent for this signal type." },
     "session_date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "description": "Session whose close produced this signal." },
-    "ear_pct": { "type": "number", "description": "2-day abnormal announcement return, percent." },
-    "vol_ratio": { "type": "number", "minimum": 0, "description": "Announcement-day volume / 20-day ADV." },
-    "mom_pct": { "type": "number", "minimum": 0, "maximum": 100, "description": "Percentile rank of 12-1 return within the universe (100 = best)." },
+    "ear_pct": { "type": "number", "description": "EARNINGS_MOMENTUM_V1 only: 2-day abnormal announcement return, percent." },
+    "vol_ratio": { "type": "number", "minimum": 0, "description": "EARNINGS_MOMENTUM_V1 only: announcement-day volume / 20-day ADV." },
+    "mom_pct": { "type": "number", "minimum": 0, "maximum": 100, "description": "EARNINGS_MOMENTUM_V1 only: percentile rank of 12-1 return within the universe (100 = best)." },
     "rsi5": { "type": ["number", "null"] },
     "revision_breadth": { "type": ["number", "null"], "description": "v1.1 only." },
     "entry_px_ref_cents": { "type": "integer", "minimum": 1 },
@@ -23,10 +33,14 @@
     "adv20_shares": { "type": "integer", "minimum": 0 },
     "sector": { "type": "string" },
     "spy_above_trend": { "type": "boolean" },
-    "entry_deadline_date": { "type": "string", "description": "Last session on which entry is allowed (signal + 2 trading days)." },
+    "entry_deadline_date": { "type": "string", "description": "Last session on which this candidate may still be acted on (earnings: signal + 2 trading days; TSMOM: signal + 5 trading days)." },
     "next_report_date": { "type": ["string", "null"] },
     "universe_snapshot_id": { "type": "string" },
     "thesis_facts": { "type": "array", "items": { "type": "string", "maxLength": 300 }, "maxItems": 12 },
-    "data_as_of_utc": { "type": "string" }
+    "data_as_of_utc": { "type": "string" },
+    "mom_sign": { "type": "integer", "enum": [-1, 0, 1], "description": "TSMOM_ETF_V1 only: sign(12-month total return)." },
+    "vol_annual_pct": { "type": "number", "minimum": 0, "description": "TSMOM_ETF_V1 only: trailing 60-session annualized vol, percent." },
+    "target_weight_pct": { "type": "number", "minimum": -100, "maximum": 100, "description": "TSMOM_ETF_V1 only: signed target weight (gross-normalized), percent of equity." },
+    "asset_class": { "type": "string", "enum": ["EQUITY", "RATES_CREDIT", "COMMODITIES", "CURRENCIES"], "description": "TSMOM_ETF_V1 only." }
   }
 }

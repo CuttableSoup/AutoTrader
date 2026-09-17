@@ -15,9 +15,11 @@
     "qty": { "type": "integer", "minimum": 1 },
     "avg_px_cents": { "type": "integer", "minimum": 1 },
     "filled_ts_utc": { "type": "string" },
-    "intent": { "type": "string", "enum": ["ENTRY", "EXIT_TIME", "EXIT_EARNINGS", "EXIT_TREND_SCALE", "EXIT_DRAWDOWN", "FLATTEN", "STOP_LEG", "TAKE_PROFIT_LEG", "UNKNOWN"] },
+    "intent": { "type": "string", "enum": ["ENTRY", "EXIT_TIME", "EXIT_EARNINGS", "EXIT_TREND_SCALE", "EXIT_DRAWDOWN", "FLATTEN", "STOP_LEG", "TAKE_PROFIT_LEG", "REBALANCE_TO_WEIGHT", "UNKNOWN"] },
     "candidate_msg_id": { "type": ["string", "null"] },
     "commission_cents": { "type": "integer", "minimum": 0 },
-    "fees_cents": { "type": "integer", "minimum": 0 }
+    "fees_cents": { "type": "integer", "minimum": 0 },
+    "target_qty": { "type": ["integer", "null"], "description": "REBALANCE_TO_WEIGHT only: the signed total position size to resize to, for Ledger::apply_rebalance_fill." },
+    "asset_class": { "type": ["string", "null"], "description": "REBALANCE_TO_WEIGHT only." }
   }
 }

@@ -2,11 +2,11 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "autotrader:v1/market.data",
   "title": "market.data payload",
-  "description": "Daily bar (subject market.data.bar.<SYMBOL>) or NBBO quote (subject market.data.quote.<SYMBOL>). Prices are integer cents.",
+  "description": "Daily bar (subject market.data.bar.<SYMBOL> or market.data.bar_tr.<SYMBOL>), NBBO quote (subject market.data.quote.<SYMBOL>), or TSMOM shortable pre-flight (subject market.data.shortable.<SYMBOL>). Prices are integer cents.",
   "type": "object",
   "required": ["kind", "symbol", "source", "data_ts_utc"],
   "properties": {
-    "kind": { "type": "string", "enum": ["bar", "quote"] },
+    "kind": { "type": "string", "enum": ["bar", "quote", "shortable"] },
     "symbol": { "type": "string", "pattern": "^[A-Z][A-Z0-9.\\-]{0,9}$" },
     "source": { "type": "string", "enum": ["alpaca", "sharadar", "synthetic", "replay"] },
     "data_ts_utc": { "type": "string", "description": "When the vendor says the data was observed. Staleness is measured from this, not from ts_utc." },
@@ -22,7 +22,8 @@
     "ask_cents": { "type": "integer", "minimum": 0 },
     "bid_size": { "type": "integer", "minimum": 0 },
     "ask_size": { "type": "integer", "minimum": 0 },
-    "halted": { "type": "boolean" }
+    "halted": { "type": "boolean" },
+    "shortable": { "type": "boolean", "description": "shortable kind only: true iff Alpaca reports both shortable and easy_to_borrow." }
   },
   "allOf": [
     {
@@ -32,6 +33,10 @@
     {
       "if": { "properties": { "kind": { "const": "quote" } } },
       "then": { "required": ["bid_cents", "ask_cents", "bid_size", "ask_size"] }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "shortable" } } },
+      "then": { "required": ["shortable"] }
     }
   ]
 }

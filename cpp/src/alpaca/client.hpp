@@ -21,7 +21,8 @@ struct AlpacaAccount {
     std::string status;
     Cents equity_cents = 0;
     Cents cash_cents = 0;
-    Cents buying_power_cents = 0;            // non_marginable_buying_power
+    Cents buying_power_cents = 0;             // non_marginable_buying_power (cash account sizing; earnings strategy uses this)
+    Cents marginable_buying_power_cents = 0;  // plain "buying_power" (Reg-T); TSMOM's shorting needs a margin account
     Cents last_equity_cents = 0;
     bool trading_blocked = false;
     nlohmann::json raw;
@@ -107,9 +108,19 @@ public:
     Clock clock();
     std::vector<Date> calendar(Date start, Date end);
 
-    // Daily bars, split-adjusted, [start, end]. Returns symbol -> bars ascending.
-    std::map<std::string, BarSeries> daily_bars(const std::vector<std::string>& symbols, Date start, Date end);
+    // Daily bars, [start, end]. Returns symbol -> bars ascending. adjustment is Alpaca's
+    // corporate-action adjustment: "split" (the default; matches every existing consumer,
+    // which reads raw/split-adjusted prices) or "all" (split + dividend, i.e. total-return
+    // adjusted -- what TSMOM's signal needs to match the Sharadar closeadj series its
+    // research was validated against; see market.data.bar_tr.* in the ingestor).
+    std::map<std::string, BarSeries> daily_bars(const std::vector<std::string>& symbols, Date start, Date end, const std::string& adjustment = "split");
     std::map<std::string, Quote> latest_quotes(const std::vector<std::string>& symbols);
+    // GET /v2/assets/{symbol} per symbol: true iff the broker reports both shortable and
+    // easy_to_borrow. A symbol missing from the result (lookup failed) should be treated as
+    // "not verified," not "not shortable" vs "shortable" -- callers distinguish absence from
+    // false. TSMOM's shortable pre-flight check (RiskManager::evaluate_rebalance) is the
+    // only consumer; infrequent (daily), so one request per symbol is fine at 18 symbols.
+    std::map<std::string, bool> shortable_flags(const std::vector<std::string>& symbols);
 
     const std::string& trading_base_url() const { return trading_; }
 

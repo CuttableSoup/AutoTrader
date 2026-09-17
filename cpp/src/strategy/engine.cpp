@@ -1,8 +1,15 @@
 #include "strategy/engine.hpp"
 
+#include "strategy/tsmom_sizing.hpp"
+
 #include <algorithm>
+#include <cstdio>
 
 namespace at {
+
+namespace {
+std::string fmt(const char* f, double v) { char b[64]; std::snprintf(b, sizeof b, f, v); return b; }
+} // namespace
 
 StrategyEngine::StrategyEngine(StrategyParams params, const TradingCalendar& cal) : params_(std::move(params)), cal_(cal) {}
 
@@ -70,6 +77,55 @@ StrategyEngine::SessionResult StrategyEngine::evaluate_session(Date session, con
             emitted_event_ids_.insert(ev->event_id);
         }
         res.evaluations.push_back(std::move(e));
+    }
+    return res;
+}
+
+StrategyEngine::RebalanceSessionResult StrategyEngine::evaluate_rebalance_session(Date session, const std::string& data_as_of_utc) {
+    RebalanceSessionResult res;
+    if (!is_formation_session(session, cal_)) return res;
+
+    TsmomSignalContext ctx{mkt_, universe_, cal_, session};
+    res.signals.reserve(universe_.symbols.size());
+    for (const auto& sym : universe_.symbols) res.signals.push_back(evaluate_tsmom_signal(sym, ctx, tsmom_params_));
+
+    auto weights = compute_tsmom_target_weights(res.signals, tsmom_params_.sizing.gross_cap_pct);
+    std::string month = iso_date(session).substr(0, 7);   // "YYYY-MM"
+
+    for (const auto& w : weights) {
+        std::string key = universe_.id + "|" + w.symbol + "|" + month;
+        if (emitted_tsmom_keys_.count(key)) continue;
+        emitted_tsmom_keys_.insert(key);
+
+        const TsmomInstrumentSignal* sig = nullptr;
+        for (const auto& s : res.signals) if (s.symbol == w.symbol) { sig = &s; break; }
+
+        Candidate c;
+        c.symbol = w.symbol;
+        c.side = "BUY";
+        c.signal_type = "TSMOM_ETF_V1";
+        c.strategy_version = tsmom_params_.strategy_version;
+        c.event_id = key;   // doubles as the idempotency key: no EarningsEvent exists for this candidate type
+        c.session_date = session;
+        // TSMOM candidates aren't time-critical the way an earnings reaction is, but still
+        // need a real (non-default) deadline: the risk manager's pending-candidate expiry
+        // sweep drops anything with entry_deadline_date < session, and a default-constructed
+        // Date would make that fire immediately.
+        c.entry_deadline_date = cal_.add_sessions(session, 5);
+        c.universe_snapshot_id = universe_.id;
+        c.data_as_of_utc = data_as_of_utc;
+        c.asset_class = w.asset_class;
+        c.target_weight_pct = w.target_weight * 100.0;
+        if (sig && sig->ok) {
+            c.mom_sign = static_cast<int>(sig->mom_sign);
+            c.vol_annual_pct = sig->vol_annual * 100.0;
+        }
+        c.thesis_facts = {
+            "12-month momentum sign " + std::to_string(c.mom_sign.value_or(0)),
+            "Trailing 60-session annualized vol " + fmt("%.2f", c.vol_annual_pct.value_or(0.0)) + "%",
+            "Target weight " + fmt("%+.2f", c.target_weight_pct.value_or(0.0)) + "% of equity",
+        };
+        res.candidates.push_back(std::move(c));
     }
     return res;
 }

@@ -13,6 +13,9 @@ if(AT_WITH_NATS)
 
   add_executable(at_risk_svc risk_main.cpp)
   target_link_libraries(at_risk_svc PRIVATE at_service_common)
+
+  add_executable(at_tsmom_svc tsmom_main.cpp)
+  target_link_libraries(at_tsmom_svc PRIVATE at_service_common)
 endif()
 
 if(AT_WITH_NATS AND AT_WITH_NET)

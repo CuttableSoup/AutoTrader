@@ -10,8 +10,8 @@
 
 namespace at {
 
-RiskManager::RiskManager(StrategyParams sp, RiskLimits rl, const TradingCalendar& cal)
-    : sp_(std::move(sp)), limits_(std::move(rl)), cal_(cal) {}
+RiskManager::RiskManager(StrategyParams sp, RiskLimits rl, const TradingCalendar& cal, std::optional<TsmomParams> tp)
+    : sp_(std::move(sp)), tp_(std::move(tp)), limits_(std::move(rl)), cal_(cal) {}
 
 // ---------------------------------------------------------------- inputs ----
 
@@ -63,9 +63,12 @@ void RiskManager::on_portfolio_state(const nlohmann::json& p) {
     v.equity_cents = p.value("equity_cents", 0LL);
     v.cash_cents = p.value("cash_cents", 0LL);
     v.buying_power_cents = p.value("buying_power_cents", 0LL);
+    v.margin_buying_power_cents = p.value("margin_buying_power_cents", 0LL);
     v.gross_exposure_cents = p.value("gross_exposure_cents", 0LL);
     if (p.contains("sector_exposure_pct"))
         for (auto& [k, val] : p["sector_exposure_pct"].items()) v.sector_exposure_pct[k] = val.get<double>();
+    if (p.contains("asset_class_exposure_pct"))
+        for (auto& [k, val] : p["asset_class_exposure_pct"].items()) v.asset_class_exposure_pct[k] = val.get<double>();
     v.hwm_equity_cents = p.value("hwm_equity_cents", v.equity_cents);
     v.drawdown_pct = p.value("drawdown_pct", 0.0);
     v.daily_pnl_pct = p.value("daily_pnl_pct", 0.0);
@@ -146,6 +149,8 @@ void RiskManager::on_control(const std::string& subject, const nlohmann::json& p
 
 void RiskManager::on_quote(const std::string& symbol, const Quote& q) { quotes_[symbol] = q; }
 
+void RiskManager::on_shortable(const std::string& symbol, bool shortable) { shortable_[symbol] = shortable; }
+
 void RiskManager::on_order_status(const nlohmann::json& p) {
     std::string ev = p.value("event", "");
     if (ev == "new" || ev == "accepted") ++counters_.submitted_today;
@@ -193,6 +198,13 @@ std::optional<PositionState> RiskManager::position(const std::string& symbol) co
 Cents RiskManager::sector_exposure_cents(const std::string& sector) const {
     Cents c = 0;
     for (const auto& p : pf_.positions) if (p.sector == sector) c += p.market_value_cents();
+    return c;
+}
+
+Cents RiskManager::asset_class_exposure_cents(const std::string& asset_class) const {
+    Cents c = 0;
+    // Gross, not net: a short still consumes asset-class risk budget.
+    for (const auto& p : pf_.positions) if (p.asset_class == asset_class) c += std::llabs(p.market_value_cents());
     return c;
 }
 
@@ -317,6 +329,127 @@ EntryDecision RiskManager::evaluate_entry(const PendingCandidate& pc, Date sessi
     return d;
 }
 
+EntryDecision RiskManager::evaluate_rebalance(const PendingCandidate& pc, Date session, SysTime now) {
+    EntryDecision d;
+    d.candidate_msg_id = pc.msg_id;
+    d.symbol = pc.cand.symbol;
+    const Candidate& c = pc.cand;
+    auto check = [&](std::string name, bool ok, nlohmann::json value = nullptr, nlohmann::json limit = nullptr) {
+        d.checks.push_back(RiskCheck{std::move(name), ok, std::move(value), std::move(limit)});
+        if (!ok && d.reject_reason.empty()) d.reject_reason = d.checks.back().name;
+        return ok;
+    };
+
+    check("tsmom_configured", tp_.has_value());
+    check("halted", !halted_, halted_);
+    check("paused_new", !paused_new_, paused_new_, pause_reason_);
+    check("portfolio_state_present", pf_.valid);
+    check("reconciled", pf_.valid && pf_.reconciled && reconcile_clean_);
+    int age = cal_.sessions_between(c.session_date, session);
+    check("candidate_age_sessions", age <= limits_.max_candidate_age_sessions && age >= 0, age, limits_.max_candidate_age_sessions);
+    check("entry_deadline", session <= c.entry_deadline_date, iso_date(c.entry_deadline_date));
+    check("max_orders_per_day", counters_.orders_today < limits_.max_orders_per_day, counters_.orders_today, limits_.max_orders_per_day);
+
+    // Quote: freshness and spread, direction-neutral (mid) -- unlike evaluate_entry's
+    // always-buy ask price, a rebalance may end up buying or selling depending on the
+    // sign of (target - current), which isn't known until sizing below.
+    Cents ref_px = 0;
+    auto qit = quotes_.find(c.symbol);
+    if (qit == quotes_.end()) {
+        check("quote_present", false);
+    } else {
+        const Quote& q = qit->second;
+        auto age_s = std::chrono::duration_cast<std::chrono::seconds>(now - q.ts).count();
+        check("quote_age_s", age_s <= limits_.max_quote_age_s && age_s >= -5, static_cast<long long>(age_s), limits_.max_quote_age_s);
+        check("not_halted", !q.halted);
+        check("spread_bps", q.bid_cents > 0 && q.ask_cents > q.bid_cents && q.spread_bps() <= limits_.max_spread_bps, q.spread_bps(), limits_.max_spread_bps);
+        if (q.bid_cents > 0 && q.ask_cents > 0) ref_px = q.mid();
+    }
+    check("ref_px_present", ref_px > 0, ref_px);
+
+    // Can't size without a valid reference price -- a missing quote must never be read as
+    // "target is zero, flatten the position."
+    if (!std::all_of(d.checks.begin(), d.checks.end(), [](const RiskCheck& r) { return r.ok; })) return d;
+
+    TsmomPositionSizingInput si;
+    si.equity_cents = pf_.equity_cents;
+    si.ref_px_cents = ref_px;
+    si.target_weight = c.target_weight_pct.value_or(0.0) / 100.0;
+    auto sized = size_tsmom_target(si);
+
+    auto cur = position(c.symbol);
+    std::int64_t current_qty = cur ? cur->qty : 0;
+    std::int64_t target_qty = sized.target_qty;
+    std::int64_t delta = target_qty - current_qty;
+    if (!check("no_op", delta != 0, target_qty, current_qty)) return d;
+
+    std::int64_t qty_abs = std::llabs(delta);
+    std::string side = delta > 0 ? "buy" : "sell";
+    double offset = tp_->order.rebalance_limit_offset_bps / 10000.0;
+    Cents limit_px = round_to_tick(side == "buy" ? ref_px + mul(ref_px, offset) : ref_px - mul(ref_px, offset));
+
+    // Shortable pre-flight: only matters when this order makes the short bigger (opening a
+    // fresh short, or adding to an existing one) -- reducing a short or going long never
+    // needs to borrow more. An unconfirmed symbol (no market.data.shortable.* seen yet, or
+    // the broker reported it false) blocks rather than assumes shortable: this is a broker-
+    // enforced fact, not a modeling choice, and the ETFs least likely to be verified quickly
+    // are exactly the thinner currency ones (FXY, FXB) where the assumption is weakest.
+    bool increasing_short = target_qty < 0 && target_qty < current_qty;
+    if (increasing_short) {
+        auto sit = shortable_.find(c.symbol);
+        check("shortable", sit != shortable_.end() && sit->second, sit != shortable_.end() ? nlohmann::json(sit->second) : nlohmann::json(nullptr));
+    }
+
+    Cents current_notional = cur ? cur->market_value_cents() : 0;
+    Cents target_notional = static_cast<Cents>(target_qty) * limit_px;
+    Cents delta_notional = qty_abs * limit_px;
+
+    Cents gross_excl_this = pf_.gross_exposure_cents - std::llabs(current_notional);
+    Cents new_gross = gross_excl_this + std::llabs(target_notional);
+    check("gross_exposure_cap_pct", pct_of(new_gross, pf_.equity_cents) <= limits_.gross_exposure_cap_pct + 1e-9, pct_of(new_gross, pf_.equity_cents), limits_.gross_exposure_cap_pct);
+
+    Cents asset_class_excl_this = asset_class_exposure_cents(c.asset_class) - std::llabs(current_notional);
+    Cents new_asset_class = asset_class_excl_this + std::llabs(target_notional);
+    check("asset_class_cap_pct", pct_of(new_asset_class, pf_.equity_cents) <= limits_.asset_class_cap_pct + 1e-9, pct_of(new_asset_class, pf_.equity_cents), limits_.asset_class_cap_pct);
+
+    // Buying power / margin: gross_exposure_cap_pct=100% (no leverage, per the
+    // pre-registration) is the real binding constraint for this cash-account book. This is
+    // a secondary sanity check against the broker's actual Reg-T marginable buying power
+    // (shorting needs a margin account, unlike the earnings path's non-marginable figure)
+    // -- same "0 means not populated" escape hatch evaluate_entry's own buying_power check
+    // already uses.
+    check("margin_buying_power", delta_notional <= pf_.margin_buying_power_cents || pf_.margin_buying_power_cents == 0, delta_notional, pf_.margin_buying_power_cents);
+
+    if (!std::all_of(d.checks.begin(), d.checks.end(), [](const RiskCheck& r) { return r.ok; })) return d;
+
+    nlohmann::json checks = nlohmann::json::array();
+    for (const auto& r : d.checks) checks.push_back(r.to_json());
+    nlohmann::json order = {
+        {"client_order_id", client_order_id_for_entry(pc.msg_id)},
+        {"candidate_msg_id", pc.msg_id},
+        {"validated_msg_id", nullptr},   // TSMOM bypasses the Claude validator sidecar entirely
+        {"intent", "REBALANCE_TO_WEIGHT"},
+        {"symbol", c.symbol},
+        {"side", side},
+        {"qty", qty_abs},
+        {"order_type", tp_->order.order_type},
+        {"limit_px_cents", limit_px},
+        {"stop_px_cents", nullptr},
+        {"take_profit_px_cents", nullptr},
+        {"linked_broker_order_id", nullptr},
+        {"tif", tp_->order.tif},
+        {"extended_hours", false},
+        {"reason", "TSMOM-v1 monthly rebalance to target_weight_pct=" + std::to_string(c.target_weight_pct.value_or(0.0))},
+        {"risk_checks", checks},
+        {"equity_at_approval_cents", pf_.equity_cents},
+        {"target_qty", target_qty},
+        {"asset_class", c.asset_class},
+    };
+    d.order = std::move(order);
+    d.approved = true;
+    return d;
+}
+
 std::vector<EntryDecision> RiskManager::process_pending_entries(Date session, SysTime now) {
     start_session(session);
     std::vector<EntryDecision> out;
@@ -327,8 +460,10 @@ std::vector<EntryDecision> RiskManager::process_pending_entries(Date session, Sy
     });
     std::deque<PendingCandidate> keep;
     for (auto& pc : pending_) {
-        // In LIVE mode a candidate without a verdict yet stays pending until its deadline.
-        if (!limits_.shadow_mode && !pc.verdict) {
+        bool is_tsmom = pc.cand.signal_type == "TSMOM_ETF_V1";
+        // TSMOM bypasses the Claude validator sidecar entirely -- never held pending a
+        // verdict that will never arrive.
+        if (!is_tsmom && !limits_.shadow_mode && !pc.verdict) {
             if (pc.cand.entry_deadline_date > session) { keep.push_back(pc); continue; }
             ++counters_.validator_missing_streak;
             if (counters_.validator_missing_streak >= limits_.validator_error_streak_pause && !paused_new_) {
@@ -336,15 +471,15 @@ std::vector<EntryDecision> RiskManager::process_pending_entries(Date session, Sy
                 pause_reason_ = "validator silent";
                 emit_control("pause_new", "VALIDATOR_ERROR_STREAK", "no validator verdict for " + std::to_string(counters_.validator_missing_streak) + " candidates in a row");
             }
-        } else if (!limits_.shadow_mode) {
+        } else if (!is_tsmom && !limits_.shadow_mode) {
             counters_.validator_missing_streak = 0;
         }
-        EntryDecision d = evaluate_entry(pc, session, now);
+        EntryDecision d = is_tsmom ? evaluate_rebalance(pc, session, now) : evaluate_entry(pc, session, now);
         if (d.approved) {
             ++counters_.new_positions_today;
             ++counters_.orders_today;
             approved_by_symbol_[pc.cand.symbol] = d.order["client_order_id"].get<std::string>();
-        } else if (d.reject_reason == "quote_present" || d.reject_reason == "quote_age_s") {
+        } else if (d.reject_reason == "quote_present" || d.reject_reason == "quote_age_s" || (is_tsmom && d.reject_reason == "ref_px_present")) {
             // Transient: try again on the next call today if still within deadline.
             if (pc.cand.entry_deadline_date >= session) keep.push_back(pc);
         }
@@ -385,6 +520,9 @@ std::vector<nlohmann::json> RiskManager::end_of_session_sweep(Date session) {
     if (!pf_.valid) return out;
     if (halted_) return out; // flatten/halt already handles everything
     for (const auto& pos : pf_.positions) {
+        // TSMOM-owned positions have no stop/earnings-deadline/trend-scale exit machinery --
+        // they only change on the next monthly formation (evaluate_rebalance), never here.
+        if (!pos.asset_class.empty()) continue;
         auto actions = evaluate_exits(pos, session, pf_.spy_above_trend, sp_.exit, cal_);
         for (const auto& a : actions) {
             if (counters_.orders_today >= limits_.max_orders_per_day) {

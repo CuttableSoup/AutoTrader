@@ -18,6 +18,7 @@ RiskLimits RiskLimits::from_json(const nlohmann::json& j) {
     rd(j, "per_position_risk_pct", r.per_position_risk_pct);
     rd(j, "single_name_cap_pct", r.single_name_cap_pct);
     rd(j, "sector_cap_pct", r.sector_cap_pct);
+    rd(j, "asset_class_cap_pct", r.asset_class_cap_pct);
     rd(j, "gross_exposure_cap_pct", r.gross_exposure_cap_pct);
     rd(j, "max_open_positions", r.max_open_positions);
     rd(j, "max_new_positions_per_day", r.max_new_positions_per_day);
@@ -53,6 +54,7 @@ nlohmann::json RiskLimits::to_json() const {
         {"per_position_risk_pct", per_position_risk_pct},
         {"single_name_cap_pct", single_name_cap_pct},
         {"sector_cap_pct", sector_cap_pct},
+        {"asset_class_cap_pct", asset_class_cap_pct},
         {"gross_exposure_cap_pct", gross_exposure_cap_pct},
         {"max_open_positions", max_open_positions},
         {"max_new_positions_per_day", max_new_positions_per_day},

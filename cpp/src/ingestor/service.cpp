@@ -1,6 +1,7 @@
 #include "ingestor/service.hpp"
 
 #include "strategy/market_store.hpp"
+#include "strategy/tsmom_universe.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -45,6 +46,13 @@ std::vector<std::string> IngestorService::all_symbols() const {
     return {s.begin(), s.end()};
 }
 
+std::vector<std::string> IngestorService::tsmom_symbols() const {
+    std::vector<std::string> out;
+    out.reserve(kTsmomUniverse.size());
+    for (const auto& entry : kTsmomUniverse) out.push_back(entry.first);
+    return out;
+}
+
 std::size_t IngestorService::pull_bars(const std::vector<std::string>& symbols, SysTime now, bool full) {
     if (symbols.empty()) return 0;
     Date session = cal_.session_for(now);
@@ -78,6 +86,54 @@ std::size_t IngestorService::pull_bars(const std::vector<std::string>& symbols, 
     return published;
 }
 
+std::size_t IngestorService::pull_bars_tr(const std::vector<std::string>& symbols, SysTime now, bool full) {
+    if (symbols.empty()) return 0;
+    Date session = cal_.session_for(now);
+    Date start = cal_.add_sessions(session, -cfg_.bar_lookback_sessions);
+    std::size_t published = 0;
+    std::vector<std::string> need;
+    for (const auto& s : symbols) if (full || !last_tr_bar_published_.count(s)) need.push_back(s);
+    std::vector<std::string> incremental;
+    for (const auto& s : symbols) if (!full && last_tr_bar_published_.count(s)) incremental.push_back(s);
+    auto publish = [&](const std::map<std::string, BarSeries>& bars) {
+        for (const auto& [sym, series] : bars) {
+            for (const auto& b : series) {
+                auto it = last_tr_bar_published_.find(sym);
+                if (it != last_tr_bar_published_.end() && b.date <= it->second) continue;
+                bus_.publish("market.data.bar_tr." + sym, make_envelope("ingestor", bar_to_payload(sym, b, "alpaca", iso_utc(now))));
+                last_tr_bar_published_[sym] = b.date;
+                ++published;
+            }
+        }
+    };
+    try {
+        if (!need.empty()) publish(client_.daily_bars(need, start, session, "all"));
+        if (!incremental.empty()) {
+            Date inc_start = cal_.add_sessions(session, -3);
+            publish(client_.daily_bars(incremental, inc_start, session, "all"));
+        }
+    } catch (const std::exception& e) {
+        spdlog::error("ingestor: TR bar pull failed: {}", e.what());
+    }
+    spdlog::info("ingestor: pulled TR bars for {} symbols, published {} bars", symbols.size(), published);
+    return published;
+}
+
+std::size_t IngestorService::pull_shortable(const std::vector<std::string>& symbols, SysTime now) {
+    if (symbols.empty()) return 0;
+    std::size_t n = 0;
+    try {
+        for (const auto& [sym, ok] : client_.shortable_flags(symbols)) {
+            bus_.publish("market.data.shortable." + sym, make_envelope("ingestor", shortable_to_payload(sym, ok, "alpaca", iso_utc(now))));
+            ++n;
+        }
+    } catch (const std::exception& e) {
+        spdlog::error("ingestor: shortable pull failed: {}", e.what());
+    }
+    spdlog::info("ingestor: refreshed shortable flags for {} of {} symbols", n, symbols.size());
+    return n;
+}
+
 std::size_t IngestorService::pull_quotes(const std::vector<std::string>& symbols, SysTime now) {
     if (symbols.empty()) return 0;
     std::size_t n = 0;
@@ -102,6 +158,10 @@ void IngestorService::tick(SysTime now) {
         if (m >= slot && pulled_[slot] != ny.date) {
             pulled_[slot] = ny.date;
             pull_bars(all_symbols(), now, false);
+            if (cfg_.pull_tsmom_tr_bars) {
+                pull_bars_tr(tsmom_symbols(), now, false);
+                if (last_shortable_pulled_ != ny.date) { last_shortable_pulled_ = ny.date; pull_shortable(tsmom_symbols(), now); }
+            }
         }
     }
     // Quotes for symbols with a live entry deadline, during the open window.

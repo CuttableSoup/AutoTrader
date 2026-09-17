@@ -101,22 +101,31 @@ nlohmann::json Candidate::to_json() const {
         {"strategy_version", strategy_version},
         {"event_id", event_id},
         {"session_date", iso_date(session_date)},
-        {"ear_pct", ear_pct},
-        {"vol_ratio", vol_ratio},
-        {"mom_pct", mom_pct},
-        {"rsi5", j_opt(rsi5)},
-        {"revision_breadth", j_opt(revision_breadth)},
-        {"entry_px_ref_cents", entry_px_ref_cents},
-        {"atr20_cents", atr20_cents},
-        {"adv20_shares", adv20_shares},
-        {"sector", sector},
-        {"spy_above_trend", spy_above_trend},
-        {"entry_deadline_date", iso_date(entry_deadline_date)},
-        {"next_report_date", j_opt_date(next_report_date)},
         {"universe_snapshot_id", universe_snapshot_id},
         {"thesis_facts", thesis_facts},
         {"data_as_of_utc", data_as_of_utc},
+        // Generic across both signal types: the risk manager's pending-candidate expiry
+        // sweep reads this regardless of strategy, so it must always be a real date on the wire.
+        {"entry_deadline_date", iso_date(entry_deadline_date)},
     };
+    if (signal_type == "TSMOM_ETF_V1") {
+        j["mom_sign"] = j_opt(mom_sign);
+        j["vol_annual_pct"] = j_opt(vol_annual_pct);
+        j["target_weight_pct"] = j_opt(target_weight_pct);
+        j["asset_class"] = asset_class;
+    } else {
+        j["ear_pct"] = ear_pct;
+        j["vol_ratio"] = vol_ratio;
+        j["mom_pct"] = mom_pct;
+        j["rsi5"] = j_opt(rsi5);
+        j["revision_breadth"] = j_opt(revision_breadth);
+        j["entry_px_ref_cents"] = entry_px_ref_cents;
+        j["atr20_cents"] = atr20_cents;
+        j["adv20_shares"] = adv20_shares;
+        j["sector"] = sector;
+        j["spy_above_trend"] = spy_above_trend;
+        j["next_report_date"] = j_opt_date(next_report_date);
+    }
     return j;
 }
 
@@ -128,21 +137,28 @@ Candidate Candidate::from_json(const nlohmann::json& p) {
     c.strategy_version = p.value("strategy_version", "");
     c.event_id = p.value("event_id", "");
     c.session_date = parse_date_or_throw(p.at("session_date").get<std::string>());
-    c.ear_pct = p.at("ear_pct").get<double>();
-    c.vol_ratio = p.at("vol_ratio").get<double>();
-    c.mom_pct = p.at("mom_pct").get<double>();
-    c.rsi5 = opt<double>(p, "rsi5");
-    c.revision_breadth = opt<double>(p, "revision_breadth");
-    c.entry_px_ref_cents = p.at("entry_px_ref_cents").get<Cents>();
-    c.atr20_cents = p.at("atr20_cents").get<Cents>();
-    c.adv20_shares = p.value("adv20_shares", 0LL);
-    c.sector = p.value("sector", "");
-    c.spy_above_trend = p.value("spy_above_trend", false);
-    if (auto d = opt_date(p, "entry_deadline_date")) c.entry_deadline_date = *d;
-    c.next_report_date = opt_date(p, "next_report_date");
     c.universe_snapshot_id = p.value("universe_snapshot_id", "");
     if (p.contains("thesis_facts")) c.thesis_facts = p["thesis_facts"].get<std::vector<std::string>>();
     c.data_as_of_utc = p.value("data_as_of_utc", "");
+    if (auto d = opt_date(p, "entry_deadline_date")) c.entry_deadline_date = *d;
+    if (c.signal_type == "TSMOM_ETF_V1") {
+        c.mom_sign = opt<int>(p, "mom_sign");
+        c.vol_annual_pct = opt<double>(p, "vol_annual_pct");
+        c.target_weight_pct = opt<double>(p, "target_weight_pct");
+        c.asset_class = p.value("asset_class", "");
+    } else {
+        c.ear_pct = p.value("ear_pct", 0.0);
+        c.vol_ratio = p.value("vol_ratio", 0.0);
+        c.mom_pct = p.value("mom_pct", 0.0);
+        c.rsi5 = opt<double>(p, "rsi5");
+        c.revision_breadth = opt<double>(p, "revision_breadth");
+        c.entry_px_ref_cents = p.value("entry_px_ref_cents", static_cast<Cents>(0));
+        c.atr20_cents = p.value("atr20_cents", static_cast<Cents>(0));
+        c.adv20_shares = p.value("adv20_shares", 0LL);
+        c.sector = p.value("sector", "");
+        c.spy_above_trend = p.value("spy_above_trend", false);
+        c.next_report_date = opt_date(p, "next_report_date");
+    }
     return c;
 }
 
@@ -164,6 +180,7 @@ nlohmann::json PositionState::to_json() const {
         {"hwm_px_cents", j_opt(hwm_px_cents)},
         {"atr20_cents", j_opt(atr20_cents)},
         {"sector", sector.empty() ? nlohmann::json(nullptr) : nlohmann::json(sector)},
+        {"asset_class", asset_class.empty() ? nlohmann::json(nullptr) : nlohmann::json(asset_class)},
         {"candidate_msg_id", j_opt(candidate_msg_id)},
         {"scaled_down", scaled_down},
     };
@@ -185,6 +202,7 @@ PositionState PositionState::from_json(const nlohmann::json& j) {
     p.hwm_px_cents = opt<Cents>(j, "hwm_px_cents");
     p.atr20_cents = opt<Cents>(j, "atr20_cents");
     if (j.contains("sector") && j["sector"].is_string()) p.sector = j["sector"].get<std::string>();
+    if (j.contains("asset_class") && j["asset_class"].is_string()) p.asset_class = j["asset_class"].get<std::string>();
     p.candidate_msg_id = opt<std::string>(j, "candidate_msg_id");
     p.scaled_down = j.value("scaled_down", false);
     return p;

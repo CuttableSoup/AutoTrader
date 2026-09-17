@@ -16,6 +16,7 @@ namespace at {
 
 struct EntryMeta {
     std::string sector;
+    std::string asset_class;           // TSMOM only: also marks the position as TSMOM-owned
     Cents atr20_cents = 0;
     Cents stop_px_cents = 0;
     Date exit_deadline{};
@@ -68,6 +69,15 @@ public:
     void apply_entry_fill(const std::string& symbol, std::int64_t qty, Cents px, Cents costs, Date session, const std::string& ts_utc, const EntryMeta& meta);
     // qty may be partial. Records a ClosedTrade for the shares sold.
     void apply_exit_fill(const std::string& symbol, std::int64_t qty, Cents px, Cents costs, Date session, const std::string& reason);
+    // TSMOM: resizes (opens/closes/flips/partially adjusts) a position to a signed
+    // target_qty in one fill, unlike apply_entry_fill/apply_exit_fill which assume
+    // long-only, monotonically-increasing-then-decreasing positions. Cash moves by
+    // (target_qty - current_qty) * px + costs regardless of direction. Realizes P&L
+    // (records a ClosedTrade) on any portion that reduces |qty| or crosses zero; a
+    // crossing is implemented as a full close of the old side immediately followed by a
+    // fresh open of the new side at px, composing the same math apply_exit_fill/
+    // apply_entry_fill already use rather than deriving new P&L formulas.
+    void apply_rebalance_fill(const std::string& symbol, std::int64_t target_qty, Cents px, Cents costs, Date session, const std::string& ts_utc, const EntryMeta& meta);
 
     // ---- marks / rollover ----
     void mark(const std::string& symbol, Cents last_px_cents);
@@ -85,6 +95,11 @@ public:
     // add unknown ones with empty metadata (flagged unprotected by the reconciler).
     void sync_from_broker(const std::vector<PositionState>& broker_positions, Date session, const std::string& ts_utc);
     void set_cash(Cents cash) { cash_ = cash; }
+    // TSMOM only: the broker's Reg-T marginable buying power (Alpaca's plain "buying_power",
+    // distinct from the non_marginable figure the earnings strategy sizes against), needed
+    // because shorting requires a margin account. 0 means "not synced yet" -- callers treat
+    // that as "unknown," never as "zero capacity" (same convention as buying_power_cents).
+    void set_margin_buying_power(Cents c) { margin_buying_power_ = c; }
 
     // ---- views ----
     Cents cash() const { return cash_; }
@@ -96,6 +111,7 @@ public:
     const std::vector<PositionState>& positions() const { return positions_; }
     std::optional<PositionState> position(const std::string& symbol) const;
     std::map<std::string, double> sector_exposure_pct() const;
+    std::map<std::string, double> asset_class_exposure_pct() const;
     const std::vector<ClosedTrade>& trades() const { return trades_; }
     const std::vector<DailyRecord>& daily() const { return daily_; }
     int consecutive_losers() const { return consecutive_losers_; }
@@ -111,6 +127,9 @@ public:
 
 private:
     PositionState* find(const std::string& symbol);
+    // Records a brand-new position (flat -> nonzero), used by apply_rebalance_fill both for
+    // a plain open and for the "open" half of a zero-crossing flip.
+    void open_rebalance_position(const std::string& symbol, std::int64_t qty, Cents px, Cents costs, Date session, const std::string& ts_utc, const EntryMeta& meta);
     Cents initial_cash_;
     Cents cash_;
     std::vector<PositionState> positions_;
@@ -120,6 +139,7 @@ private:
     Cents day_start_equity_;
     Date day_start_session_{};
     Cents total_costs_ = 0;
+    Cents margin_buying_power_ = 0;
     int consecutive_losers_ = 0;
     // per-position cost basis for P&L on partial exits
     std::map<std::string, Cents> entry_costs_;

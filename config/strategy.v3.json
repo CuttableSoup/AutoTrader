@@ -1,0 +1,21 @@
+{
+  "strategy_version": "TSMOM_ETF_V1.0",
+  "_doc": "Frozen TSMOM-v1 parameters (docs/prereg/TSMOM-v1.md). Zero tunable parameters -- this is a literature-cited spec (Moskowitz, Ooi & Pedersen 2012), not a search. Changing anything here bumps strategy_version and requires a new pre-registration, not a walk-forward grid. Universe is the fixed 18-ETF list in strategy/tsmom_universe.cpp (kTsmomUniverse), not a point-in-time filter -- there is no universe.* block to mirror strategy.v1.json's.",
+
+  "signal": {
+    "momentum_lookback_sessions": 252,
+    "vol_lookback_sessions": 60,
+    "formation_cadence": "monthly"
+  },
+
+  "sizing": {
+    "gross_cap_pct": 100.0,
+    "asset_class_cap_pct_default": 40.0
+  },
+
+  "order": {
+    "order_type": "limit",
+    "tif": "day",
+    "rebalance_limit_offset_bps": 20.0
+  }
+}

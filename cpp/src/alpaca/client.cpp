@@ -86,6 +86,7 @@ AlpacaAccount AlpacaClient::account() {
     a.equity_cents = alpaca_cents(j.value("equity", nlohmann::json("0")));
     a.cash_cents = alpaca_cents(j.value("cash", nlohmann::json("0")));
     a.buying_power_cents = alpaca_cents(j.contains("non_marginable_buying_power") ? j["non_marginable_buying_power"] : j.value("buying_power", nlohmann::json("0")));
+    a.marginable_buying_power_cents = alpaca_cents(j.value("buying_power", nlohmann::json("0")));
     a.last_equity_cents = alpaca_cents(j.value("last_equity", nlohmann::json("0")));
     a.trading_blocked = j.value("trading_blocked", false) || j.value("account_blocked", false);
     a.raw = j;
@@ -191,14 +192,14 @@ std::vector<Date> AlpacaClient::calendar(Date start, Date end) {
     return out;
 }
 
-std::map<std::string, BarSeries> AlpacaClient::daily_bars(const std::vector<std::string>& symbols, Date start, Date end) {
+std::map<std::string, BarSeries> AlpacaClient::daily_bars(const std::vector<std::string>& symbols, Date start, Date end, const std::string& adjustment) {
     std::map<std::string, BarSeries> out;
     for (std::size_t i = 0; i < symbols.size(); i += 100) {
         std::string syms;
         for (std::size_t k = i; k < std::min(symbols.size(), i + 100); ++k) { if (!syms.empty()) syms += ','; syms += symbols[k]; }
         std::string token;
         do {
-            std::string url = data_ + "/v2/stocks/bars?symbols=" + url_encode(syms) + "&timeframe=1Day&adjustment=split&feed=" + feed_ + "&limit=10000&start=" + iso_date(start) + "&end=" + iso_date(end);
+            std::string url = data_ + "/v2/stocks/bars?symbols=" + url_encode(syms) + "&timeframe=1Day&adjustment=" + adjustment + "&feed=" + feed_ + "&limit=10000&start=" + iso_date(start) + "&end=" + iso_date(end);
             if (!token.empty()) url += "&page_token=" + url_encode(token);
             auto j = call("GET", url);
             for (auto& [sym, arr] : json_obj(j, "bars").items()) {
@@ -216,6 +217,19 @@ std::map<std::string, BarSeries> AlpacaClient::daily_bars(const std::vector<std:
         } while (!token.empty());
     }
     for (auto& [s, v] : out) std::sort(v.begin(), v.end(), [](const Bar& a, const Bar& b) { return a.date < b.date; });
+    return out;
+}
+
+std::map<std::string, bool> AlpacaClient::shortable_flags(const std::vector<std::string>& symbols) {
+    std::map<std::string, bool> out;
+    for (const auto& sym : symbols) {
+        try {
+            auto j = call("GET", trading_ + "/v2/assets/" + url_encode(sym));
+            out[sym] = j.value("shortable", false) && j.value("easy_to_borrow", false);
+        } catch (const std::exception& e) {
+            spdlog::warn("alpaca: shortable lookup for {} failed: {}", sym, e.what());
+        }
+    }
     return out;
 }
 

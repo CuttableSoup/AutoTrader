@@ -86,6 +86,129 @@ void Ledger::apply_entry_fill(const std::string& symbol, std::int64_t qty, Cents
     open_meta_[symbol] = t;
 }
 
+void Ledger::open_rebalance_position(const std::string& symbol, std::int64_t qty, Cents px, Cents costs, Date session, const std::string& ts_utc, const EntryMeta& m) {
+    PositionState p;
+    p.symbol = symbol;
+    p.qty = qty;
+    p.avg_px_cents = px;
+    p.last_px_cents = px;
+    p.entry_ts_utc = ts_utc;
+    p.entry_session = session;
+    p.sessions_held = 0;
+    p.hwm_px_cents = px;
+    p.sector = m.sector;
+    p.asset_class = m.asset_class;
+    p.candidate_msg_id = m.candidate_msg_id;
+    positions_.push_back(p);
+    entry_costs_[symbol] = costs;
+    ClosedTrade t;
+    t.symbol = symbol;
+    t.candidate_msg_id = m.candidate_msg_id;
+    t.event_id = m.event_id;
+    t.entry_date = session;
+    t.entry_px_cents = px;
+    t.ear_pct = m.ear_pct;
+    t.mom_pct = m.mom_pct;
+    t.verdict = m.verdict;
+    open_meta_[symbol] = t;
+}
+
+void Ledger::apply_rebalance_fill(const std::string& symbol, std::int64_t target_qty, Cents px, Cents costs, Date session, const std::string& ts_utc, const EntryMeta& m) {
+    PositionState* p = find(symbol);
+    std::int64_t current_qty = p ? p->qty : 0;
+    std::int64_t delta = target_qty - current_qty;
+    if (delta == 0) return;
+
+    // Cash moves opposite the signed share delta regardless of direction: buying-to-open,
+    // selling-to-open (short), buying-to-cover and selling-to-reduce are all the same formula.
+    cash_ -= delta * px + costs;
+    total_costs_ += costs;
+
+    bool crosses_zero = current_qty != 0 && target_qty != 0 && (current_qty > 0) != (target_qty > 0);
+
+    if (current_qty == 0) {
+        open_rebalance_position(symbol, target_qty, px, costs, session, ts_utc, m);
+        return;
+    }
+
+    if (crosses_zero) {
+        // Full close of the old side (realizes all its P&L), then a fresh open of the new
+        // side at px -- there is no gain/loss on the "opening" half by construction, since
+        // its avg_px is px itself.
+        Cents entry_share = entry_costs_.count(symbol) ? entry_costs_[symbol] : 0;
+        entry_costs_.erase(symbol);
+        ClosedTrade t = open_meta_.count(symbol) ? open_meta_[symbol] : ClosedTrade{};
+        t.symbol = symbol;
+        t.qty = current_qty;
+        t.entry_px_cents = p->avg_px_cents;
+        if (t.entry_date == Date{}) t.entry_date = p->entry_session;
+        t.exit_date = session;
+        t.exit_px_cents = px;
+        t.exit_reason = "rebalance_flip";
+        t.gross_pnl_cents = current_qty * (px - p->avg_px_cents);
+        t.costs_cents = entry_share;   // the fill's own cost is charged to the new leg below
+        t.net_pnl_cents = t.gross_pnl_cents - t.costs_cents;
+        t.holding_sessions = p->sessions_held;
+        trades_.push_back(t);
+        if (t.net_pnl_cents < 0) ++consecutive_losers_; else consecutive_losers_ = 0;
+        open_meta_.erase(symbol);
+        positions_.erase(std::remove_if(positions_.begin(), positions_.end(), [&](const PositionState& x) { return x.symbol == symbol; }), positions_.end());
+        open_rebalance_position(symbol, target_qty, px, costs, session, ts_utc, m);
+        return;
+    }
+
+    if (target_qty == 0) {
+        Cents entry_share = entry_costs_.count(symbol) ? entry_costs_[symbol] : 0;
+        ClosedTrade t = open_meta_.count(symbol) ? open_meta_[symbol] : ClosedTrade{};
+        t.symbol = symbol;
+        t.qty = current_qty;
+        t.entry_px_cents = p->avg_px_cents;
+        if (t.entry_date == Date{}) t.entry_date = p->entry_session;
+        t.exit_date = session;
+        t.exit_px_cents = px;
+        t.exit_reason = "rebalance_close";
+        t.gross_pnl_cents = current_qty * (px - p->avg_px_cents);
+        t.costs_cents = costs + entry_share;
+        t.net_pnl_cents = t.gross_pnl_cents - t.costs_cents;
+        t.holding_sessions = p->sessions_held;
+        trades_.push_back(t);
+        if (t.net_pnl_cents < 0) ++consecutive_losers_; else consecutive_losers_ = 0;
+        positions_.erase(std::remove_if(positions_.begin(), positions_.end(), [&](const PositionState& x) { return x.symbol == symbol; }), positions_.end());
+        entry_costs_.erase(symbol);
+        open_meta_.erase(symbol);
+        return;
+    }
+
+    // Same-direction resize (no crossing): increasing adds at px with a weighted-average
+    // cost basis, like apply_entry_fill; decreasing realizes P&L on the reduced portion,
+    // like apply_exit_fill, leaving avg_px_cents unchanged.
+    if (std::llabs(target_qty) > std::llabs(current_qty)) {
+        Cents total_notional = current_qty * p->avg_px_cents + delta * px;
+        p->qty = target_qty;
+        p->avg_px_cents = total_notional / target_qty;
+        entry_costs_[symbol] += costs;
+    } else {
+        std::int64_t reduced_qty = current_qty - target_qty;   // same sign as current_qty
+        Cents entry_share = entry_costs_.count(symbol) ? entry_costs_[symbol] * std::llabs(reduced_qty) / std::llabs(current_qty) : 0;
+        if (entry_costs_.count(symbol)) entry_costs_[symbol] -= entry_share;
+        ClosedTrade t = open_meta_.count(symbol) ? open_meta_[symbol] : ClosedTrade{};
+        t.symbol = symbol;
+        t.qty = reduced_qty;
+        t.entry_px_cents = p->avg_px_cents;
+        if (t.entry_date == Date{}) t.entry_date = p->entry_session;
+        t.exit_date = session;
+        t.exit_px_cents = px;
+        t.exit_reason = "rebalance_reduce";
+        t.gross_pnl_cents = reduced_qty * (px - p->avg_px_cents);
+        t.costs_cents = costs + entry_share;
+        t.net_pnl_cents = t.gross_pnl_cents - t.costs_cents;
+        t.holding_sessions = p->sessions_held;
+        trades_.push_back(t);
+        if (t.net_pnl_cents < 0) ++consecutive_losers_; else consecutive_losers_ = 0;
+        p->qty = target_qty;
+    }
+}
+
 void Ledger::apply_exit_fill(const std::string& symbol, std::int64_t qty, Cents px, Cents costs, Date session, const std::string& reason) {
     PositionState* p = find(symbol);
     if (!p || qty <= 0) return;
@@ -224,6 +347,16 @@ std::map<std::string, double> Ledger::sector_exposure_pct() const {
     return out;
 }
 
+std::map<std::string, double> Ledger::asset_class_exposure_pct() const {
+    std::map<std::string, double> out;
+    Cents eq = equity();
+    if (eq <= 0) return out;
+    // Gross (not net) per bucket -- consistent with how gross_exposure() already treats
+    // shorts, and the natural reading of an "exposure cap" for a book that can be short.
+    for (const auto& p : positions_) if (!p.asset_class.empty()) out[p.asset_class] += pct_of(std::llabs(p.market_value_cents()), eq);
+    return out;
+}
+
 std::optional<double> Ledger::realized_vol_annual(int lookback) const {
     if (static_cast<int>(daily_.size()) < lookback + 1) return std::nullopt;
     std::vector<double> r;
@@ -244,10 +377,12 @@ nlohmann::json Ledger::portfolio_state_payload(const std::string& as_of_utc, Dat
         {"equity_cents", eq},
         {"cash_cents", cash_},
         {"buying_power_cents", std::max<Cents>(cash_, 0)},
+        {"margin_buying_power_cents", margin_buying_power_},
         {"positions", pos},
         {"gross_exposure_cents", gross_exposure()},
         {"gross_exposure_pct", pct_of(gross_exposure(), eq)},
         {"sector_exposure_pct", sector_exposure_pct()},
+        {"asset_class_exposure_pct", asset_class_exposure_pct()},
         {"hwm_equity_cents", std::max(hwm_equity_, eq)},
         {"drawdown_pct", drawdown_pct()},
         {"day_start_equity_cents", day_start_equity_},
@@ -275,6 +410,7 @@ nlohmann::json Ledger::state_json() const {
         {"initial_cash_cents", initial_cash_}, {"cash_cents", cash_}, {"positions", pos}, {"trades", tr}, {"open_meta", om}, {"entry_costs", ec},
         {"daily", dl}, {"hwm_equity_cents", hwm_equity_}, {"day_start_equity_cents", day_start_equity_}, {"day_start_session", iso_date(day_start_session_)},
         {"total_costs_cents", total_costs_}, {"consecutive_losers", consecutive_losers_},
+        {"margin_buying_power_cents", margin_buying_power_},
     };
 }
 
@@ -336,6 +472,7 @@ void Ledger::load_state(const nlohmann::json& j) {
     if (auto d = parse_date(j.value("day_start_session", ""))) day_start_session_ = *d;
     total_costs_ = j.value("total_costs_cents", 0LL);
     consecutive_losers_ = j.value("consecutive_losers", 0);
+    margin_buying_power_ = j.value("margin_buying_power_cents", 0LL);
 }
 
 } // namespace at

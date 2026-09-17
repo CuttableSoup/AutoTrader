@@ -17,9 +17,11 @@
   ],
   "topics": [
     { "subject": "market.data.bar.*",   "schema": "v1/market.data.schema.json",        "producer": "ingestor",        "consumers": ["strategy", "portfolio", "logger"] },
+    { "subject": "market.data.bar_tr.*", "schema": "v1/market.data.schema.json",       "producer": "ingestor",        "consumers": ["tsmom", "logger"] },
+    { "subject": "market.data.shortable.*", "schema": "v1/market.data.schema.json",    "producer": "ingestor",        "consumers": ["risk", "logger"] },
     { "subject": "market.data.quote.*", "schema": "v1/market.data.schema.json",        "producer": "ingestor",        "consumers": ["risk", "logger"] },
     { "subject": "events.earnings",     "schema": "v1/events.earnings.schema.json",    "producer": "events-feed",     "consumers": ["strategy", "portfolio", "logger"] },
-    { "subject": "signals.candidate",   "schema": "v1/signals.candidate.schema.json",  "producer": "strategy",        "consumers": ["validator", "risk", "logger"] },
+    { "subject": "signals.candidate",   "schema": "v1/signals.candidate.schema.json",  "producer": "strategy|tsmom",  "consumers": ["validator", "risk", "logger"] },
     { "subject": "signals.validated",   "schema": "v1/signals.validated.schema.json",  "producer": "validator",       "consumers": ["risk", "logger"] },
     { "subject": "orders.approved",     "schema": "v1/orders.approved.schema.json",    "producer": "risk",            "consumers": ["execution", "logger"] },
     { "subject": "orders.submitted",    "schema": "v1/orders.submitted.schema.json",   "producer": "execution",       "consumers": ["portfolio", "reconciler", "logger"] },

@@ -4,6 +4,7 @@
   "nats_url": "nats://127.0.0.1:4222",
   "schemas_dir": "schemas",
   "strategy_config": "config/strategy.v1.json",
+  "tsmom_config": "config/strategy.v3.json",
   "risk_config": "config/risk.v1.json",
   "state_dir": "var/state",
   "log_dir": "var/log",

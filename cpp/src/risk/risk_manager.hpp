@@ -8,6 +8,8 @@
 #include "risk/limits.hpp"
 #include "strategy/params.hpp"
 #include "strategy/sizing.hpp"
+#include "strategy/tsmom_params.hpp"
+#include "strategy/tsmom_sizing.hpp"
 #include "strategy/types.hpp"
 
 #include <deque>
@@ -52,8 +54,10 @@ struct PortfolioView {
     Cents equity_cents = 0;
     Cents cash_cents = 0;
     Cents buying_power_cents = 0;
+    Cents margin_buying_power_cents = 0;   // TSMOM only: Alpaca's Reg-T marginable buying power
     Cents gross_exposure_cents = 0;
     std::map<std::string, double> sector_exposure_pct;
+    std::map<std::string, double> asset_class_exposure_pct;   // TSMOM only, gross per bucket
     Cents hwm_equity_cents = 0;
     double drawdown_pct = 0;
     double daily_pnl_pct = 0;
@@ -77,7 +81,10 @@ struct RiskCounters {
 
 class RiskManager {
 public:
-    RiskManager(StrategyParams sp, RiskLimits rl, const TradingCalendar& cal);
+    // tp is set only by services that also run the TSMOM book (at_risk_svc when
+    // tsmom_config is configured, and the backtester's TSMOM harness); the earnings-only
+    // path never reads it.
+    RiskManager(StrategyParams sp, RiskLimits rl, const TradingCalendar& cal, std::optional<TsmomParams> tp = std::nullopt);
 
     // ---- inputs -----------------------------------------------------------
     void on_candidate(const Envelope& env);
@@ -86,6 +93,7 @@ public:
     void on_reconcile(const nlohmann::json& payload);
     void on_control(const std::string& subject, const nlohmann::json& payload);
     void on_quote(const std::string& symbol, const Quote& q);
+    void on_shortable(const std::string& symbol, bool shortable);   // TSMOM pre-flight; market.data.shortable.*
     void on_order_status(const nlohmann::json& payload);
     void on_order_filled(const nlohmann::json& payload);
 
@@ -94,6 +102,10 @@ public:
     // Returns the decisions (approved and rejected). Approved ones carry the orders.approved payload.
     std::vector<EntryDecision> process_pending_entries(Date session, SysTime now);
     EntryDecision evaluate_entry(const PendingCandidate& pc, Date session, SysTime now);
+    // TSMOM: resizes the candidate's symbol to its target weight. No validator wait (TSMOM
+    // bypasses the Claude sidecar entirely), no SPY-trend/earnings-gate/max-open-positions
+    // checks (this is a rebalance of a fixed 18-name book, not a bounded set of new entries).
+    EntryDecision evaluate_rebalance(const PendingCandidate& pc, Date session, SysTime now);
 
     // Called after the close of `session`. Returns orders.approved payloads for exits / stop ratchets.
     std::vector<nlohmann::json> end_of_session_sweep(Date session);
@@ -123,15 +135,18 @@ private:
     void apply_drawdown_rules();
     std::optional<PositionState> position(const std::string& symbol) const;
     Cents sector_exposure_cents(const std::string& sector) const;
+    Cents asset_class_exposure_cents(const std::string& asset_class) const;
     nlohmann::json make_exit_order(const PositionState& pos, const std::string& intent, std::int64_t qty, const std::string& reason, Date session, std::optional<Cents> new_stop = std::nullopt);
 
     StrategyParams sp_;
+    std::optional<TsmomParams> tp_;
     RiskLimits limits_;
     const TradingCalendar& cal_;
     PortfolioView pf_;
     RiskCounters counters_;
     std::deque<PendingCandidate> pending_;
     std::map<std::string, Quote> quotes_;
+    std::map<std::string, bool> shortable_;   // TSMOM: symbol -> broker-confirmed shortable+easy_to_borrow
     std::vector<std::pair<std::string, nlohmann::json>> control_out_;
     std::map<std::string, std::string> approved_by_symbol_;   // symbol -> client_order_id, entries approved but not yet in portfolio
     Dedupe seen_candidates_{200000};                          // candidate msg_ids ever accepted (bus is at-least-once)

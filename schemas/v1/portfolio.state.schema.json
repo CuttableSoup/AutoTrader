@@ -12,7 +12,8 @@
     "reconciled": { "type": "boolean", "description": "False until broker.reconcile reported CLEAN after the last startup. Nothing trades while false." },
     "equity_cents": { "type": "integer" },
     "cash_cents": { "type": "integer" },
-    "buying_power_cents": { "type": "integer", "description": "Alpaca non_marginable_buying_power (no margin in v1). PDT fields are never read." },
+    "buying_power_cents": { "type": "integer", "description": "Alpaca non_marginable_buying_power. PDT fields are never read." },
+    "margin_buying_power_cents": { "type": "integer", "description": "TSMOM only: Alpaca's plain (Reg-T marginable) buying_power. Shorting requires a margin account; 0 means not yet synced from the broker, never \"zero capacity\"." },
     "positions": {
       "type": "array",
       "items": {
@@ -35,6 +36,7 @@
           "hwm_px_cents": { "type": ["integer", "null"], "description": "Highest close since entry, for the trailing ratchet." },
           "atr20_cents": { "type": ["integer", "null"] },
           "sector": { "type": ["string", "null"] },
+          "asset_class": { "type": ["string", "null"], "description": "TSMOM only: EQUITY, RATES_CREDIT, COMMODITIES or CURRENCIES. Also marks the position as TSMOM-owned. qty/market_value_cents/unrealized_cents may be negative for a short position." },
           "candidate_msg_id": { "type": ["string", "null"] },
           "scaled_down": { "type": "boolean" }
         }
@@ -43,6 +45,7 @@
     "gross_exposure_cents": { "type": "integer" },
     "gross_exposure_pct": { "type": "number" },
     "sector_exposure_pct": { "type": "object", "additionalProperties": { "type": "number" } },
+    "asset_class_exposure_pct": { "type": "object", "additionalProperties": { "type": "number" }, "description": "TSMOM only: gross exposure per asset class (EQUITY, RATES_CREDIT, COMMODITIES, CURRENCIES), shorts included via abs(market_value)." },
     "hwm_equity_cents": { "type": "integer" },
     "drawdown_pct": { "type": "number", "description": "(equity / hwm - 1) * 100, <= 0." },
     "day_start_equity_cents": { "type": "integer" },

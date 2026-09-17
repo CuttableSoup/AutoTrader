@@ -36,7 +36,12 @@ nlohmann::json reconcile_diff(const std::vector<AlpacaPosition>& broker, const s
         Cents ia = it->second.value("avg_px_cents", 0LL);
         if (ia > 0 && bp->avg_entry_px_cents > 0 && std::fabs(pct_of(ia - bp->avg_entry_px_cents, bp->avg_entry_px_cents)) > tol_pct)
             diffs.push_back({{"symbol", sym}, {"field", "avg_px_cents"}, {"broker", bp->avg_entry_px_cents}, {"internal", ia}});
-        if (bp->qty > 0 && protected_qty[sym] < bp->qty)
+        // TSMOM positions (tagged with asset_class) never carry a resting stop by design --
+        // the strategy has no stop-loss mechanism, only the next monthly rebalance. Without
+        // this guard every TSMOM long would permanently reconcile as "unprotected" and pause
+        // new entries forever.
+        bool is_tsmom_position = !it->second.value("asset_class", std::string()).empty();
+        if (!is_tsmom_position && bp->qty > 0 && protected_qty[sym] < bp->qty)
             diffs.push_back({{"symbol", sym}, {"field", "unprotected_position"}, {"broker", bp->qty}, {"internal", protected_qty[sym]}});
     }
     for (const auto& [sym, ip] : i)

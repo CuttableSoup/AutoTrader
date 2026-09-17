@@ -10,7 +10,8 @@
 namespace at {
 
 nlohmann::json OrderMeta::to_json() const {
-    return {{"intent", intent}, {"symbol", symbol}, {"candidate_msg_id", candidate_msg_id}, {"approved_msg_id", approved_msg_id}, {"broker_order_id", broker_order_id}};
+    return {{"intent", intent}, {"symbol", symbol}, {"candidate_msg_id", candidate_msg_id}, {"approved_msg_id", approved_msg_id}, {"broker_order_id", broker_order_id},
+            {"target_qty", target_qty ? nlohmann::json(*target_qty) : nlohmann::json(nullptr)}, {"asset_class", asset_class}};
 }
 
 OrderMeta OrderMeta::from_json(const nlohmann::json& j) {
@@ -20,6 +21,8 @@ OrderMeta OrderMeta::from_json(const nlohmann::json& j) {
     m.candidate_msg_id = j.value("candidate_msg_id", "");
     m.approved_msg_id = j.value("approved_msg_id", "");
     m.broker_order_id = j.value("broker_order_id", "");
+    if (j.contains("target_qty") && j["target_qty"].is_number()) m.target_qty = j["target_qty"].get<std::int64_t>();
+    m.asset_class = j.value("asset_class", "");
     return m;
 }
 
@@ -82,6 +85,7 @@ void ExecutionEngine::on_approved(const Envelope& env) {
         if (intent == "ENTRY") submit_entry(env, p);
         else if (intent == "STOP_REPLACE") replace_stop(env, p);
         else if (intent == "FLATTEN") on_control("control.flatten", {{"command", "flatten"}, {"reason", p.value("reason", "")}});
+        else if (intent == "REBALANCE_TO_WEIGHT") submit_rebalance(env, p);
         else submit_exit(env, p);
     } catch (const std::exception& e) {
         spdlog::error("execution: {} {} failed: {}", intent, coid, e.what());
@@ -157,6 +161,28 @@ void ExecutionEngine::submit_exit(const Envelope& env, const nlohmann::json& p) 
     }
 }
 
+void ExecutionEngine::submit_rebalance(const Envelope& env, const nlohmann::json& p) {
+    OrderRequest r;
+    r.symbol = p["symbol"].get<std::string>();
+    r.qty = p["qty"].get<std::int64_t>();
+    r.side = p["side"].get<std::string>();   // "buy" or "sell", computed by RiskManager from sign(target - current)
+    r.type = "limit";
+    r.tif = p.value("tif", "day");
+    r.limit_px_cents = p["limit_px_cents"].get<Cents>();
+    r.client_order_id = p["client_order_id"].get<std::string>();
+    // r.order_class left empty ("simple"): no bracket/stop leg -- TSMOM never places a stop.
+    OrderMeta m{"REBALANCE_TO_WEIGHT", r.symbol, p.value("candidate_msg_id", ""), env.msg_id, ""};
+    if (p.contains("target_qty") && p["target_qty"].is_number()) m.target_qty = p["target_qty"].get<std::int64_t>();
+    m.asset_class = p.value("asset_class", "");
+    // Register the intent BEFORE the POST: the trade_updates fill can arrive before (or instead of) the REST response.
+    remember(r.client_order_id, m);
+    SubmitResult res = client_.submit(r, max_attempts_, backoff_ms_);
+    m.broker_order_id = res.order.id;
+    remember(r.client_order_id, m);
+    publish_submitted(env, p, res, "limit");
+    spdlog::info("execution: REBALANCE_TO_WEIGHT {} {} {} x{} limit {} -> {} (attempts {}, deduped {})", r.symbol, r.client_order_id, r.side, r.qty, cents_to_decimal(*r.limit_px_cents), res.order.id, res.attempts, res.deduped_at_broker);
+}
+
 void ExecutionEngine::replace_stop(const Envelope& env, const nlohmann::json& p) {
     std::string sym = p["symbol"].get<std::string>();
     Cents new_stop = p["stop_px_cents"].get<Cents>();
@@ -224,6 +250,10 @@ void ExecutionEngine::on_trade_update(const nlohmann::json& data) {
             {"candidate_msg_id", mit != by_coid_.end() && !mit->second.candidate_msg_id.empty() ? nlohmann::json(mit->second.candidate_msg_id) : nlohmann::json(nullptr)},
             {"commission_cents", 0}, {"fees_cents", 0},
         };
+        if (mit != by_coid_.end() && mit->second.intent == "REBALANCE_TO_WEIGHT") {
+            f["target_qty"] = mit->second.target_qty ? nlohmann::json(*mit->second.target_qty) : nlohmann::json(nullptr);
+            f["asset_class"] = mit->second.asset_class;
+        }
         bus_.publish("orders.filled", make_envelope("execution", f));
         save_state();
     }

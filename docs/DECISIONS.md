@@ -184,3 +184,183 @@ space (one literature-established formulation, not a family to search).
   cheap Python validation phase before any of the live system changes; see
   `docs/prereg/TSMOM-v1.md`'s "Out of scope for this phase." The owner does not
   want to deploy even paper trading without a genuinely validated strategy.
+
+## Phase 2: wiring TSMOM into the live C++ system (2026-09-16)
+
+TSMOM-v1 passed both its development gate and the sealed hold-out
+(`docs/TSMOM-RESULT.md`) -- the first strategy in this project's history to clear a
+gate. This phase ports the validated spec into the C++ system that already runs the
+earnings-momentum strategy, without forking shared strategy/risk code. Three
+architecture decisions were made explicitly before implementation and are not
+re-litigated here: (1) ship the real, gated primary spec including shorts on
+bonds/FX/commodities, with real short-sale support built into sizing/risk/execution/
+ledger, rather than a long-only substitute; (2) TSMOM candidates bypass the Claude
+validator sidecar entirely -- no LLM veto for a systematic signal with no
+discretionary thesis; (3) do not genericize `walk_forward.cpp`'s grid search (TSMOM
+has zero tunable parameters), and build a parity/regression test against the
+published Python numbers instead.
+
+* **What shipped.** A faithful C++ port of the primary spec (`strategy/tsmom_signal.
+  {hpp,cpp}`, `strategy/tsmom_sizing.{hpp,cpp}`, `strategy/tsmom_universe.{hpp,cpp}`,
+  `strategy/tsmom_params.{hpp,cpp}`, `config/strategy.v3.json`); a monthly-rebalance
+  path on `StrategyEngine` (`evaluate_rebalance_session`) driven by a new
+  `MonthlyTrigger`; short-sale-aware `Ledger::apply_rebalance_fill` (opens, closes,
+  resizes and zero-crossing flips in one fill, composed from the existing close/open
+  P&L math); a new `asset_class_cap_pct` risk limit mirroring `sector_cap_pct`
+  end-to-end (`RiskLimits`, `RiskManager`, `Ledger`, `portfolio.state` schema); a new
+  `RiskManager::evaluate_rebalance` path (no validator wait, no SPY-trend/earnings-
+  gate/max-open-positions checks -- this is a resize of a fixed 18-name book, not a
+  bounded set of new entries); a new `REBALANCE_TO_WEIGHT` order intent through
+  execution (`submit_rebalance`) and the portfolio service's fill handler
+  (`apply_rebalance_fill`, keyed on a new `target_qty` field threaded through
+  `orders.approved`/`orders.filled` because a rebalance fill's side alone doesn't
+  say how to apply it -- a sell can reduce a long, open/increase a short, or flip
+  through zero); `signals.candidate`/`orders.approved`/`orders.filled`/
+  `portfolio.state` schema surgery (a new `TSMOM_ETF_V1` signal_type, conditionally
+  required fields via draft-07 `if`/`then`, validated in both the C++ and Python
+  `SchemaRegistry`s); the ingestor pulling bars for the fixed 18-ETF universe
+  (`strategy/tsmom_universe.cpp`'s `kTsmomUniverse`, which they were previously
+  excluded from entirely by `exclude_etfs: true`); a new `at_tsmom_svc` binary
+  (separate process from `at_strategy_svc` -- independent failure domain, no
+  `events.earnings` dependency, a different cadence), wired into
+  `docs/RUNBOOK.md` and `scripts/run_paper.{ps1,sh}`; and a real, data-backed C++
+  parity test (`cpp/tests/test_tsmom_signal.cpp`, fixture exported by
+  `python/autotrader/research/export_tsmom_fixture.py` from the same cached
+  development panel TSMOM-v1 used) confirming the C++ signal math reproduces
+  Python's on real formation dates -- momentum sign matches exactly; vol/weight
+  magnitudes match within a tolerance derived from, and documented against, the
+  system's own cents-quantization of a continuously-adjusted total-return price
+  series (this project's `Cents` money convention applied to a synthetic series
+  that was never really "money" in the first place).
+
+* **Follow-up work (2026-09-17), closing out everything flagged above except one
+  item.**
+  * **Backtester parity harness, built.** `cpp/src/backtester/tsmom_backtester.
+    {hpp,cpp}` (`run_tsmom_gross_backtest`) is a direct monthly-formation replay
+    over `MarketStore`'s total-return-adjusted bars -- deliberately not routed
+    through `Backtester::run`'s earnings-shaped daily-event loop, nor through
+    `Ledger`/`RiskManager` (this harness checks the signal + return-attribution
+    *formula*, not risk-gate logic, which is exercised separately and live-shaped
+    in `test_tsmom_risk.cpp`). Gross only, matching decision 3's scoping: no
+    turnover cost, no idle-capital risk-free credit on either side of the
+    comparison. Checked in `cpp/tests/test_tsmom_backtest.cpp` against a second
+    Python fixture (`python/autotrader/research/export_tsmom_backtest_fixture.py`,
+    also `end=SEAL_DATE`, also not a new trial) covering a real ~2.5-year,
+    600-session window of the development panel spanning several formation
+    transitions -- 600/600 days agree within a documented tolerance (most days
+    within a few basis points; a handful spike into the tens of basis points on
+    days when an already-characterized, already-accepted weight-quantization
+    effect coincides with an unusually large single-day move in the affected
+    instrument, explained and bounded in the test's own comments). This is what
+    `docs/prereg/TSMOM-v1-gates.md`'s proposed G1 parity check now points to.
+  * **Live dividend/distribution adjustment, fixed.** `AlpacaClient::daily_bars`
+    takes an `adjustment` parameter (`"split"`, unchanged default, vs. `"all"`).
+    The ingestor now pulls a *second*, separate bar series for the TSMOM universe
+    on a new subject, `market.data.bar_tr.*` (`IngestorService::pull_bars_tr`),
+    requesting `adjustment=all` (Alpaca's own split+dividend total-return
+    adjustment) -- kept off the existing `market.data.bar.*` deliberately, because
+    SPY is *both* the earnings strategy's `trend_symbol` (needs raw/split-adjusted
+    prices for its SMA-200 filter) and a TSMOM universe member (needs
+    total-return-adjusted prices for its momentum/vol): one subject cannot serve
+    both without corrupting one consumer's series. `at_tsmom_svc` subscribes to
+    `market.data.bar_tr.*` instead of `market.data.bar.*`.
+  * **Shortable/easy-to-borrow verification, added.** `AlpacaClient::
+    shortable_flags` (`GET /v2/assets/{symbol}`) is polled once daily by the
+    ingestor for the TSMOM universe and published on a new
+    `market.data.shortable.*` subject; `RiskManager::evaluate_rebalance` gates on
+    it (`check("shortable", ...)`), but *only* when an order would increase a
+    short (open one from flat/long, or add to an existing one) -- reducing a short
+    or going long never needs to borrow more, so never blocks on this. An
+    unconfirmed symbol (no `market.data.shortable.*` seen yet, or the broker
+    reports it false) blocks rather than assumes shortable, since this is a
+    broker-enforced fact, not a modeling choice.
+  * **Margin/buying-power, added.** `AlpacaAccount` now carries a second field,
+    `marginable_buying_power_cents` (Alpaca's plain `buying_power`, Reg-T), kept
+    separate from the existing `buying_power_cents` (`non_marginable_buying_power`,
+    which the earnings strategy's cash-account sizing still uses unchanged). The
+    portfolio service syncs it into a new `Ledger::margin_buying_power_cents` /
+    `portfolio.state.margin_buying_power_cents`, and `evaluate_rebalance`'s
+    buying-power check now reads that instead -- still a secondary sanity check,
+    since `gross_exposure_cap_pct=100%` (matching the spec's own no-leverage cap)
+    remains the real binding constraint. Confirmed against a real account response
+    from the configured paper account (see next item): `non_marginable_buying_power`
+    equaled cash exactly and `buying_power` reflected the account's margin
+    multiplier, matching this field mapping.
+  * **Alpaca long-to-short single-order flip -- partially verified, one genuine
+    finding.** Ran a live probe against the configured Alpaca paper account
+    (explicitly approved first): account confirmed `shorting_enabled: true`,
+    `multiplier: "4"` (margin account). The probe itself was inconclusive on the
+    core question (does a single sell order for more shares than currently held
+    net a close+reverse in one fill?) because the market was closed at the time
+    and Alpaca's paper matching only simulates fills during real market hours --
+    the test buy order sat `accepted`/unfilled. It did surface one real, useful
+    fact: Alpaca's wash-trade guard rejects submitting an opposite-side order for
+    the same symbol while an order on the current side is still open/unfilled
+    (`"potential wash trade detected... opposite side market/stop order exists"`).
+    This does not affect `submit_rebalance` under TSMOM's actual cadence (one
+    `tif=day` order per symbol per month, which fills or expires same-day long
+    before the next month's formation runs), so no code change followed from it --
+    noted here because it's a real broker behavior worth knowing about, not
+    because it changes the design. The account was left clean (no positions, no
+    open orders) after the probe. **The core single-order-flip question during
+    live market hours remains unverified** -- the only item from the original
+    flagged list still open.
+  * **`docs/prereg/TSMOM-v1-gates.md`** still proposes G1/G3 pass criteria for a
+    rebalanced book (replacing round-trip trade counts with formation-month
+    counts) but leaves the exact formation-month floor as an open number for the
+    owner to set, not a decision made here.
+
+* **Deployment-readiness audit (2026-09-17), asked directly: "anything in the way
+  of deployment?"** Triggered a targeted review of the broker-sync/reconciliation
+  path, which every prior test in this phase exercised only through synthetic
+  `Ledger`/`RiskManager` fixtures, never through the actual `AlpacaClient` ->
+  reconciler chain.
+  * **Found and fixed: the reconciler's `unprotected_position` check would have
+    permanently blocked every TSMOM long position.** `reconcile_diff`
+    (`cpp/src/reconciler/service.cpp`) flags a broker position as unprotected
+    when no resting stop order covers it -- correct for the earnings strategy,
+    which always places one, but TSMOM never places a stop by design (monthly
+    rebalance is its only exit mechanism). Before this fix, every TSMOM long
+    position would have permanently failed reconciliation and triggered
+    `control.pause_new` the moment it synced from the broker. Fixed by skipping
+    the check for any internal position carrying a non-empty `asset_class`
+    (the same TSMOM-ownership tag `end_of_session_sweep`'s exit-sweep skip
+    already uses). Not caught earlier because no test in this phase exercised
+    `reconcile_diff` with a TSMOM-tagged position -- `at_reconciler` has no unit
+    tests at all (gated behind `AT_WITH_NET`, not linked into `at_tests`, same
+    testing-boundary precedent as `execution/engine.cpp` and
+    `ingestor/service.cpp`), so this was only found by deliberately re-reading
+    the reconciliation path end to end rather than by a failing test.
+  * **Investigated and ruled out: a claimed `qty`-sign bug.** A first pass
+    (subagent-assisted) concluded Alpaca's `/v2/positions` `qty` is an unsigned
+    magnitude with direction carried separately in a `side` field, and that this
+    codebase's `AlpacaClient::positions()` (never reads `side`) would silently
+    drop the sign of every TSMOM short, corrupting `Ledger::sync_from_broker`.
+    Independently verified before touching any code (a live paper-account check
+    was the deciding step, since the docs alone were inconsistent depending on
+    which page/summary was consulted): Alpaca's actual API returns `qty` already
+    signed (`"side": "short", "qty": "-2478"` in a real example, with
+    `market_value`/`cost_basis`/`unrealized_pl` also negative for a short) --
+    this codebase's existing `qty_of()` already parses a signed decimal string
+    correctly, so `AlpacaClient`/`Ledger::sync_from_broker`/`PortfolioService`
+    were already correct as written. No code change was made for this; noted
+    here so the (incorrect) claim doesn't get rediscovered and acted on later
+    without the verification trail.
+  * **Still open, genuinely blocking a real deployment (not just a nice-to-have):**
+    the full service stack (`nats-server` + all services including the new
+    `at_tsmom_svc`) has never actually been started together end-to-end in this
+    phase -- every check in this phase ran through `at_tests`/`pytest`, never
+    through `scripts/run_paper.{ps1,sh}`. Gate G2's fault-injection scenarios
+    (`scripts/fault_injection.py`) don't exercise TSMOM order flow at all (its
+    only order-construction helper hardcodes `intent=ENTRY, side=buy`; its
+    service-start list in `docs/TESTING.md` doesn't even start `at_tsmom_svc`) --
+    extending G2 to cover a `REBALANCE_TO_WEIGHT` short-and-flip scenario against
+    the fake broker would be the natural way to close both this gap and the
+    still-unverified Alpaca single-order-flip question above without needing
+    live market hours. `bootstrap_streams.py` and both `run_paper` scripts were
+    checked and need no changes (confirmed: they read `schemas/topics.json`
+    dynamically / the new service lines are consistent with their siblings).
+
+* **Scope boundary held.** This phase does not start paper trading -- that remains
+  an explicit, separate decision after this work is reviewed, per the owner's
+  stated position (`docs/TSMOM-RESULT.md`).

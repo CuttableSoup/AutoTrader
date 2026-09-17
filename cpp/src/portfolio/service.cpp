@@ -46,6 +46,7 @@ void PortfolioService::sync_from_broker(SysTime now) {
         }
         ledger_.sync_from_broker(bp, session_, iso_utc(now));
         ledger_.set_cash(acct.cash_cents);
+        ledger_.set_margin_buying_power(acct.marginable_buying_power_cents);
         open_orders_ = nlohmann::json::array();
         for (const auto& o : client_.orders("open", true)) {
             open_orders_.push_back({{"client_order_id", o.client_order_id}, {"broker_order_id", o.id}, {"symbol", o.symbol}, {"side", o.side}, {"qty", o.qty}, {"status", o.status}, {"order_type", o.type},
@@ -102,7 +103,21 @@ void PortfolioService::on_filled(const Envelope& env) {
     Cents costs = p.value("commission_cents", 0LL) + p.value("fees_cents", 0LL);
     SysTime now = now_utc();
     Date session = cal_.session_for(now);
-    if (intent == "ENTRY" || (p.value("side", "") == "buy" && intent == "UNKNOWN")) {
+    if (intent == "REBALANCE_TO_WEIGHT") {
+        // Unlike ENTRY/EXIT_*, side alone doesn't tell us how to apply this fill (a
+        // REBALANCE_TO_WEIGHT sell can reduce a long, open/increase a short, or flip
+        // through zero) -- target_qty (the signed total position size this fill resizes
+        // to) came from the risk manager via orders.approved -> orders.filled and is the
+        // only thing that can drive Ledger::apply_rebalance_fill correctly.
+        if (p.contains("target_qty") && p["target_qty"].is_number()) {
+            EntryMeta m;
+            m.asset_class = p.value("asset_class", "");
+            ledger_.apply_rebalance_fill(sym, p["target_qty"].get<std::int64_t>(), px, costs, session, p.value("filled_ts_utc", iso_utc(now)), m);
+            spdlog::info("portfolio: REBALANCE_TO_WEIGHT fill {} x{} @ {} -> target {}", sym, qty, cents_to_decimal(px), p["target_qty"].get<std::int64_t>());
+        } else {
+            spdlog::error("portfolio: REBALANCE_TO_WEIGHT fill for {} missing target_qty; ledger not updated, reconciler will flag the mismatch", sym);
+        }
+    } else if (intent == "ENTRY" || (p.value("side", "") == "buy" && intent == "UNKNOWN")) {
         // Broker truth: any buy fill is a position, even if the intent map was lost. The reconciler flags it if unprotected.
         if (intent == "UNKNOWN") spdlog::warn("portfolio: buy fill {} x{} with unknown intent; adopting as ENTRY", sym, qty);
         EntryMeta m;

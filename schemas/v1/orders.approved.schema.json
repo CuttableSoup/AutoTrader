@@ -10,7 +10,7 @@
     "client_order_id": { "type": "string", "minLength": 8, "maxLength": 48 },
     "candidate_msg_id": { "type": ["string", "null"], "description": "Set for ENTRY; null for exits." },
     "validated_msg_id": { "type": ["string", "null"] },
-    "intent": { "type": "string", "enum": ["ENTRY", "EXIT_TIME", "EXIT_EARNINGS", "EXIT_TREND_SCALE", "EXIT_DRAWDOWN", "FLATTEN", "STOP_REPLACE"] },
+    "intent": { "type": "string", "enum": ["ENTRY", "EXIT_TIME", "EXIT_EARNINGS", "EXIT_TREND_SCALE", "EXIT_DRAWDOWN", "FLATTEN", "STOP_REPLACE", "REBALANCE_TO_WEIGHT"] },
     "symbol": { "type": "string", "pattern": "^[A-Z][A-Z0-9.\\-]{0,9}$" },
     "side": { "type": "string", "enum": ["buy", "sell"] },
     "qty": { "type": "integer", "minimum": 1 },
@@ -36,6 +36,8 @@
       }
     },
     "equity_at_approval_cents": { "type": "integer" },
-    "atr20_cents": { "type": ["integer", "null"] }
+    "atr20_cents": { "type": ["integer", "null"] },
+    "target_qty": { "type": ["integer", "null"], "description": "REBALANCE_TO_WEIGHT only: the signed total position size this order is sizing toward (qty/side above are the unsigned delta and its direction). The portfolio service needs this to call Ledger::apply_rebalance_fill correctly on the resulting fill." },
+    "asset_class": { "type": ["string", "null"], "description": "REBALANCE_TO_WEIGHT only." }
   }
 }

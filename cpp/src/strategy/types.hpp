@@ -20,6 +20,7 @@ struct SecurityInfo {
     std::string name;
     std::string sector;
     std::string category;         // "Domestic Common Stock", "ETF", "ADR Common Stock", ...
+    std::string asset_class;      // TSMOM only: "EQUITY","RATES_CREDIT","COMMODITIES","CURRENCIES"
     Cents market_cap_cents = 0;
     std::optional<Date> first_listed;
     int analyst_coverage = 0;
@@ -101,6 +102,11 @@ struct Candidate {
     std::string universe_snapshot_id;
     std::vector<std::string> thesis_facts;
     std::string data_as_of_utc;
+    // TSMOM_ETF_V1 only.
+    std::optional<int> mom_sign;          // sign(12m total return) in {-1,0,1}
+    std::optional<double> vol_annual_pct; // trailing 60-session annualized vol, percent
+    std::optional<double> target_weight_pct; // signed, -100..100
+    std::string asset_class;
 
     nlohmann::json to_json() const;
     static Candidate from_json(const nlohmann::json& payload);
@@ -122,6 +128,7 @@ struct PositionState {
     std::optional<Cents> hwm_px_cents;
     std::optional<Cents> atr20_cents;
     std::string sector;
+    std::string asset_class;    // TSMOM only: also identifies which strategy owns this position
     std::optional<std::string> candidate_msg_id;
     bool scaled_down = false;
 

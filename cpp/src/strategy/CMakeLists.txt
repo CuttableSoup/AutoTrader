@@ -8,5 +8,9 @@ add_library(at_strategy STATIC
   sizing.cpp
   engine.cpp
   ledger.cpp
+  tsmom_params.cpp
+  tsmom_universe.cpp
+  tsmom_signal.cpp
+  tsmom_sizing.cpp
 )
 target_link_libraries(at_strategy PUBLIC at_common)

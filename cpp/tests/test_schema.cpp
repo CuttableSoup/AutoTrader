@@ -2,6 +2,7 @@
 #include "common/schema.hpp"
 #include "risk/limits.hpp"
 #include "strategy/params.hpp"
+#include "strategy/tsmom_params.hpp"
 #include "strategy/types.hpp"
 #include "strategy/ledger.hpp"
 #include "helpers.hpp"
@@ -87,4 +88,67 @@ TEST_CASE("frozen configs load and round trip", "[config]") {
     nlohmann::json bad = r.to_json();
     bad["gross_exposure_cap_pct"] = 150.0;
     CHECK_THROWS(RiskLimits::from_json(bad));
+    CHECK(r.asset_class_cap_pct == 40.0);
+
+    TsmomParams tp = TsmomParams::load(root() / "config" / "strategy.v3.json");
+    CHECK(tp.strategy_version == "TSMOM_ETF_V1.0");
+    CHECK(tp.signal.momentum_lookback_sessions == 252);
+    CHECK(tp.signal.vol_lookback_sessions == 60);
+    CHECK(tp.sizing.gross_cap_pct == 100.0);
+    TsmomParams tp2 = TsmomParams::from_json(tp.to_json());
+    CHECK(tp2.fingerprint() == tp.fingerprint());
+}
+
+TEST_CASE("TSMOM candidate and REBALANCE_TO_WEIGHT order are schema-valid; earnings-only fields stay required for that signal type", "[schema][tsmom]") {
+    SchemaRegistry reg(root() / "schemas");
+
+    Candidate c;
+    c.symbol = "SPY";
+    c.signal_type = "TSMOM_ETF_V1";
+    c.strategy_version = "TSMOM_ETF_V1.0";
+    c.event_id = "u|SPY|2026-09";
+    c.session_date = make_date(2026, 9, 30);
+    c.entry_deadline_date = make_date(2026, 10, 7);
+    c.universe_snapshot_id = "u";
+    c.thesis_facts = {"12-month momentum sign 1"};
+    c.data_as_of_utc = now_utc_iso();
+    c.asset_class = "EQUITY";
+    c.mom_sign = 1;
+    c.vol_annual_pct = 15.0;
+    c.target_weight_pct = 5.0;
+    auto cj = c.to_json();
+    CHECK(reg.validate("signals.candidate", make_envelope("tsmom", cj).to_json()).empty());
+    Candidate back = Candidate::from_json(cj);
+    CHECK(back.signal_type == "TSMOM_ETF_V1");
+    CHECK(back.asset_class == "EQUITY");
+    REQUIRE(back.target_weight_pct.has_value());
+    CHECK(*back.target_weight_pct == 5.0);
+
+    // Missing target_weight_pct (a TSMOM_ETF_V1-conditional required field) is rejected.
+    nlohmann::json missing = cj;
+    missing.erase("target_weight_pct");
+    CHECK_FALSE(reg.validate("signals.candidate", make_envelope("tsmom", missing).to_json()).empty());
+
+    // A valid earnings candidate still validates after the schema relaxation (regression).
+    Candidate e;
+    e.symbol = "AAPL"; e.strategy_version = "v"; e.event_id = "ev-1"; e.session_date = make_date(2026, 9, 15);
+    e.ear_pct = 4.2; e.vol_ratio = 2.5; e.mom_pct = 77; e.entry_px_ref_cents = 10000; e.atr20_cents = 150; e.adv20_shares = 100000;
+    e.sector = "Technology"; e.spy_above_trend = true; e.entry_deadline_date = make_date(2026, 9, 17);
+    e.universe_snapshot_id = "abc"; e.thesis_facts = {"EPS 1.00 vs 0.90"}; e.data_as_of_utc = now_utc_iso();
+    CHECK(reg.validate("signals.candidate", make_envelope("strategy", e.to_json()).to_json()).empty());
+    // An earnings candidate missing one of its own conditionally-required fields is rejected.
+    nlohmann::json e_missing = e.to_json();
+    e_missing.erase("atr20_cents");
+    CHECK_FALSE(reg.validate("signals.candidate", make_envelope("strategy", e_missing).to_json()).empty());
+
+    nlohmann::json rebalance_order = {
+        {"client_order_id", "atr-0000000000000000000000000000000000"},
+        {"candidate_msg_id", "cid"}, {"validated_msg_id", nullptr},
+        {"intent", "REBALANCE_TO_WEIGHT"}, {"symbol", "SPY"}, {"side", "buy"}, {"qty", 500},
+        {"order_type", "limit"}, {"limit_px_cents", 10020}, {"stop_px_cents", nullptr}, {"take_profit_px_cents", nullptr},
+        {"linked_broker_order_id", nullptr}, {"tif", "day"}, {"extended_hours", false},
+        {"reason", "TSMOM-v1 monthly rebalance"}, {"risk_checks", nlohmann::json::array()},
+        {"equity_at_approval_cents", 100000000}, {"target_qty", 500}, {"asset_class", "EQUITY"},
+    };
+    CHECK(reg.validate("orders.approved", make_envelope("risk", rebalance_order).to_json()).empty());
 }

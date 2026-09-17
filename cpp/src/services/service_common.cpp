@@ -47,6 +47,14 @@ bool DailyTrigger::due(SysTime now, const TradingCalendar& cal) {
     return true;
 }
 
+bool MonthlyTrigger::due(SysTime now, const TradingCalendar& cal) {
+    NyLocal ny = to_ny(now);
+    if (!cal.is_trading_day(ny.date) || !is_formation_session(ny.date, cal)) return false;
+    if (ny.minutes_since_midnight() < minutes_et || last_fired == ny.date) return false;
+    last_fired = ny.date;
+    return true;
+}
+
 ServiceContext bootstrap(int argc, char** argv, const std::string& service_name, bool need_secrets) {
     std::string config_path = "config/paper.json";
     std::string level = "info";
@@ -66,6 +74,7 @@ ServiceContext bootstrap(int argc, char** argv, const std::string& service_name,
         ctx.state_dir = ctx.cfg.resolve(ctx.cfg.get<std::string>("state_dir", "var/state"));
         std::filesystem::create_directories(ctx.state_dir);
         ctx.strategy = StrategyParams::load(ctx.cfg.resolve(ctx.cfg.get<std::string>("strategy_config", "config/strategy.v1.json")));
+        if (auto tsmom_config = ctx.cfg.get_opt<std::string>("tsmom_config")) ctx.tsmom = TsmomParams::load(ctx.cfg.resolve(*tsmom_config));
         ctx.risk = RiskLimits::load(ctx.cfg.resolve(ctx.cfg.get<std::string>("risk_config", "config/risk.v1.json")));
         ctx.registry = std::make_unique<SchemaRegistry>(ctx.cfg.resolve(ctx.cfg.get<std::string>("schemas_dir", "schemas")));
         if (need_secrets) ctx.secrets = Secrets::load(ctx.cfg);

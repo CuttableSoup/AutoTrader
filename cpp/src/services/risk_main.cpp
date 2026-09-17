@@ -11,7 +11,7 @@ using namespace at;
 int main(int argc, char** argv) {
     ServiceContext ctx = bootstrap(argc, argv, "risk", false);
     const TradingCalendar& cal = nyse();
-    RiskManager risk(ctx.strategy, ctx.risk, cal);
+    RiskManager risk(ctx.strategy, ctx.risk, cal, ctx.tsmom);
     std::filesystem::path state_file = ctx.state_file("risk_state.json");
     risk.load_state(load_json_file(state_file));
     auto persist = [&]() { save_json_atomic(state_file, risk.state_json()); };
@@ -25,6 +25,7 @@ int main(int argc, char** argv) {
     ctx.bus->subscribe("broker.reconcile", "risk-reconcile", [&](const Delivery& d) { risk.on_reconcile(d.env.payload); flush_control(); persist(); });
     ctx.bus->subscribe("control.>", "risk-control", [&](const Delivery& d) { if (d.env.producer != "risk") risk.on_control(d.subject, d.env.payload); persist(); });
     ctx.bus->subscribe("market.data.quote.*", "risk-quotes", [&](const Delivery& d) { risk.on_quote(d.env.payload.value("symbol", ""), quote_from_payload(d.env.payload)); });
+    ctx.bus->subscribe("market.data.shortable.*", "risk-shortable", [&](const Delivery& d) { risk.on_shortable(d.env.payload.value("symbol", ""), d.env.payload.value("shortable", false)); });
     ctx.bus->subscribe("orders.status", "risk-status", [&](const Delivery& d) { risk.on_order_status(d.env.payload); flush_control(); });
     ctx.bus->subscribe("orders.filled", "risk-filled", [&](const Delivery& d) { risk.on_order_filled(d.env.payload); });
 
@@ -41,7 +42,8 @@ int main(int argc, char** argv) {
             for (const auto& d : decisions) {
                 if (d.approved) {
                     ctx.bus->publish("orders.approved", make_envelope("risk", d.order, d.candidate_msg_id));
-                    spdlog::info("risk: APPROVED {} qty={} limit={} stop={} binding={}", d.symbol, d.order["qty"].get<int>(), cents_to_decimal(d.order["limit_px_cents"].get<Cents>()), cents_to_decimal(d.order["stop_px_cents"].get<Cents>()), d.sizing.binding);
+                    std::string stop_str = d.order["stop_px_cents"].is_null() ? "-" : cents_to_decimal(d.order["stop_px_cents"].get<Cents>());
+                    spdlog::info("risk: APPROVED {} {} qty={} limit={} stop={} binding={}", d.order.value("intent", "ENTRY"), d.symbol, d.order["qty"].get<int>(), cents_to_decimal(d.order["limit_px_cents"].get<Cents>()), stop_str, d.sizing.binding);
                 } else {
                     spdlog::info("risk: REJECTED {} reason={}", d.symbol, d.reject_reason);
                 }

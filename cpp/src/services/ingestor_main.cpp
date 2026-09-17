@@ -29,8 +29,9 @@ int main(int argc, char** argv) {
     ctx.bus->subscribe("signals.candidate", "ingestor-candidates", [&](const Delivery& d) { svc.on_candidate(d.env); });
     ctx.bus->subscribe("portfolio.state", "ingestor-portfolio", [&](const Delivery& d) { svc.on_portfolio_state(d.env); });
 
-    // Initial history pull so the strategy engine has its lookback on day one.
+    // Initial history pull so the strategy engines have their lookback on day one.
     svc.pull_bars(svc.all_symbols(), now_utc(), true);
+    if (ic.pull_tsmom_tr_bars) { svc.pull_bars_tr(svc.tsmom_symbols(), now_utc(), true); svc.pull_shortable(svc.tsmom_symbols(), now_utc()); }
     run_loop(*ctx.bus, [&](SysTime now) { svc.tick(now); }, 500);
     spdlog::info("ingestor: shutting down");
     return 0;

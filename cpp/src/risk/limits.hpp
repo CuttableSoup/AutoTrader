@@ -12,6 +12,7 @@ struct RiskLimits {
     double per_position_risk_pct = 0.5;
     double single_name_cap_pct = 8.0;
     double sector_cap_pct = 30.0;
+    double asset_class_cap_pct = 40.0;   // TSMOM only: cap per EQUITY/RATES_CREDIT/COMMODITIES/CURRENCIES bucket, gross
     double gross_exposure_cap_pct = 100.0;
     int max_open_positions = 15;
     int max_new_positions_per_day = 3;

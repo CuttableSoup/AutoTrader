@@ -8,17 +8,23 @@
 
 #include <filesystem>
 #include <map>
+#include <optional>
 #include <set>
 #include <string>
 
 namespace at {
 
 struct OrderMeta {
-    std::string intent;               // ENTRY, EXIT_TIME, ..., STOP_LEG, TAKE_PROFIT_LEG
+    std::string intent;               // ENTRY, EXIT_TIME, ..., STOP_LEG, TAKE_PROFIT_LEG, REBALANCE_TO_WEIGHT
     std::string symbol;
     std::string candidate_msg_id;     // may be empty
     std::string approved_msg_id;
     std::string broker_order_id;
+    // REBALANCE_TO_WEIGHT only: carried through to the orders.filled payload so the
+    // portfolio service can call Ledger::apply_rebalance_fill with the right signed target
+    // and asset_class, rather than the earnings-shaped apply_entry_fill/apply_exit_fill pair.
+    std::optional<std::int64_t> target_qty;
+    std::string asset_class;
     nlohmann::json to_json() const;
     static OrderMeta from_json(const nlohmann::json& j);
 };
@@ -40,6 +46,7 @@ public:
 private:
     void submit_entry(const Envelope& env, const nlohmann::json& p);
     void submit_exit(const Envelope& env, const nlohmann::json& p);
+    void submit_rebalance(const Envelope& env, const nlohmann::json& p);
     void replace_stop(const Envelope& env, const nlohmann::json& p);
     void publish_submitted(const Envelope& env, const nlohmann::json& p, const SubmitResult& r, const std::string& order_type);
     void remember(const std::string& coid, const OrderMeta& m);

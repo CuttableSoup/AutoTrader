@@ -8,10 +8,13 @@
 #include "common/secrets.hpp"
 #include "risk/limits.hpp"
 #include "strategy/params.hpp"
+#include "strategy/tsmom_params.hpp"
+#include "strategy/tsmom_signal.hpp"
 
 #include <chrono>
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <string>
 #include <thread>
 
@@ -22,6 +25,7 @@ struct ServiceContext {
     Config cfg;
     Secrets secrets;
     StrategyParams strategy;
+    std::optional<TsmomParams> tsmom;   // populated only when the config names a tsmom_config path
     RiskLimits risk;
     std::unique_ptr<SchemaRegistry> registry;
     std::unique_ptr<NatsBus> bus;
@@ -42,6 +46,14 @@ void save_json_atomic(const std::filesystem::path& p, const nlohmann::json& j);
 
 // Fires once per trading day at or after minutes_et (New York wall clock).
 struct DailyTrigger {
+    int minutes_et;
+    Date last_fired{};
+    bool due(SysTime now, const TradingCalendar& cal);
+};
+
+// Fires once per calendar month, on the formation session (the last trading session of
+// the month, strategy/tsmom_signal.hpp's is_formation_session), at or after minutes_et.
+struct MonthlyTrigger {
     int minutes_et;
     Date last_fired{};
     bool due(SysTime now, const TradingCalendar& cal);

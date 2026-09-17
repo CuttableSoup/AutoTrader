@@ -5,6 +5,8 @@
   "per_position_risk_pct": 0.5,
   "single_name_cap_pct": 8.0,
   "sector_cap_pct": 30.0,
+  "asset_class_cap_pct": 40.0,
+  "_asset_class_cap_pct_doc": "TSMOM only (EQUITY/RATES_CREDIT/COMMODITIES/CURRENCIES, gross). Starting point per docs/TSMOM-RESULT.md's per-asset-class OOS attribution, which is comparable across all four buckets.",
   "gross_exposure_cap_pct": 100.0,
   "max_open_positions": 15,
   "max_new_positions_per_day": 3,

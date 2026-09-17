@@ -48,5 +48,7 @@ Bar bar_from_payload(const nlohmann::json& payload);
 nlohmann::json bar_to_payload(const std::string& symbol, const Bar& b, const std::string& source, const std::string& data_ts_utc);
 Quote quote_from_payload(const nlohmann::json& payload);
 nlohmann::json quote_to_payload(const std::string& symbol, const Quote& q, const std::string& source);
+// TSMOM shortable pre-flight (RiskManager::evaluate_rebalance).
+nlohmann::json shortable_to_payload(const std::string& symbol, bool shortable, const std::string& source, const std::string& data_ts_utc);
 
 } // namespace at

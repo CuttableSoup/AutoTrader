@@ -165,4 +165,8 @@ nlohmann::json quote_to_payload(const std::string& symbol, const Quote& q, const
     };
 }
 
+nlohmann::json shortable_to_payload(const std::string& symbol, bool shortable, const std::string& source, const std::string& data_ts_utc) {
+    return {{"kind", "shortable"}, {"symbol", symbol}, {"source", source}, {"data_ts_utc", data_ts_utc}, {"shortable", shortable}};
+}
+
 } // namespace at
